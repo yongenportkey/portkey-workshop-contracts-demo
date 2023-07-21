@@ -14,6 +14,11 @@ const config: DocsThemeConfig = {
   },
   docsRepositoryBase:
     "https://github.com/yongenportkey/portkey-workshop-contracts-demo",
+  useNextSeoProps() {
+    return {
+      titleTemplate: "%s - Portkey Developer Workshop",
+    };
+  },
 };
 
 export default config;
