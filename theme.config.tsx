@@ -12,6 +12,8 @@ const config: DocsThemeConfig = {
   footer: {
     text: "Portkey Developer Workshop",
   },
+  docsRepositoryBase:
+    "https://github.com/yongenportkey/portkey-workshop-contracts-demo",
 };
 
 export default config;
