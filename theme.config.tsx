@@ -1,18 +1,17 @@
-import React from 'react'
-import { DocsThemeConfig } from 'nextra-theme-docs'
+import React from "react";
+import { DocsThemeConfig } from "nextra-theme-docs";
 
 const config: DocsThemeConfig = {
-  logo: <span>My Project</span>,
+  logo: <span>Portkey Developer Workshop</span>,
   project: {
-    link: 'https://github.com/shuding/nextra-docs-template',
+    link: "https://github.com/AElfProject/aelf-web3.js",
   },
   chat: {
-    link: 'https://discord.com',
+    link: "https://discord.gg/EUBq3rHQhr",
   },
-  docsRepositoryBase: 'https://github.com/shuding/nextra-docs-template',
   footer: {
-    text: 'Nextra Docs Template',
+    text: "Portkey Developer Workshop",
   },
-}
+};
 
-export default config
+export default config;

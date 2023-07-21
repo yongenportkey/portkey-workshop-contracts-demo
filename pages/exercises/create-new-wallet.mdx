@@ -1,0 +1,36 @@
+# Create a new wallet
+
+Open the project in your IDE and edit `src/App.js`:
+
+```js filename="src/App.js" showLineNumbers copy
+import AElf from "aelf-sdk";
+import { useState } from "react";
+
+// create a new instance of AElf
+const aelf = new AElf(
+  new AElf.providers.HttpProvider("https://aelf-test-node.aelf.io")
+);
+
+function App() {
+  const [wallet, setWallet] = useState();
+
+  const generateWallet = () => {
+    setWallet(AElf.wallet.createNewWallet());
+  };
+
+  return (
+    <div>
+      <div>Wallet address: {wallet ? wallet.address : ""}</div>
+      <button onClick={generateWallet}>Generate new wallet</button>
+    </div>
+  );
+}
+
+export default App;
+```
+
+- Visit http://localhost:3000 in your browser.
+- Click on the "Generate new wallet" button.
+- Observe that the wallet address changes.
+
+Congratulations! You have successfully generated a wallet.
