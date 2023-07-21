@@ -2,19 +2,19 @@
 
 Open your IDE and go to terminal.
 
-```js
+```sh copy
 npx create-react-app my-app
 ```
 
 # Install Portkey UI sdk
 
-```js
+```sh copy
 npm install "@portkey/did-ui-react"
 ```
 
 or
 
-```js
+```sh copy
 yarn add "@portkey/did-ui-react"
 ```
 
@@ -22,7 +22,7 @@ yarn add "@portkey/did-ui-react"
 
 ## Copy below sample code and replace the codes in src/App.js
 
-```js
+```js filename="src/App.js" copy showLineNumbers
 import { SignIn, PortkeyProvider } from "@portkey/did-ui-react";
 import { useRef, useCallback } from "react";
 import "@portkey/did-ui-react/dist/assets/index.css"; // import portkey css
@@ -63,7 +63,7 @@ As during Sign In process, there are number of api calls that is retrieving hold
 
 ## Npm run project
 
-```js
+```sh
 npm run start
 ```
 
