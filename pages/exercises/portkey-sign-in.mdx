@@ -1,0 +1,64 @@
+### Create a sample project using react
+Open your IDE and go to terminal.
+
+```js
+npx create-react-app my-app
+```
+
+### Install Portkey UI sdk
+
+```js
+npm install "@portkey/did-ui-react"
+```
+or
+
+```js
+yarn add "@portkey/did-ui-react"
+```
+
+### Integrate SignIn Component 
+#### Copy below sample code and replace the codes in src/App.js
+
+```js 
+import { SignIn, PortkeyProvider } from "@portkey/did-ui-react";
+import { useRef, useCallback } from "react";
+import "@portkey/did-ui-react/dist/assets/index.css"; // import portkey css 
+
+const App = () => {
+  const ref = useRef();
+
+  const onFinish = useCallback((didWallet) => {
+    console.log("didWallet:", didWallet);
+  }, []);
+
+  return (
+    <PortkeyProvider networkType={"TESTNET"}>
+      <button
+        onClick={() => {
+          ref.current?.setOpen(true);
+        }}
+      >
+        Sign In
+      </button>
+      <SignIn ref={ref} onFinish={onFinish} />
+    </PortkeyProvider>
+  );
+};
+
+export default App;
+```
+
+### Setting up the proxy to connect to testnet for testing 
+As during Sign In process, there are number of api calls that is retrieving holder info or guardians info from chain. 
+
+```js
+"proxy": "https://did-portkey-test.portkey.finance" //testnet
+```
+
+### Get wallet info
+#### Npm run project
+```js
+npm run start
+```
+#### Press Option+Command+I to see the console logs.
+#### Click on Sign In button and finish sign in process and you can see wallet info in console logs
