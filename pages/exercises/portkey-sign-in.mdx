@@ -23,7 +23,7 @@ yarn add "@portkey/did-ui-react"
 ## Copy below sample code and replace the codes in src/App.js
 
 ```js filename="src/App.js" copy showLineNumbers
-import { SignIn, PortkeyProvider } from "@portkey/did-ui-react";
+import { SignIn, PortkeyConfigProvider } from "@portkey/did-ui-react";
 import { useRef, useCallback } from "react";
 import "@portkey/did-ui-react/dist/assets/index.css"; // import portkey css
 
@@ -35,7 +35,7 @@ const App = () => {
   }, []);
 
   return (
-    <PortkeyProvider networkType={"TESTNET"}>
+    <PortkeyConfigProvider networkType={"TESTNET"}>
       <button
         onClick={() => {
           ref.current?.setOpen(true);
@@ -44,7 +44,7 @@ const App = () => {
         Sign In
       </button>
       <SignIn ref={ref} onFinish={onFinish} />
-    </PortkeyProvider>
+    </PortkeyConfigProvider>
   );
 };
 
