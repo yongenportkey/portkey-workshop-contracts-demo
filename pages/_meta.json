@@ -1,6 +1,5 @@
 {
   "index": "Introduction",
-  "environment-setup": "Environment Setup",
-  "create-react-app": "Create react app",
-  "exercises": "Exercises"
+  "portkey-sign-in": "Portkey Sign In",
+  "get-balance": "Get Balance"
 }

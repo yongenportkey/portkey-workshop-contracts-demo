@@ -1,0 +1,67 @@
+# Get Balance
+
+## Edit `src/App.js` and replace with the following:
+
+```js filename="src/App.js" copy showLineNumbers
+import { SignIn, PortkeyConfigProvider, did } from "@portkey/did-ui-react";
+import { useRef, useCallback, useState } from "react";
+import "@portkey/did-ui-react/dist/assets/index.css"; // import portkey css
+import { getContractBasic } from "@portkey/contracts";
+import BigNumber from "bignumber.js";
+
+const CHAIN_ID = "AELF";
+
+const App = () => {
+  const ref = useRef();
+  const [wallet, setWallet] = useState();
+  const [balance, setBalance] = useState(new BigNumber(0));
+
+  const getBalance = async (wallet) => {
+    const chainsInfo = await did.services.getChainsInfo();
+    const chainInfo = chainsInfo.find((chain) => chain.chainId === CHAIN_ID);
+    const multiTokenContract = await getContractBasic({
+      contractAddress: chainInfo.defaultToken.address,
+      account: wallet.walletInfo.wallet,
+      rpcUrl: chainInfo.endPoint,
+    });
+    const caInfo = await did.didWallet.getHolderInfoByContract({
+      caHash: wallet.caInfo.caHash,
+      chainId: CHAIN_ID,
+    });
+    const result = await multiTokenContract.callViewMethod("GetBalance", {
+      symbol: "ELF",
+      owner: caInfo.caAddress,
+    });
+
+    const balance = new BigNumber(result?.data?.balance).dividedBy(10 ** 8);
+
+    setBalance(balance);
+  };
+
+  const onFinish = useCallback((didWallet) => {
+    setWallet(didWallet);
+    getBalance(didWallet);
+  }, []);
+
+  return (
+    <PortkeyConfigProvider networkType={"TESTNET"}>
+      <button
+        onClick={() => {
+          ref.current?.setOpen(true);
+        }}
+      >
+        Sign In
+      </button>
+      <SignIn ref={ref} onFinish={onFinish} />
+      {wallet ? (
+        <>
+          <button onClick={() => getBalance(wallet)}>getBalance</button>
+          <div>Balance: {balance.toFixed(2)} ELF</div>
+        </>
+      ) : null}
+    </PortkeyConfigProvider>
+  );
+};
+
+export default App;
+```
