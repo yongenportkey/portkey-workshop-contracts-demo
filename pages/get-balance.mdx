@@ -19,30 +19,42 @@ const App = () => {
   const ref = useRef();
   const [wallet, setWallet] = useState();
   const [balance, setBalance] = useState(new BigNumber(0));
+  const [message, setMessage] = useState("");
 
   const getBalance = async (wallet) => {
     const viewWallet = AElf.wallet.createNewWallet();
+    setMessage("");
 
-    const chainsInfo = await did.services.getChainsInfo();
-    const chainInfo = chainsInfo.find((chain) => chain.chainId === CHAIN_ID);
+    try {
+      setMessage("Fetching chainsInfo...");
+      const chainsInfo = await did.services.getChainsInfo();
+      const chainInfo = chainsInfo.find((chain) => chain.chainId === CHAIN_ID);
 
-    const multiTokenContract = await aelf.chain.contractAt(
-      chainInfo.defaultToken.address,
-      viewWallet
-    );
+      setMessage("Fetching multiTokenContract...");
+      const multiTokenContract = await aelf.chain.contractAt(
+        chainInfo.defaultToken.address,
+        viewWallet
+      );
 
-    const caInfo = await did.didWallet.getHolderInfoByContract({
-      caHash: wallet.caInfo.caHash,
-      chainId: CHAIN_ID,
-    });
-    const result = await multiTokenContract.GetBalance.call({
-      symbol: "ELF",
-      owner: caInfo.caAddress,
-    });
+      setMessage("Fetching caInfo...");
+      const caInfo = await did.didWallet.getHolderInfoByContract({
+        caHash: wallet.caInfo.caHash,
+        chainId: CHAIN_ID,
+      });
 
-    const balance = new BigNumber(result?.balance).dividedBy(10 ** 8);
+      setMessage("Fetching GetBalance...");
+      const result = await multiTokenContract.GetBalance.call({
+        symbol: "ELF",
+        owner: caInfo.caAddress,
+      });
 
-    setBalance(balance);
+      const balance = new BigNumber(result?.balance).dividedBy(10 ** 8);
+
+      setBalance(balance);
+      setMessage("");
+    } catch (err) {
+      setMessage(err);
+    }
   };
 
   const onFinish = useCallback((didWallet) => {
@@ -63,7 +75,14 @@ const App = () => {
       {wallet ? (
         <>
           <button onClick={() => getBalance(wallet)}>getBalance</button>
-          <div>Balance: {balance.toFixed(2)} ELF</div>
+          <div>
+            Wallet address: ELF_{wallet.caInfo.caAddress}_{CHAIN_ID}
+          </div>
+          {message ? (
+            <div>{message}</div>
+          ) : (
+            <div>Balance: {balance.toFixed(2)} ELF</div>
+          )}
         </>
       ) : null}
     </PortkeyConfigProvider>
@@ -72,3 +91,7 @@ const App = () => {
 
 export default App;
 ```
+
+# Faucet
+
+You may top up your testnet wallet using the [Faucet](https://testnet-faucet.aelf.io).
