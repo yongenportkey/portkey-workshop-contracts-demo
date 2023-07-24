@@ -6,11 +6,6 @@ Open the project in your IDE and edit `src/App.js`:
 import AElf from "aelf-sdk";
 import { useState } from "react";
 
-// create a new instance of AElf
-const aelf = new AElf(
-  new AElf.providers.HttpProvider("https://aelf-test-node.aelf.io")
-);
-
 function App() {
   const [wallet, setWallet] = useState();
 
