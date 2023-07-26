@@ -1,5 +1,6 @@
 {
   "index": "Introduction",
   "portkey-sign-in": "Portkey Sign In",
-  "get-balance": "Get Balance"
+  "get-balance": "Get Balance",
+  "create-token": "Create Token"
 }

@@ -1,0 +1,38 @@
+# Create a Token on AElf Chain
+
+## Preparation
+
+- Install Node.js
+- Run npm install aelf-command.
+```sh copy
+npm i aelf-command -g
+```
+
+## Usage
+
+Run the following commands to create a new token.
+
+```sh copy
+aelf-command send -a 2cJGkUmdAJEBtXVxoPRgnN5PMDyF1TKRHA3q6Kk9fJXCtRzfiZ AElf.ContractNames.Token -e http://127.0.0.1:8000
+```
+
+Key in the password admin123. Choose the Create method and key in parameters as follows:
+
+```sh copy
+Enter the params one by one, type `Enter` to skip optional param:
+? Enter the required param <symbol>: ELFTEST
+? Enter the required param <tokenName>: elf test token
+? Enter the required param <totalSupply>: 1000000000_00000000
+? Enter the required param <decimals>: 8
+? Enter the required param <issuer>: 2cJGkUmdAJEBtXVxoPRgnN5PMDyF1TKRHA3q6Kk9fJXCtRzfiZ
+? Enter the required param <isBurnable>: true
+? Enter the required param <lockWhiteList>: 
+? Enter the required param <issueChainId>: 9992731
+```
+## Get token information
+
+Run the following commands to get the token information.
+
+```sh copy
+aelf-command call -a 2cJGkUmdAJEBtXVxoPRgnN5PMDyF1TKRHA3q6Kk9fJXCtRzfiZ AElf.ContractNames.Token -e http://127.0.0.1:8000
+```
