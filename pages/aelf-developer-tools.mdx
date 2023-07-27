@@ -1,0 +1,139 @@
+# AElf developer tools
+
+## Development
+### Preparation
+- Install dotnet sdk.
+  - Follow this doc https://dotnet.microsoft.com/en-us/download to install dotnet sdk. You can choose the 6.x or 7.x version.
+  - Type ```dotnet --version```, if return the version of dotnet sdk, the installation is successful.
+
+### Create new project
+- Open a terminal and type the following command. You can install the contract template from nuget repo to your local.
+``` 
+ $ PROD: dotnet new install AElf.Contract
+ $ DEV: dotnet new install AElf.Contract --nuget-source http://192.168.66.111:8081/repository/nuget-group/index.json
+```
+- Type the following command, and create a new template project locally. You can modify custom parameters of command to define contract names and namespace customisedly. -n stands for contract name, -N stands for namespace.
+```
+$ dotnet new aelfcontract -n BingoGameContract -N AElf.Contracts.BingoGameContract
+```
+   For example, -n HelloWorld means your contract name will be HelloWorld, -N AElf.Contracts.HelloWorld means your contract namespace will be AElf.Contracts.HelloWorld.
+Type the following command to understand usage of all the custom parameters.
+```
+$ dotnet new aelfcontract --help
+```
+
+### Create and modify proto files
+- Create new proto files and modify existed protobuf files according to your requirements. Note that the import path, the path of proto under the ```base/contract/message/reference``` folder needs to use the absolute path, the path of other imported proto doesn't need to do it. Like the following picture. When we create the proto files under the Protobuf folder, we don't need to add the configs of import proto to csproj file.
+
+### Create and modify class files
+- Create new class files and modify existing class files according to your requirements.
+
+### Build
+- Run the following command and check the result. If have any errors, solve them according to error messages.
+```
+$ cd src
+$ dotnet build
+```
+  
+## Testing
+### Copy proto files
+- With the same method as above, copy proto files from src folder to base, message, stub folders. And update the import path.
+
+### Create and modify class files
+- Create new class files and modify existing class files according to your requirements.
+
+### Build and run
+- Run the following command and check the result. If have any errors, solve them according to error messages.
+```
+$ cd test
+$ dotnet build
+```
+- After building successfully, run dotnet test command. And check the result. If have any errors, solve them according to error messages.
+
+## Deployment
+
+### Start local chain
+- Install Docker. Refer to https://www.docker.com/products/docker-desktop/
+- Run the following commands, to pull the docker image and run it.
+```
+$ docker run --name aelf-node --restart always \
+    -itd -p 6801:6801 -p 8000:8000 -p 5001:5001 \
+    -p 5011:5011 \
+    --ulimit core=-1 --security-opt \
+    seccomp=unconfined --privileged=true \
+    aelf/standalone-testing-node
+```
+- Check the log.
+
+### Deploy smart contract
+- Install the aelf-command or aelf-cli tools.
+
+- Prepare a smart contract dll file. You can get it with the following steps.
+  - Go to the src folder of Project, and pack it. Then you can see the dll.patched file under the path ```bin/Debug/net6.0/```.
+```
+$ cd src
+$ dotnet pack
+```
+- Run the following commands to get some information of the chain. Get the GenesisContractAddress value.
+```
+$ aelf-command get-chain-status
+```
+- Run the following command to deploy contract.
+```
+$ aelf-command send pykr77ft9UUKJZLVq15wCH8PinBSjVRQ12sD1Ayq92mKFsJ1i ProposeNewContract
+```
+And type your category and contract path, deploy it and get the transactionId.
+- Run the following command to get proposalId and proposedContractInputHash.
+```
+$ aelf-command event b8195becb339672d729fc2bb932f6c6f958961ba42f258f0bef496319d5db804
+```
+- Run the following commands and type the Parliament contract address. Then select Approve option and type proposalId.
+```
+$ aelf-command send
+? Enter the the URI of an AElf node: http://127.0.0.1:8000
+? Enter a valid wallet address, if you don’t have, create one by aelf-command create: 2cJGkUmdAJEBtXVxoPRgnN5PMDyF1
+TKRHA3q6Kk9fJXCtRzfiZ
+? Enter the password you typed when creating a wallet: ********
+? Enter contract name (System contracts only) or the address of contract: AElf.ContractNames.Parliament
+✔ Fetching contract successfully!
+? Pick up a contract method: Approve
+
+If you need to pass file contents as a parameter, you can enter the relative or absolute path of the file
+
+Enter the params one by one, type `Enter` to skip optional param:
+? Enter the required param <value>: af5edc00120f127e67b22053c41c257248d952e99d41081612a7fb4c195687df
+```
+- Run the following commands to approve contracts.
+```
+$ aelf-command send pykr77ft9UUKJZLVq15wCH8PinBSjVRQ12sD1Ayq92mKFsJ1i ReleaseApprovedContract
+? Enter the the URI of an AElf node: http://127.0.0.1:8000
+? Enter a valid wallet address, if you dont have, create one by aelf-command create: 2cJGkUmdAJEBtXVxoPRgnN5PMDyF1
+TKRHA3q6Kk9fJXCtRzfiZ
+? Enter the password you typed when creating a wallet: ********
+✔ Fetching contract successfully!
+
+If you need to pass file contents as a parameter, you can enter the relative or absolute path of the file
+
+Enter the params one by one, type `Enter` to skip optional param:
+? Enter the required param <proposalId>: af5edc00120f127e67b22053c41c257248d952e99d41081612a7fb4c195687df
+? Enter the required param <proposedContractInputHash>: f2335b7ef35bb1a94c188c0e62206f87491c4a47ac9ddc4b6721556726d092e3
+b526b
+```
+- Run the following commands to get proposalId.
+```
+$ aelf-command event 459b57c46fbc55a1925203d8056f738257b6a1d3eebae60898c6c56c1b5b7fda
+```
+- Run the following commands to code check.
+```
+$ aelf-command send pykr77ft9UUKJZLVq15wCH8PinBSjVRQ12sD1Ayq92mKFsJ1i ReleaseCodeCheckedContract
+```
+- Run the following commands to get deployed information.
+
+## Call the contract
+- Send aelf commands.
+  - Open terminal, type aelf-command send, fill in the node with 127.0.0.1:8000, address and password are same as before. Fill the contract with address that return before.
+- Select the interface and type parameters.
+  - Select method/interface that you want to test. Type the parameters.
+- Check result.
+  - If call succeeds. You can get the transactionId.
+  - Type http://localhost:8000/swagger/index.html. And go to the api/blockChain/transactionResult, fill with the transactionId and click Execute. Get the result and check it.
