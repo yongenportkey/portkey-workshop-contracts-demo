@@ -2,10 +2,25 @@
 
 ## Preparation
 
-- Install Node.js
-- Run npm install aelf-command.
+- Install [Node.js](https://nodejs.org/en/download).
+- At the terminal:
+
 ```sh copy
 npm i aelf-command -g
+```
+
+## Start local AElf node
+
+- Install Docker. Refer to https://www.docker.com/products/docker-desktop/
+- Run the following commands, to pull the docker image and run it.
+
+```
+$ docker run --name aelf-node --restart always \
+    -itd -p 6801:6801 -p 8000:8000 -p 5001:5001 \
+    -p 5011:5011 \
+    --ulimit core=-1 --security-opt \
+    seccomp=unconfined --privileged=true \
+    aelf/standalone-testing-node
 ```
 
 ## Usage
@@ -26,9 +41,10 @@ Enter the params one by one, type `Enter` to skip optional param:
 ? Enter the required param <decimals>: 8
 ? Enter the required param <issuer>: 2cJGkUmdAJEBtXVxoPRgnN5PMDyF1TKRHA3q6Kk9fJXCtRzfiZ
 ? Enter the required param <isBurnable>: true
-? Enter the required param <lockWhiteList>: 
+? Enter the required param <lockWhiteList>:
 ? Enter the required param <issueChainId>: 9992731
 ```
+
 ## Get token information
 
 Run the following commands to get the token information.
