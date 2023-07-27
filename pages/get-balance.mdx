@@ -1,5 +1,25 @@
 # Get Balance
 
+## Create a sample project using react
+
+In a terminal:
+
+```sh copy
+npx create-react-app my-app
+```
+
+Enter the project folder.
+
+```sh copy
+cd my-app
+```
+
+## Install Portkey UI sdk
+
+```sh copy
+npm install @portkey/did-ui-react
+```
+
 ## Edit `src/App.js` and replace with the following:
 
 ```js filename="src/App.js" copy showLineNumbers
@@ -92,6 +112,24 @@ const App = () => {
 export default App;
 ```
 
-# Faucet
+## Setting up the proxy to connect to testnet for testing
+
+As during Sign In process, there are number of api calls that is retrieving holder info or guardians info from chain.
+
+Edit `package.json` and add the following:
+
+```json filename="package.json"
+"proxy": "https://did-portkey-test.portkey.finance" //testnet
+```
+
+## Start the development server
+
+```sh
+npm run start
+```
+
+## Faucet
 
 You may top up your testnet wallet using the [Faucet](https://testnet-faucet.aelf.io).
+
+After topping up, you can click the `getBalance` button to retrieve the new balance.

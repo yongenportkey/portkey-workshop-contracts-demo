@@ -1,26 +1,28 @@
-# Create a sample project using react
+# Portkey Sign In
 
-Open your IDE and go to terminal.
+## Create a sample project using react
+
+In a terminal:
 
 ```sh copy
 npx create-react-app my-app
 ```
 
-# Install Portkey UI sdk
+Enter the project folder.
 
 ```sh copy
-npm install "@portkey/did-ui-react"
+cd my-app
 ```
 
-or
+## Install Portkey UI sdk
 
 ```sh copy
-yarn add "@portkey/did-ui-react"
+npm install @portkey/did-ui-react
 ```
 
-# Integrate SignIn Component
+## Integrate SignIn Component
 
-## Copy below sample code and replace the codes in src/App.js
+### Copy below sample code and replace the codes in src/App.js
 
 ```js filename="src/App.js" copy showLineNumbers
 import { SignIn, PortkeyConfigProvider } from "@portkey/did-ui-react";
@@ -51,17 +53,17 @@ const App = () => {
 export default App;
 ```
 
-# Setting up the proxy to connect to testnet for testing
+## Setting up the proxy to connect to testnet for testing
 
 As during Sign In process, there are number of api calls that is retrieving holder info or guardians info from chain.
 
-```js
+Edit `package.json` and add the following:
+
+```json filename="package.json"
 "proxy": "https://did-portkey-test.portkey.finance" //testnet
 ```
 
-# Get wallet info
-
-## Npm run project
+## Start the development server
 
 ```sh
 npm run start
