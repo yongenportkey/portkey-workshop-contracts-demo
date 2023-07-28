@@ -2,6 +2,7 @@
   "index": "Introduction",
   "portkey-sign-in": "Portkey Sign In",
   "get-balance": "Get Balance",
+  "custom-css": "Custom CSS",
   "create-token": "Create Token",
   "deploy-smart-contract": "Deploy a smart contract"
 }
