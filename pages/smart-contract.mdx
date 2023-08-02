@@ -1,4 +1,4 @@
-# Deploy a smart contract
+# Develope, deploy and test a smart contract
 
 ## Development
 
@@ -14,7 +14,7 @@
 
 ```
  $ PROD: dotnet new install AElf.Contract
- $ DEV: dotnet new install AElf.Contract --nuget-source http://192.168.66.111:8081/repository/nuget-group/index.json
+ $ DEV: dotnet new install AElf.Contract --nuget-source http://10.0.1.239:8081/repository/nuget-group/index.json
 ```
 
 - Type the following command, and create a new template project locally. You can modify custom parameters of command to define contract names and namespace customisedly. -n stands for contract name, -N stands for namespace.
@@ -106,48 +106,50 @@ $ dotnet pack
 - Run the following commands to get some information of the chain. Get the GenesisContractAddress value.
 
 ```
-$ aelf-command get-chain-status
+$ aelf-command get-chain-status -e http://127.0.0.1:8000 
 ```
 
 - Run the following command to deploy contract.
 
 ```
-$ aelf-command send pykr77ft9UUKJZLVq15wCH8PinBSjVRQ12sD1Ayq92mKFsJ1i ProposeNewContract
+$ aelf-command send pykr77ft9UUKJZLVq15wCH8PinBSjVRQ12sD1Ayq92mKFsJ1i ProposeNewContract -e http://127.0.0.1:8000
+? Enter a valid wallet address, if you don't have, create one by aelf-command create: W1ptWN5n5mfdVvh3khTRm9KMJCAUdge9txNyVtyvZaYRYcqc1
+? Enter the password you typed when creating a wallet: {password}
 ```
 
 And type your category and contract path, deploy it and get the transactionId.
 
-- Run the following command to get proposalId and proposedContractInputHash.
+- Run the following command to get proposal_Id and proposedContractInputHash.
 
 ```
-$ aelf-command event b8195becb339672d729fc2bb932f6c6f958961ba42f258f0bef496319d5db804
+$ aelf-command event {transactionId} -e http://127.0.0.1:8000
 ```
 
-- Run the following commands and type the Parliament contract address. Then select Approve option and type proposalId.
+- Run the following commands and type the Parliament contract address. Then select Approve option and type proposal_Id.
 
 ```
-$ aelf-command send
-? Enter the the URI of an AElf node: http://127.0.0.1:8000
-? Enter a valid wallet address, if you don’t have, create one by aelf-command create: 2cJGkUmdAJEBtXVxoPRgnN5PMDyF1
-TKRHA3q6Kk9fJXCtRzfiZ
-? Enter the password you typed when creating a wallet: ********
-? Enter contract name (System contracts only) or the address of contract: AElf.ContractNames.Parliament
+$ aelf-command send -a W1ptWN5n5mfdVvh3khTRm9KMJCAUdge9txNyVtyvZaYRYcqc1 AElf.ContractNames.Parliament -e http://127.0.0.1:8000
+? Enter the password you typed when creating a wallet: {password}
 ✔ Fetching contract successfully!
 ? Pick up a contract method: Approve
 
 If you need to pass file contents as a parameter, you can enter the relative or absolute path of the file
 
 Enter the params one by one, type `Enter` to skip optional param:
-? Enter the required param <value>: af5edc00120f127e67b22053c41c257248d952e99d41081612a7fb4c195687df
+? Enter the required param <value>: {proposal_Id}
+```
+
+- Run the following commands to get new_proposal_Id.
+
+```
+$ aelf-command event {new_proposal_Id}
 ```
 
 - Run the following commands to approve contracts.
 
 ```
-$ aelf-command send pykr77ft9UUKJZLVq15wCH8PinBSjVRQ12sD1Ayq92mKFsJ1i ReleaseApprovedContract
-? Enter the the URI of an AElf node: http://127.0.0.1:8000
-? Enter a valid wallet address, if you dont have, create one by aelf-command create: 2cJGkUmdAJEBtXVxoPRgnN5PMDyF1
-TKRHA3q6Kk9fJXCtRzfiZ
+$ aelf-command send pykr77ft9UUKJZLVq15wCH8PinBSjVRQ12sD1Ayq92mKFsJ1i ReleaseApprovedContract -e http://127.0.0.1:8000
+? Enter a valid wallet address, if you dont have, create one by aelf-command create: W1ptWN5n5mfdVvh3khTRm9KMJCAUdge9txNyVtyvZaYRYcqc1
 ? Enter the password you typed when creating a wallet: ********
 ✔ Fetching contract successfully!
 
@@ -159,10 +161,10 @@ Enter the params one by one, type `Enter` to skip optional param:
 b526b
 ```
 
-- Run the following commands to get proposalId.
+- Run the following commands to get new_proposal_Id.
 
 ```
-$ aelf-command event 459b57c46fbc55a1925203d8056f738257b6a1d3eebae60898c6c56c1b5b7fda
+$ aelf-command event {new_proposal_Id}
 ```
 
 - Run the following commands to code check.
