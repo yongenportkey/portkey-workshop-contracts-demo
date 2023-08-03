@@ -6,28 +6,34 @@
 
 - Install dotnet sdk.
   - Follow this doc https://dotnet.microsoft.com/en-us/download to install dotnet sdk. You can choose the 6.x or 7.x version.
-  - Type `dotnet --version`, if return the version of dotnet sdk, the installation is successful.
+  - Type dotnet --version, if return the version of dotnet sdk, the installation is successful.
+
+- Install node.
+  - Follow this doc https://nodejs.org/en/download to install node and npm.
+  - Type ```node -v``` and npm ```-v```, if return the versions, the installation is successful.
+
 
 ### Create new project
 
 - Open a terminal and type the following command. You can install the contract template from nuget repo to your local.
 
 ```
- $ PROD: dotnet new install AElf.Contract
- $ DEV: dotnet new install AElf.Contract --nuget-source http://10.0.1.239:8081/repository/nuget-group/index.json
+ $ PROD: dotnet new install AElf.HelloWorld.Contract
+ $ DEV: dotnet new install AElf.HelloWorld.Contract --nuget-source http://10.0.1.239:8081/repository/nuget-group/index.json
+```
+After installing, you can use dotnet new uninstall to check this template on local.
+
+- Type the following command, and create a new template project locally. You can modify custom parameters of command to define contract names and namespace customisedly. ```-n``` stands for contract name, ```-N``` stands for namespace.
+
+```
+$ dotnet new helloworldcontract -n HelloWorld -N AElf.Contracts.HelloWorld
 ```
 
-- Type the following command, and create a new template project locally. You can modify custom parameters of command to define contract names and namespace customisedly. -n stands for contract name, -N stands for namespace.
-
-```
-$ dotnet new aelfcontract -n BingoGameContract -N AElf.Contracts.BingoGameContract
-```
-
-For example, -n HelloWorld means your contract name will be HelloWorld, -N AElf.Contracts.HelloWorld means your contract namespace will be AElf.Contracts.HelloWorld.
+For example, ```-n HelloWorld``` means your contract name will be HelloWorld, ```-N AElf.Contracts.HelloWorld``` means your contract namespace will be AElf.Contracts.HelloWorld.
 Type the following command to understand usage of all the custom parameters.
 
 ```
-$ dotnet new aelfcontract --help
+$ dotnet new helloworldcontract --help
 ```
 
 ### Create and modify proto files
@@ -66,7 +72,7 @@ $ cd test
 $ dotnet build
 ```
 
-- After building successfully, run dotnet test command. And check the result. If have any errors, solve them according to error messages.
+- After building successfully, run ```dotnet test``` command. And check the result. If have any errors, solve them according to error messages.
 
 ## Deployment
 
@@ -77,10 +83,10 @@ $ dotnet build
 
 ```
 $ docker run --name aelf-node --restart always \
-    -itd -p 6801:6801 -p 8000:8000 -p 5001:5001 \
-    -p 5011:5011 \
-    --ulimit core=-1 --security-opt \
-    seccomp=unconfined --privileged=true \
+    -itd -p 6801:6801 -p 8000:8000 -p 5001:5001 -p 5011:5011 \
+    --platform linux/amd64 \
+    --ulimit core=-1 \
+    --security-opt seccomp=unconfined --privileged=true \
     aelf/standalone-testing-node
 ```
 
@@ -88,15 +94,20 @@ $ docker run --name aelf-node --restart always \
 
 ### Deploy smart contract
 
-- Install [Node.js](https://nodejs.org/en/download).
-- At the terminal:
+- Run the following command to install aelf-command tool.
 
-```sh copy
+```
 npm i aelf-command -g
 ```
 
+- Load the keystore to your local environment.
+
+```
+aelf-command load 1111111111111111111111111111111111111111111111111111111111111111
+```
+
 - Prepare a smart contract dll file. You can get it with the following steps.
-  - Go to the src folder of Project, and pack it. Then you can see the dll.patched file under the path `bin/Debug/net6.0/`.
+  - Go to the src folder of Project, and pack it. Then you can see the ```dll.patched``` file under the path `bin/Debug/net6.0/`.
 
 ```
 $ cd src
@@ -112,20 +123,24 @@ $ aelf-command get-chain-status -e http://127.0.0.1:8000
 - Run the following command to deploy contract.
 
 ```
-$ aelf-command send pykr77ft9UUKJZLVq15wCH8PinBSjVRQ12sD1Ayq92mKFsJ1i ProposeNewContract -e http://127.0.0.1:8000
+$ aelf-command send {GenesisContractAddress} ProposeNewContract -e http://127.0.0.1:8000
 ? Enter a valid wallet address, if you don't have, create one by aelf-command create: W1ptWN5n5mfdVvh3khTRm9KMJCAUdge9txNyVtyvZaYRYcqc1
 ? Enter the password you typed when creating a wallet: {password}
 ```
 
-And type your category and contract path, deploy it and get the transactionId.
-
-- Run the following command to get proposal_Id and proposedContractInputHash.
-
+And type your category and contract path, deploy it and get the transactionId_1.
 ```
-$ aelf-command event {transactionId} -e http://127.0.0.1:8000
+? category: 0
+? code: {your contract dll file path}/contract.dll.patched
 ```
 
-- Run the following commands and type the Parliament contract address. Then select Approve option and type proposal_Id.
+- Run the following command using the transactionId_1 obtained above to get proposalId_1 and proposedContractInputHash.
+
+```
+$ aelf-command event {transactionId_1} -e http://127.0.0.1:8000
+```
+
+- Run the following commands and type the Parliament contract address. Then select Approve option and type proposalId_1. After this, get transactionId_2.
 
 ```
 $ aelf-command send -a W1ptWN5n5mfdVvh3khTRm9KMJCAUdge9txNyVtyvZaYRYcqc1 AElf.ContractNames.Parliament -e http://127.0.0.1:8000
@@ -136,19 +151,13 @@ $ aelf-command send -a W1ptWN5n5mfdVvh3khTRm9KMJCAUdge9txNyVtyvZaYRYcqc1 AElf.Co
 If you need to pass file contents as a parameter, you can enter the relative or absolute path of the file
 
 Enter the params one by one, type `Enter` to skip optional param:
-? Enter the required param <value>: {proposal_Id}
+? Enter the required param <value>: {proposalId_1}
 ```
 
-- Run the following commands to get new_proposal_Id.
+- Run the following commands to approve contracts. And get transactionId_2.
 
 ```
-$ aelf-command event {new_proposal_Id}
-```
-
-- Run the following commands to approve contracts.
-
-```
-$ aelf-command send pykr77ft9UUKJZLVq15wCH8PinBSjVRQ12sD1Ayq92mKFsJ1i ReleaseApprovedContract -e http://127.0.0.1:8000
+$ aelf-command send {GenesisContractAddress} ReleaseApprovedContract -e http://127.0.0.1:8000
 ? Enter a valid wallet address, if you dont have, create one by aelf-command create: W1ptWN5n5mfdVvh3khTRm9KMJCAUdge9txNyVtyvZaYRYcqc1
 ? Enter the password you typed when creating a wallet: ********
 ✔ Fetching contract successfully!
@@ -156,31 +165,46 @@ $ aelf-command send pykr77ft9UUKJZLVq15wCH8PinBSjVRQ12sD1Ayq92mKFsJ1i ReleaseApp
 If you need to pass file contents as a parameter, you can enter the relative or absolute path of the file
 
 Enter the params one by one, type `Enter` to skip optional param:
-? Enter the required param <proposalId>: af5edc00120f127e67b22053c41c257248d952e99d41081612a7fb4c195687df
+? Enter the required param <proposalId_1>: af5edc00120f127e67b22053c41c257248d952e99d41081612a7fb4c195687df
 ? Enter the required param <proposedContractInputHash>: f2335b7ef35bb1a94c188c0e62206f87491c4a47ac9ddc4b6721556726d092e3
 b526b
 ```
 
-- Run the following commands to get new_proposal_Id.
+- Run the following commands to get proposalId_2.
 
 ```
-$ aelf-command event {new_proposal_Id}
+$ aelf-command event {transactionId_2}
 ```
 
-- Run the following commands to code check.
+- Run the following commands to code check. And get transactionId_3.
 
 ```
-$ aelf-command send pykr77ft9UUKJZLVq15wCH8PinBSjVRQ12sD1Ayq92mKFsJ1i ReleaseCodeCheckedContract
+$ aelf-command send {GenesisContractAddress} ReleaseCodeCheckedContract -e http://127.0.0.1:8000
+? Enter a valid wallet address, if you dont have, create one by aelf-command create: W1ptWN5n5mfdVvh3khTRm9KMJCAUdge9txNyVtyvZaYRYcqc1
+? Enter the password you typed when creating a wallet: ********
+✔ Fetching contract successfully!
+
+If you need to pass file contents as a parameter, you can enter the relative or absolute path of the file
+
+Enter the params one by one, type `Enter` to skip optional param:
+? Enter the required param <proposalId_2>: 0986fb00120f127e67b22053c41c257248d952e99d41081612a7fb4c195687df
+? Enter the required param <proposedContractInputHash>: f2335b7ef35bb1a94c188c0e62206f87491c4a47ac9ddc4b6721556726d092e3
+b526b
 ```
 
 - Run the following commands to get deployed information.
 
+```
+$ aelf-command event {transactionId_3}
+```
+
+
 ## Call the contract
 
 - Send aelf commands.
-  - Open terminal, type aelf-command send, fill in the node with 127.0.0.1:8000, address and password are same as before. Fill the contract with address that return before.
+  - Open terminal, type aelf-command send, fill in the node with http://127.0.0.1:8000, address and password are same as before. Fill the contract with address that return before.
 - Select the interface and type parameters.
   - Select method/interface that you want to test. Type the parameters.
 - Check result.
   - If call succeeds. You can get the transactionId.
-  - Type http://localhost:8000/swagger/index.html. And go to the api/blockChain/transactionResult, fill with the transactionId and click Execute. Get the result and check it.
+  - Type http://localhost:8000/swagger/index.html and go to the api/blockChain/transactionResult, fill with the transactionId and click Execute. Get the result and check it.
