@@ -2,53 +2,80 @@
 
 ## Preparation
 
-- Install [Node.js](https://nodejs.org/en/download).
-- At the terminal:
+- Install node.
+  - Follow this doc https://nodejs.org/en/download to install node and npm.
+  - Type ```node -v``` and ```npm -v```, if return the versions, the installation is successful.
+
+- Run the following command to install aelf-command tool.
 
 ```sh copy
 npm i aelf-command -g
 ```
 
-## Start local AElf node
+- Run the following command to create a new aelf account. If you already have account, you can continue use your account.
 
-- Install Docker. Refer to https://www.docker.com/products/docker-desktop/
-- Run the following commands, to pull the docker image and run it.
-
+```sh copy
+aelf-command create
 ```
-$ docker run --name aelf-node --restart always \
-    -itd -p 6801:6801 -p 8000:8000 -p 5001:5001 \
-    -p 5011:5011 \
-    --ulimit core=-1 --security-opt \
-    seccomp=unconfined --privileged=true \
-    aelf/standalone-testing-node
+
+## Creation
+
+- Firstly, before creating the token/NFT, we need to get the seed NFT......
+
+- Run the following commands to create a new token. The symbol of the created token must be consistent with the symbol applied for in the seed NFT.
+
+```sh copy
+aelf-command send AElf.ContractNames.Token -e https://aelf-test-node.aelf.io
+```
+
+Key in the password. Choose the Create method and key in parameters as follows:
+
+```sh copy
+Enter the params one by one, type `Enter` to skip optional param:
+? Enter the required param <symbol>: WKSPTKAAA
+? Enter the required param <tokenName>: WKSPTKAAA Token
+? Enter the required param <totalSupply>: 100000000000
+? Enter the required param <decimals>: 8
+? Enter the required param <issuer>: W1ptWN5n5mfdVvh3khTRm9KMJCAUdge9txNyVtyvZaYRYcqc1
+? Enter the required param <isBurnable>: false
+? Enter the required param <lockWhiteList>: 
+? Enter the required param <issueChainId>: 9992731
+? Enter the required param <externalInfo.value>: 
+? Enter the required param <owner>: W1ptWN5n5mfdVvh3khTRm9KMJCAUdge9txNyVtyvZaYRYcqc1
+```
+
+- After creating the token, it is only creating the token's information. We still need to issue it before we can use the token. Run the following commands.
+
+```sh copy
+aelf-command send AElf.ContractNames.Token -e https://aelf-test-node.aelf.io
+```
+
+Key in the password. Choose the Issue method and key in parameters as follows:
+
+```sh copy
+Enter the params one by one, type `Enter` to skip optional param:
+? Enter the required param <symbol>: WKSPTKAAA
+? Enter the required param <amount>: 1000000
+? Enter the required param <memo>: transfer
+? Enter the required param <to>: {address}
 ```
 
 ## Usage
 
-Run the following commands to create a new token.
+Run the following commands to transfer token from issuer to others.
 
 ```sh copy
-aelf-command send -a 2cJGkUmdAJEBtXVxoPRgnN5PMDyF1TKRHA3q6Kk9fJXCtRzfiZ AElf.ContractNames.Token -e http://127.0.0.1:8000
+aelf-command send AElf.ContractNames.Token -e https://aelf-test-node.aelf.io
 ```
 
-Key in the password admin123. Choose the Create method and key in parameters as follows:
+Key in the password. Choose the Transfer method and key in parameters as follows:
 
 ```sh copy
 Enter the params one by one, type `Enter` to skip optional param:
-? Enter the required param <symbol>: ELFTEST
-? Enter the required param <tokenName>: elf test token
-? Enter the required param <totalSupply>: 1000000000_00000000
-? Enter the required param <decimals>: 8
-? Enter the required param <issuer>: 2cJGkUmdAJEBtXVxoPRgnN5PMDyF1TKRHA3q6Kk9fJXCtRzfiZ
-? Enter the required param <isBurnable>: true
-? Enter the required param <lockWhiteList>:
-? Enter the required param <issueChainId>: 9992731
+? Enter the required param <to>: {to_address}
+? Enter the required param <symbol>: WKSPTKAAA
+? Enter the required param <amount>: 10000
+? Enter the required param <memo>: transfer
 ```
 
-## Get token information
-
-Run the following commands to get the token information.
-
-```sh copy
-aelf-command call -a 2cJGkUmdAJEBtXVxoPRgnN5PMDyF1TKRHA3q6Kk9fJXCtRzfiZ AElf.ContractNames.Token -e http://127.0.0.1:8000
-```
+... display on Portkey app
