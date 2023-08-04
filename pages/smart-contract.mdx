@@ -21,9 +21,8 @@
  $ PROD: dotnet new install AElf.HelloWorld.Contract
  $ DEV: dotnet new install AElf.HelloWorld.Contract --nuget-source http://10.0.1.239:8081/repository/nuget-group/index.json
 ```
-After installing, you can use dotnet new uninstall to check this template on local.
 
-- Type the following command, and create a new template project locally. You can modify custom parameters of command to define contract names and namespace customisedly. ```-n``` stands for contract name, ```-N``` stands for namespace.
+- Type the following command, and create a new template project locally. You can modify custom parameters of command to define contract names and namespace. ```-n``` stands for contract name, ```-N``` stands for namespace.
 
 ```
 $ dotnet new helloworldcontract -n HelloWorld -N AElf.Contracts.HelloWorld
@@ -55,7 +54,7 @@ $ dotnet build
 
 ## Testing
 
-### Copy proto files
+### Copy proto files (if you created or did some changes on proto files)
 
 - With the same method as above, copy proto files from src folder to base, message, stub folders. And update the import path.
 
