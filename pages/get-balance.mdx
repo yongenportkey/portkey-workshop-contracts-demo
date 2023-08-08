@@ -137,3 +137,100 @@ npm run start
 You may top up your testnet wallet using the [Faucet](https://testnet-faucet.aelf.io).
 
 After topping up, you can click the `getBalance` button to retrieve the new balance.
+
+## Get Token Balance
+
+Modify App.js with the following:
+
+```js filename="src/App.js" copy showLineNumbers
+import { SignIn, PortkeyProvider, did } from "@portkey/did-ui-react";
+import { useRef, useCallback, useState } from "react";
+import "@portkey/did-ui-react/dist/assets/index.css"; // import portkey css
+import AElf from "aelf-sdk";
+
+const CHAIN_ID = "AELF";
+
+const aelf = new AElf(
+  new AElf.providers.HttpProvider("https://aelf-test-node.aelf.io")
+);
+
+const App = () => {
+  const ref = useRef();
+  const [wallet, setWallet] = useState();
+  const [message, setMessage] = useState("");
+  const [imgUrl, setImgUrl] = useState("");
+
+  const getBalance = async (wallet) => {
+    const viewWallet = AElf.wallet.createNewWallet();
+    setMessage("");
+
+    try {
+      setMessage("Fetching chainsInfo...");
+      const chainsInfo = await did.services.getChainsInfo();
+      const chainInfo = chainsInfo.find((chain) => chain.chainId === CHAIN_ID);
+
+      setMessage("Fetching multiTokenContract...");
+      const multiTokenContract = await aelf.chain.contractAt(
+        chainInfo.defaultToken.address,
+        viewWallet
+      );
+
+      setMessage("Fetching caInfo...");
+      const caInfo = await did.didWallet.getHolderInfoByContract({
+        caHash: wallet.caInfo.caHash,
+        chainId: CHAIN_ID,
+      });
+
+      setMessage("Fetching Token...");
+      const result = await multiTokenContract.GetTokenInfo.call({
+        symbol: "WKSPNFTAAA-6",
+        owner: caInfo.caAddress,
+      });
+
+      setImgUrl(result?.externalInfo?.value?.["__nft_image_url"]);
+
+      setMessage("");
+    } catch (err) {
+      setMessage(err);
+    }
+  };
+
+  const onFinish = useCallback((didWallet) => {
+    setWallet(didWallet);
+  }, []);
+
+  return (
+    <PortkeyProvider networkType={"TESTNET"}>
+      <button
+        onClick={() => {
+          ref.current?.setOpen(true);
+        }}
+      >
+        Sign In
+      </button>
+      <SignIn ref={ref} onFinish={onFinish} />
+      {wallet ? (
+        <>
+          <button onClick={() => getBalance(wallet)}>getToken</button>
+          <div>
+            Wallet address: ELF_{wallet.caInfo.caAddress}_{CHAIN_ID}
+          </div>
+          {message ? (
+            <div>{message}</div>
+          ) : (
+            <div>
+              <img src={imgUrl} alt="NFT image" />
+            </div>
+          )}
+        </>
+      ) : null}
+    </PortkeyProvider>
+  );
+};
+
+export default App;
+```
+
+After Sign in, click on the getToken button.
+
+If the NFT exists, it will be displayed in the page.
