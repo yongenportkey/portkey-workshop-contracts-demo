@@ -18,21 +18,21 @@
 - Open a terminal and type the following command. You can install the contract template from nuget repo to your local.
 
 ```
- $ PROD: dotnet new install AElf.HelloWorld.Contract
- $ DEV: dotnet new install AElf.HelloWorld.Contract --nuget-source http://10.0.1.239:8081/repository/nuget-group/index.json
+ $ PROD: dotnet new install AElf.Contract
+ $ DEV: dotnet new install AElf.Contract --nuget-source http://10.0.1.239:8081/repository/nuget-group/index.json
 ```
 
 - Type the following command, and create a new template project locally. You can modify custom parameters of command to define contract names and namespace. ```-n``` stands for contract name, ```-N``` stands for namespace.
 
 ```
-$ dotnet new helloworldcontract -n HelloWorld -N AElf.Contracts.HelloWorld
+$ dotnet new aelfcontract -n HelloWorld -N AElf.Contract
 ```
 
 For example, ```-n HelloWorld``` means your contract name will be HelloWorld, ```-N AElf.Contracts.HelloWorld``` means your contract namespace will be AElf.Contracts.HelloWorld.
 Type the following command to understand usage of all the custom parameters.
 
 ```
-$ dotnet new helloworldcontract --help
+$ dotnet new aelfcontract --help
 ```
 
 ### Create or modify project files
@@ -71,17 +71,6 @@ $ dotnet build
 
 ## RNG (Random number generator) Introduction
 RNG is a very important part in AElf porject, AElf currently employs the Verifiable Random Function (VRF) algorithm as its underlying mechanism for generating random numbers. The essence of the VRF algorithm is rooted in mathematical operations on elliptic curves. 
-Within VRF, the central algorithm involves the following key steps:
-
-1. Hash to Curve: Transforming input data into a point on an elliptic curve using a hash function. This pivotal step maps input of arbitrary length onto a point on the elliptic curve.
-
-2. Scalar Multiplication: Conducting multiplication operations between points and scalars on the elliptic curve. This operation transforms one point into another through scalar multiples.
-
-3. Nonce Generation: Generating a random number for signing, ensuring uniqueness and unpredictability for each signing instance.
-
-4. Hashing and Concatenation: Hashing and concatenating multiple points to create a new hash value. This step is utilized to generate the final signature or proof.
-
-In the VRF algorithm, these core steps collaborate to generate a verifiable random function value, also referred to as the VRF output. Simultaneously, this process guarantees that other users can verify the authenticity of this output. The accuracy and security of the core algorithm hinge on the mathematical properties of elliptic curves, encompassing operations such as point addition, multiplication, and the characteristics of hash functions.
 
 The following section contains the code of the core algorithm for AElf's VRF along with comments:
 ```
@@ -183,8 +172,9 @@ Next, following the example above, we can obtain a `randomHash` to generate a ra
 Add the following code to the `src/Protobuf/contract/hello_world_contract.proto` file. This line of code will introduce a new method called `Bet`, which takes a string as input and also produces a string as output.
 
 ```
-  rpc Bet (google.protobuf.StringValue) returns (google.protobuf.StringValue) {
-  }
+rpc RandomCharacter (google.protobuf.Empty) returns (google.protobuf.StringValue) {
+  option (aelf.is_view) = true;
+}
 ```
 And aslo add this line of code into HelloWorldState.cs, this will encapsulates AEDPoS consensus contract reference state.
 
@@ -193,53 +183,59 @@ internal AEDPoSContractContainer.AEDPoSContractReferenceState ConsensusContract 
 ```
 Add implementation of Bet method in HelloWorld.cs as well:
 ```
-public override StringValue Bet(StringValue input)
+public override StringValue RandomCharacter(Empty input)
 {
+    State.ConsensusContract.Value =
+            Context.GetContractAddressByName(SmartContractConstants.ConsensusContractSystemName);
+    var currentHeight = Context.CurrentHeight;
     var randomHash = State.ConsensusContract.GetRandomHash.Call(new Int64Value
     {
-        Value = 8
+        Value = currentHeight
     });
-    var intValue = int.Parse(randomHash.ToHex().Substring(0, 8), System.Globalization.NumberStyles.HexNumber);
-    var random = new StringValue();
-    if (intValue > 128)
+    var attributes = new List<int>();
+    for (int i = 0; i < 3; i++)
     {
-        random.Value = "big";
-    } 
-    else 
-    {
-        random.Value = "small";
+    var startIndex = i * 8;
+    var intValue = int.Parse(randomHash.ToHex().Substring(startIndex, 8), System.Globalization.NumberStyles.HexNumber);
+    var attribute = (intValue % 6 + 5) % 6 + 1;
+    attributes.Add(attribute);
     }
-    var result = new StringValue();
-
-    if (input.Value == random.Value) 
-    {
-        result.Value = "win";
-    } 
-    else 
-    {
-        result.Value = "lose";
-    }
-    return result;
+    var sum = attributes[0] + attributes[1] + attributes[2];
+    var health = 30 * attributes[0] / sum;
+    var strength = 30 * attributes[1] / sum;
+    var speed = 30 * attributes[2] / sum;
+    var character = new StringValue();
+    character.Value = $"Here is your character, HP is {health}, strength is {strength}, speed is {speed}";
+    return character;
 }
 ```
-The input is the user's guessed size, and random is a randomly generated number. We compare whether the random number is greater than 128 to determine its size. Then we compare the user's guessed size with the random number's size. If they match, it returns "win"; otherwise, it returns "lose".
+This code generates a random character's attributes based on a random hash obtained from the consensus contract. The hash is divided into three segments, each transformed into an attribute. The attributes determine health, strength, and speed proportions, which sum up to 30. The resulting character's attributes are then formatted into a message and returned, providing details such as HP, strength, and speed.
 
+Add the required import
+```
+using System.Collections.Generic;
+```
 
 Next, we need to add a unit test case for the Bet method. We go to the test folder and add this line of code to `test/Protobuf/contract/hello_world_contract.proto`.
 ```
-rpc Bet (google.protobuf.StringValue) returns (google.protobuf.StringValue) {
-  }
+rpc RandomCharacter (google.protobuf.Empty) returns (google.protobuf.StringValue) {
+  option (aelf.is_view) = true;
+}
 ```
 Then add unit test for Bet method in HelloWorldTests.cs:
 ```
 [Fact]
-public async Task Bet_Test()
+public async Task Random_Test()
 {
     // Arrange
-    var input = new StringValue {Value = "big"};
-    var result = await HelloWorldStub.Bet.SendAsync(input);
-    result.Value.ShouldBe("win");
+    var result = await HelloWorldStub.RandomCharacter.CallAsync(new Empty());
+    Console.WriteLine(result.Value);
 }
+```
+
+Add required import as well
+```
+using System;
 ```
 ## Call the contract
 
