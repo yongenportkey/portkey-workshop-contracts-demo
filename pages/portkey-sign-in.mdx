@@ -40,22 +40,26 @@ const App = () => {
 
   return (
     <PortkeyProvider networkType={"TESTNET"}>
-      <button
-        onClick={() => {
-          ref.current?.setOpen(true);
-        }}
-      >
-        Sign In
-      </button>
-      <SignIn
-        ref={ref}
-        onFinish={(wallet) => {
-          setWallet(wallet);
-        }}
-      />
-      <p>
-        Wallet address: ELF_{wallet.caInfo.caAddress}_{CHAIN_ID}
-      </p>
+      <div className="my-app">
+        <button
+          onClick={() => {
+            ref.current?.setOpen(true);
+          }}
+        >
+          Sign In
+        </button>
+        <SignIn
+          ref={ref}
+          onFinish={(wallet) => {
+            setWallet(wallet);
+          }}
+        />
+        {wallet && (
+          <p>
+            Wallet address: ELF_{wallet?.caInfo.caAddress}_{wallet?.chainId}
+          </p>
+        )}
+      </div>
     </PortkeyProvider>
   );
 };
@@ -66,10 +70,10 @@ export default App;
 ### Copy below sample code and replace the codes in src/App.css
 
 ```css filename="src/App.css" copy showLineNumbers
-button,
-p {
+.my-app button,
+.my-app p {
   margin: 1rem;
-  font-size: 3rem;
+  font-size: 2rem;
 }
 ```
 

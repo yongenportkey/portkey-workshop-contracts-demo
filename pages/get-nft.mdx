@@ -1,4 +1,4 @@
-# Get Balance
+# Get NFT
 
 ## Preparation
 
@@ -6,11 +6,12 @@
 
 ## Edit `src/App.js` and replace with the following:
 
+Modify App.js with the following:
+
 ```js filename="src/App.js" copy showLineNumbers
 import { SignIn, PortkeyProvider, did } from "@portkey/did-ui-react";
 import { useRef, useCallback, useState } from "react";
 import "@portkey/did-ui-react/dist/assets/index.css"; // import portkey css
-import BigNumber from "bignumber.js";
 import AElf from "aelf-sdk";
 import "./App.css";
 
@@ -23,10 +24,10 @@ const aelf = new AElf(
 const App = () => {
   const ref = useRef();
   const [wallet, setWallet] = useState();
-  const [balance, setBalance] = useState(new BigNumber(0));
   const [message, setMessage] = useState("");
+  const [imgUrl, setImgUrl] = useState("");
 
-  const getBalance = async (wallet) => {
+  const getNFT = async (wallet) => {
     const viewWallet = AElf.wallet.createNewWallet();
     setMessage("");
 
@@ -47,15 +48,14 @@ const App = () => {
         chainId: CHAIN_ID,
       });
 
-      setMessage("Fetching GetBalance...");
-      const result = await multiTokenContract.GetBalance.call({
-        symbol: "ELF",
+      setMessage("Fetching NFT...");
+      const result = await multiTokenContract.GetTokenInfo.call({
+        symbol: "WKSPNFTAAA-6",
         owner: caInfo.caAddress,
       });
 
-      const balance = new BigNumber(result?.balance).dividedBy(10 ** 8);
+      setImgUrl(result?.externalInfo?.value?.["__nft_image_url"]);
 
-      setBalance(balance);
       setMessage("");
     } catch (err) {
       setMessage(err);
@@ -64,7 +64,6 @@ const App = () => {
 
   const onFinish = useCallback((didWallet) => {
     setWallet(didWallet);
-    getBalance(didWallet);
   }, []);
 
   return (
@@ -80,14 +79,14 @@ const App = () => {
         <SignIn ref={ref} onFinish={onFinish} />
         {wallet ? (
           <>
-            <button onClick={() => getBalance(wallet)}>getBalance</button>
+            <button onClick={() => getNFT(wallet)}>getNFT</button>
             <p>
               Wallet address: ELF_{wallet.caInfo.caAddress}_{CHAIN_ID}
             </p>
             {message ? (
               <p>{message}</p>
             ) : (
-              <p>Balance: {balance.toFixed(2)} ELF</p>
+              <img src={imgUrl} width="600" alt="NFT image" />
             )}
           </>
         ) : null}
@@ -99,8 +98,6 @@ const App = () => {
 export default App;
 ```
 
-## Faucet
+After Sign in, click on the getNFT button.
 
-You may top up your testnet wallet using the [Faucet](https://testnet-faucet.aelf.io).
-
-After topping up, you can click the `getBalance` button to retrieve the new balance.
+If the NFT exists, it will be displayed in the page.
