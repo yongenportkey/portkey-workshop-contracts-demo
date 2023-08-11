@@ -2,32 +2,12 @@
 
 ## Preparation
 
-- Install [Node.js](https://nodejs.org/en/download).
-
-## Create a sample project using react
-
-In a terminal:
-
-```sh copy
-npx create-react-app my-app
-```
-
-Enter the project folder.
-
-```sh copy
-cd my-app
-```
-
-## Install Portkey UI sdk
-
-```sh copy
-npm install @portkey/did-ui-react
-```
+- Follow the example at [authenticate](/portkey-sign-in).
 
 ## Edit `src/App.js` and replace with the following:
 
 ```js filename="src/App.js" copy showLineNumbers
-import { SignIn, PortkeyConfigProvider, did } from "@portkey/did-ui-react";
+import { SignIn, PortkeyProvider, did } from "@portkey/did-ui-react";
 import { useRef, useCallback, useState } from "react";
 import "@portkey/did-ui-react/dist/assets/index.css"; // import portkey css
 import BigNumber from "bignumber.js";
@@ -87,7 +67,7 @@ const App = () => {
   }, []);
 
   return (
-    <PortkeyConfigProvider networkType={"TESTNET"}>
+    <PortkeyProvider networkType={"TESTNET"}>
       <button
         onClick={() => {
           ref.current?.setOpen(true);
@@ -109,27 +89,11 @@ const App = () => {
           )}
         </>
       ) : null}
-    </PortkeyConfigProvider>
+    </PortkeyProvider>
   );
 };
 
 export default App;
-```
-
-## Setting up the proxy to connect to testnet for testing
-
-As during Sign In process, there are number of api calls that is retrieving holder info or guardians info from chain.
-
-Edit `package.json` and add the following:
-
-```json filename="package.json"
-"proxy": "https://did-portkey-test.portkey.finance" //testnet
-```
-
-## Start the development server
-
-```sh
-npm run start
 ```
 
 ## Faucet

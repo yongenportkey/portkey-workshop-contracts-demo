@@ -53,7 +53,9 @@ const App = () => {
           setWallet(wallet);
         }}
       />
-      <p>Wallet address: {wallet?.walletInfo.address}</p>
+      <p>
+        Wallet address: ELF_{wallet.caInfo.caAddress}_{CHAIN_ID}
+      </p>
     </PortkeyProvider>
   );
 };
