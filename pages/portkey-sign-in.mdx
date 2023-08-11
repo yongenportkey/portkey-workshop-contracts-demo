@@ -29,19 +29,17 @@ npm install @portkey/did-ui-react
 ### Copy below sample code and replace the codes in src/App.js
 
 ```js filename="src/App.js" copy showLineNumbers
-import { SignIn, PortkeyConfigProvider } from "@portkey/did-ui-react";
-import { useRef, useCallback } from "react";
+import { SignIn, PortkeyProvider } from "@portkey/did-ui-react";
+import { useRef, useState } from "react";
 import "@portkey/did-ui-react/dist/assets/index.css"; // import portkey css
+import "./App.css";
 
 const App = () => {
   const ref = useRef();
-
-  const onFinish = useCallback((didWallet) => {
-    console.log("didWallet:", didWallet);
-  }, []);
+  const [wallet, setWallet] = useState();
 
   return (
-    <PortkeyConfigProvider networkType={"TESTNET"}>
+    <PortkeyProvider networkType={"TESTNET"}>
       <button
         onClick={() => {
           ref.current?.setOpen(true);
@@ -49,12 +47,28 @@ const App = () => {
       >
         Sign In
       </button>
-      <SignIn ref={ref} onFinish={onFinish} />
-    </PortkeyConfigProvider>
+      <SignIn
+        ref={ref}
+        onFinish={(wallet) => {
+          setWallet(wallet);
+        }}
+      />
+      <p>Wallet address: {wallet?.walletInfo.address}</p>
+    </PortkeyProvider>
   );
 };
 
 export default App;
+```
+
+### Copy below sample code and replace the codes in src/App.css
+
+```css filename="src/App.css" copy showLineNumbers
+button,
+p {
+  margin: 1rem;
+  font-size: 3rem;
+}
 ```
 
 ## Setting up the proxy to connect to testnet for testing
@@ -73,6 +87,8 @@ Edit `package.json` and add the following:
 npm run start
 ```
 
-## Press Option+Command+I to see the console logs.
+## Result
 
-## Click on Sign In button and finish sign in process and you can see wallet info in console logs
+Click on the Sign in button and complete the sign in process.
+
+When successful, your wallet address will be displayed on the frontend.
