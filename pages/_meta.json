@@ -1,8 +1,8 @@
 {
   "index": "Introduction",
   "create-token": "Create Token",
-  "smart-contract": "Smart contract",
   "portkey-sign-in": "Portkey Sign In",
   "get-balance": "Get Balance",
-  "get-nft": "Get NFT"
+  "get-nft": "Get NFT",
+  "smart-contract": "Smart contract"
 }
