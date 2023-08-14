@@ -18,21 +18,21 @@
 - Open a terminal and type the following command. You can install the contract template from nuget repo to your local.
 
 ```
- $ PROD: dotnet new install AElf.Contract
- $ DEV: dotnet new install AElf.Contract --nuget-source http://10.0.1.239:8081/repository/nuget-group/index.json
+PROD: dotnet new install AElf.Contract
+DEV: dotnet new install AElf.Contract --nuget-source http://10.0.1.239:8081/repository/nuget-group/index.json
 ```
 
 - Type the following command, and create a new template project locally. You can modify custom parameters of command to define contract names and namespace. ```-n``` stands for contract name, ```-N``` stands for namespace.
 
 ```
-$ dotnet new aelfcontract -n HelloWorld -N AElf.Contract
+dotnet new aelfcontract -n HelloWorld -N AElf.Contract
 ```
 
 For example, ```-n HelloWorld``` means your contract name will be HelloWorld, ```-N AElf.Contracts.HelloWorld``` means your contract namespace will be AElf.Contracts.HelloWorld.
 Type the following command to understand usage of all the custom parameters.
 
 ```
-$ dotnet new aelfcontract --help
+dotnet new aelfcontract --help
 ```
 
 ### High level scope of the project
@@ -71,8 +71,8 @@ Protos -> implementation -> unit test cases
 - Run the following command and check the result. If have any errors, solve them according to error messages.
 
 ```
-$ cd src
-$ dotnet build
+cd src
+dotnet build
 ```
 
 ## Testing
@@ -90,8 +90,8 @@ $ dotnet build
 - Run the following command and check the result. If have any errors, solve them according to error messages.
 
 ```
-$ cd test
-$ dotnet build
+cd test
+dotnet build
 ```
 
 - After building successfully, run ```dotnet test``` command. And check the result. If have any errors, solve them according to error messages.
@@ -99,68 +99,7 @@ $ dotnet build
 ## RNG (Random number generator) Introduction
 RNG is a very important part in AElf porject, AElf currently employs the Verifiable Random Function (VRF) algorithm as its underlying mechanism for generating random numbers. The essence of the VRF algorithm is rooted in mathematical operations on elliptic curves. 
 
-The following section contains the code of the core algorithm for AElf's VRF along with comments to explain each part of code:
-```
-// Hash input data onto the elliptic curve and attempt multiple hash iterations until a suitable result is found
-public IECPoint HashToCurveTryAndIncrement(IECPoint point, byte[] alpha)
-{
-    using var curve = new TCurve();
-
-    // Step 1: Initialize counter ctr = 0
-    var ctr = 0;
-
-    // Step 2: Serialize the input elliptic curve point Y into a string PK_string
-    var pkString = curve.SerializePoint(point, true);
-
-    // Steps 3 ~ 6: Attempt multiple hash iterations, incrementing counter ctr, until a suitable result is found or the maximum attempt limit 256 is reached
-    byte oneString = 0x01;
-    for (; ctr < 256; ctr++)
-    {
-        using var hasher = _hasherFactory.Create();
-        using var stream = new MemoryStream();
-
-        // Step 3: Construct input data for hashing
-        stream.WriteByte(_config.SuiteString); // Use SuiteString
-        stream.WriteByte(oneString); // Fixed byte 0x01
-        stream.Write(pkString); // Add elliptic curve point PK_string
-        stream.Write(alpha); // Add input data alpha
-        stream.WriteByte((byte)ctr); // Add counter ctr
-
-        // Step 4: Reset stream pointer to the beginning for hashing calculation
-        stream.Seek(0, SeekOrigin.Begin);
-
-        // Step 5: Calculate hash value of input data
-        var hash = hasher.ComputeHash(stream);
-
-        // Step 6: Parse the hash value into a point on the elliptic curve and attempt to validate its validity
-        var pkSerialized = new byte[Secp256k1.SERIALIZED_COMPRESSED_PUBKEY_LENGTH];
-        pkSerialized[0] = 0x02;
-        Buffer.BlockCopy(hash, 0, pkSerialized, 1, hash.Length);
-        try
-        {
-            var outputPoint = curve.DeserializePoint(pkSerialized);
-
-            // If the elliptic curve parameters include a cofactor, an additional multiplication by the cofactor is necessary to get the final result
-            if (_config.EcParameters.Curve.Cofactor.CompareTo(BigInteger.One) > 0)
-            {
-                return curve.MultiplyScalar(outputPoint,
-                    curve.DeserializeScalar(_config.EcParameters.Curve.Cofactor.ToByteArray()));
-            }
-
-            // Return the obtained elliptic curve point
-            return outputPoint;
-        }
-        catch (InvalidSerializedPublicKeyException ex)
-        {
-            // When an exception occurs while parsing the hash value into an elliptic curve point, ignore the exception and continue with the next counter value
-        }
-    }
-
-    // If a suitable result is not found even after reaching the maximum attempt limit, throw an exception
-    throw new FailedToHashToCurveException();
-}
-```
-Code source: https://github.com/AElfProject/AElf/blob/dev/src/AElf.Cryptography/ECVRF/Vrf.cs
+You can find the source code of AElf VRF here: https://github.com/AElfProject/AElf/blob/dev/src/AElf.Cryptography/ECVRF/Vrf.cs
 
 In AElf, we have already implemented a wrapper for the VRF algorithm, allowing direct invocation of the `GetRandomHash` function from the `ConsensusContract` at the upper layers to obtain a random number.
 ```
@@ -197,11 +136,14 @@ This piece of code takes a `RandomHash` as input, which is the hash obtained und
 Next, we can do a simple practice of RNG on the workshop project we just created. 
 
 Add the following code to the `src/Protobuf/contract/hello_world_contract.proto` file. This line of code will introduce a new method called `RandomCharacter`, which no need input and produces a string as output.
-
 ```
-rpc RandomCharacter (google.protobuf.Empty) returns (google.protobuf.StringValue) {
+  rpc CreateRandomCharacter (google.protobuf.Empty) returns (google.protobuf.Empty) {
+  }
+```
+```
+  rpc GetRandomCharacter (google.protobuf.Empty) returns (google.protobuf.StringValue) {
   option (aelf.is_view) = true;
-}
+  }
 ```
 And aslo add this line of code into HelloWorldState.cs, this will encapsulates AEDPoS consensus contract reference state.
 
@@ -209,13 +151,14 @@ And aslo add this line of code into HelloWorldState.cs, this will encapsulates A
 using AElf.Contracts.Consensus.AEDPoS;
 ```
 ```
+public StringState Character { get; set; }
 internal RandomNumberAccessorContractContainer.RandomNumberAccessorContractReferenceState ConsensusContract { get; set; }
 ```
 
 
-Add implementation of RandomCharacter method in HelloWorld.cs as well:
+Add implementation of CreateRandomCharacter and GetRandomCharacter method in HelloWorld.cs as well:
 ```
-public override StringValue RandomCharacter(Empty input)
+public override Empty CreateRandomCharacter(Empty input)
 {
     State.ConsensusContract.Value =
             Context.GetContractAddressByName(SmartContractConstants.ConsensusContractSystemName);
@@ -238,7 +181,18 @@ public override StringValue RandomCharacter(Empty input)
     var speed = 30 * attributes[2] / sum;
     var character = new StringValue();
     character.Value = $"Here is your character, HP is {health}, strength is {strength}, speed is {speed}";
-    return character;
+    State.Character.Value = character.Value;
+    return new Empty();
+}
+
+public override StringValue GetRandomCharacter(Empty input)
+{
+    var value = State.Character.Value;
+    // Return value retrieved
+    return new StringValue
+    {
+        Value = value
+    };
 }
 ```
 This code generates a random character's attributes based on a random hash obtained from the consensus contract. The hash is divided into three segments, each transformed into an attribute. The attributes determine health, strength, and speed proportions, which sum up to 30. The resulting character's attributes are then formatted into a message and returned, providing details such as HP, strength, and speed.
@@ -250,9 +204,13 @@ using System.Collections.Generic;
 
 Next, we need to add a unit test case for the Bet method. We go to the test folder and add this line of code to `test/Protobuf/contract/hello_world_contract.proto`.
 ```
-rpc RandomCharacter (google.protobuf.Empty) returns (google.protobuf.StringValue) {
+  rpc CreateRandomCharacter (google.protobuf.Empty) returns (google.protobuf.Empty) {
+  }
+```
+```
+  rpc GetRandomCharacter (google.protobuf.Empty) returns (google.protobuf.StringValue) {
   option (aelf.is_view) = true;
-}
+  }
 ```
 Then add unit test for RandomCharacter method in HelloWorldTests.cs:
 ```
@@ -260,7 +218,8 @@ Then add unit test for RandomCharacter method in HelloWorldTests.cs:
 public async Task Random_Test()
 {
     // Arrange
-    var result = await HelloWorldStub.RandomCharacter.CallAsync(new Empty());
+    await HelloWorldStub.CreateRandomCharacter.SendAsync(new Empty());
+    var result = await HelloWorldStub.GetRandomCharacter.CallAsync(new Empty());
     Console.WriteLine(result.Value);
 }
 ```
@@ -274,10 +233,10 @@ using System;
 - Send aelf commands.
   - Open terminal, type aelf-command send, fill in the node with http://127.0.0.1:8000, address and password are same as before. Fill the contract with address that return before.
 ```
-$ aelf-command send -a W1ptWN5n5mfdVvh3khTRm9KMJCAUdge9txNyVtyvZaYRYcqc1 {contract_address} -e http://127.0.0.1:8000
+aelf-command call 2LUmicHyH4RXrMjG4beDwuDsiWJESyLkgkwPdGTR8kahRzq5XS -a W1ptWN5n5mfdVvh3khTRm9KMJCAUdge9txNyVtyvZaYRYcqc1 -e http://127.0.0.1:8000
 ```
-- Select the interface and type parameters.
-  - Select method/interface that you want to test. Type the parameters.
-- Check result.
-  - If call succeeds. You can get the transactionId.
-  - Type http://localhost:8000/swagger/index.html and go to the api/blockChain/transactionResult, fill with the transactionId and click Execute. Get the result and check it.
+```
+aelf-command [call|send] [contract-address|contract-name] [params]
+-a, --account <account> 
+-e, --endpoint <URI>
+```
