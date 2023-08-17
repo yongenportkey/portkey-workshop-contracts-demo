@@ -18,8 +18,13 @@
 - Open a terminal and type the following command. You can install the contract template from nuget repo to your local.
 
 ```
-PROD: dotnet new install AElf.Contract
-DEV: dotnet new install AElf.Contract --nuget-source http://10.0.1.239:8081/repository/nuget-group/index.json
+dotnet new install AElf.Contract --nuget-source http://10.0.1.239:8081/repository/nuget-group/index.json
+```
+
+- Create a folder to place the workshop project
+```
+mkdir workshop
+cd workshop
 ```
 
 - Type the following command, and create a new template project locally. You can modify custom parameters of command to define contract names and namespace. ```-n``` stands for contract name, ```-N``` stands for namespace.
@@ -36,7 +41,10 @@ dotnet new aelfcontract --help
 ```
 
 ### High level scope of the project
-If you open your project folder, you should see two newly generated directories: src and test. These correspond to the smart contract code and the unit test code for the contract, respectively. The src folder contains several proto files used to describe blockchain smart contract services and data structures. It also includes specific implementations of smart contract methods and definition files for managing contract state in communication with the blockchain, such as HelloWorldState.cs here. 
+If you open your project folder, you should see two newly generated directories: src and test. These correspond to the smart contract code and the unit test code for the contract, respectively. 
+
+#### src
+The src folder contains several proto files used to describe blockchain smart contract services and data structures. It also includes specific implementations of smart contract methods and definition files for managing contract state in communication with the blockchain, such as HelloWorldState.cs here. 
 
 ```
 - src
@@ -46,6 +54,7 @@ If you open your project folder, you should see two newly generated directories:
   - HelloWorldState.cs
 ```
 
+#### test
 The test folder similarly contains a proto subfolder, along with a setup file used to establish the unit testing environment for blockchain smart contracts. It defines test module classes and a base test class, facilitating context loading, stub class retrieval, and stub acquisition methods. As a result, these classes and methods are employed in unit tests to conduct various tests on the smart contract.
 
 ```
@@ -68,7 +77,7 @@ Protos -> implementation -> unit test cases
 
 ### Build
 
-- Run the following command and check the result. If have any errors, solve them according to error messages.
+- Run the following command and check the result. If you encounter any errors, please resolve them according to the error messages.
 
 ```
 cd src
@@ -77,7 +86,7 @@ dotnet build
 
 ## Testing
 
-### Copy proto files (if you created or did some changes on proto files)
+### Copy proto files (If you created or made any changes to the *.proto files)
 
 - With the same method as above, copy proto files from src folder to base, message, stub folders. And update the import path.
 
@@ -87,17 +96,17 @@ dotnet build
 
 ### Build and run
 
-- Run the following command and check the result. If have any errors, solve them according to error messages.
+- Run the following command and check the result. If you encounter any errors, please resolve them according to the error messages.
 
 ```
 cd test
 dotnet build
 ```
 
-- After building successfully, run ```dotnet test``` command. And check the result. If have any errors, solve them according to error messages.
+- After building successfully, run ```dotnet test``` command. And check the result. If you encounter any errors, please resolve them according to the error messages.
 
 ## RNG (Random number generator) Introduction
-RNG is a very important part in AElf porject, AElf currently employs the Verifiable Random Function (VRF) algorithm as its underlying mechanism for generating random numbers. The essence of the VRF algorithm is rooted in mathematical operations on elliptic curves. 
+RNG is a very important part of the AElf project, AElf currently employs the Verifiable Random Function (VRF) algorithm as its underlying mechanism for generating random numbers. The essence of the VRF algorithm is rooted in mathematical operations on elliptic curves. 
 
 You can find the source code of AElf VRF here: https://github.com/AElfProject/AElf/blob/dev/src/AElf.Cryptography/ECVRF/Vrf.cs
 
