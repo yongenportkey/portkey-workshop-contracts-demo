@@ -73,7 +73,7 @@ Protos -> implementation -> unit test cases
 
 ### Create or modify project files
 
-- Create new proto files and modify existed project files according to your requirements. 
+- Create new proto files and modify existing project files according to your requirements. 
 
 ### Build
 
@@ -139,12 +139,12 @@ private List<int> GetDices(Hash hashValue)
     return dices;
 }
 ```
-This piece of code takes a `RandomHash` as input, which is the hash obtained under the VRF algorithm, and converts it into a hexadecimal string named `hexString`. Next, it extracts three consecutive groups of eight-bit hexadecimal values from this string and interprets them as integer types. Subsequently, through a series of operations, these three integers are transformed into dice values (integers between 1 and 6).
+This piece of code takes a `RandomHash` as input, which is the hash obtained under the VRF algorithm, and converts it into a hexadecimal string named `hexString`. Next, it extracts three consecutive groups of 8-bit hexadecimal values from this string and interprets them as integer types. Subsequently, through a series of operations, these three integers are transformed into dice values (integers between 1 and 6).
 
 ## RNG Practice
 Next, we can do a simple practice of RNG on the workshop project we just created. 
 
-Add the following code to the `src/Protobuf/contract/hello_world_contract.proto` file. This line of code will introduce a new method called `RandomCharacter`, which no need input and produces a string as output.
+Add the following code to the `src/Protobuf/contract/hello_world_contract.proto` file. This line of code will introduce a new method called `RandomCharacter`, which doesn't need any input and produces a string as output.
 ```
   rpc CreateRandomCharacter (google.protobuf.Empty) returns (google.protobuf.Empty) {
   }
@@ -154,7 +154,7 @@ Add the following code to the `src/Protobuf/contract/hello_world_contract.proto`
   option (aelf.is_view) = true;
   }
 ```
-And aslo add this line of code into HelloWorldState.cs, this will encapsulates AEDPoS consensus contract reference state.
+And also add this line of code into HelloWorldState.cs, this will encapsulate AEDPoS consensus contract reference state.
 
 ```
 using AElf.Contracts.Consensus.AEDPoS;
@@ -233,14 +233,14 @@ public async Task Random_Test()
 }
 ```
 
-Add required import in HelloWorldTests.cs as well
+Add the required import in HelloWorldTests.cs as well
 ```
 using System;
 ```
 ## Call the contract
 
 - Send aelf commands.
-  - Open terminal, type aelf-command send, fill in the node with http://127.0.0.1:8000, address and password are same as before. Fill the contract with address that return before.
+  - Open terminal, type aelf-command send, fill in the node with http://127.0.0.1:8000, address and password are same as before.
 ```
 aelf-command call 2LUmicHyH4RXrMjG4beDwuDsiWJESyLkgkwPdGTR8kahRzq5XS -a W1ptWN5n5mfdVvh3khTRm9KMJCAUdge9txNyVtyvZaYRYcqc1 -e http://127.0.0.1:8000
 ```
