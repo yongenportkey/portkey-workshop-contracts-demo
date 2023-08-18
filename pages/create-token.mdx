@@ -13,52 +13,103 @@ Run the following command to install it.
 npm i aelf-command -g
 ```
 
-###### Create a new aelf account
-Run the following command to create. To use aelf-command to send aelf-commands, we need to have an aelf account. If you already have account, you can continue use your account.
-
-```sh copy
-aelf-command create
-```
+###### ~~Create a new aelf account~~
+~~Run the following command to create. To use aelf-command to send aelf-commands, we need to have an aelf account. If you already have account, you can continue use your account.~~
 
 
 ## FT Creation
 
-Firstly, Before creating an FT or NFT, we need to get a seed NFT. The seed NFT defines the symbol name of the FT or NFT you are going to create. The name of the created FT/NFT must be consistent with the name defined in this seed NFT. How do we obtain the seed NFT? 
+###### Initialization
+Firstly, before we start the token creation process, we need to do some initialization steps. We have prepared an initialization script for each developer present here, which needs to be run first. In this script, you will do some actions, such as setting up environment variables (including your address, testnet URL, and contract name), and load the aelf account we've applied for you to your local environment.
 
-The method is to purchase the seed NFT through a sales contract. However, the sales contract is not ready now, so we manually applied for the seed NFT for each person and sent this seed NFT to their addresses. You can use the ```GetBalance``` method to check the number of seed NFTs in your address.
+Why are we doing this? The reason is that currently, if we want to create an FT or NFT, we need to get a seed NFT. The seed NFT defines the symbol name of the FT or NFT you are going to create. The name of the created FT/NFT must be consistent with the name defined in this seed NFT. So how do we get the seed NFT? 
 
-###### Get ELF token from faucet
-Create an FT or NFT, a small amount of transaction fee is required. We can obtain some ELF tokens through the faucet. Run the following commands to get it.
+The method is to purchase the seed NFT through a sales contract. However, the sales contract is not ready now, so we manually applied for the seed NFT for each person and sent this seed NFT to your accounts. This is to enable everyone to proceed with the subsequent steps.
+
+Now let's run this script. Once the script has been executed, I will teach you how to check the seed NFTs in your account.
+
+```sh copy
+chmod +x setup.sh
+source setup.sh
+```
+
+###### Check seed NFT
+After running the script, let's check our seed NFTs. 
+Firstly run the following commands to know your seed NFTs name.
+
+```sh copy
+echo ${seed_nft_1}
+echo ${seed_nft_2}
+```
+
+Then you will see your seed NFTs name.
+
+Next, we will check the seed NFT information. Run the following command. And let me introduce the aelf-command usage first.
 
 ```sh copy
 # The basic format of aelf-command is ```aelf-command send/call```,
 # the "send" represents methods that will modify the contract state,
 # and "call" represents methods that will not modify the state (read-only methods).
 # Additionally, we can combine multiple commands into one command.
-# For example, the following command represents 'aelf-command send {contract.name} -a {account.address} -e {node url}'.
-$ aelf-command send 2M24EKAecggCnttZ9DUUMCXi4xC67rozA87kFgid9qEwRUMHTs -a {account.address} -e https://aelf-test-node.aelf.io
+# For example, the following command represents 
+# 'aelf-command call/send -> enter ${node url} -> enter ${aelf_address} -> enter ${contract.name}'.
+
+aelf-command call ${token_contract} -a ${aelf_address} -e ${aelf_testnet}
 ```
 
-Type the symbol and amount, to get the tokens.
+After running this command, you will see all the methods of this contract. Choose the ```GetTokenInfo``` method and key in parameters as follows.
+
 ```sh copy
 Enter the params one by one, type `Enter` to skip optional param:
-? Enter the required param <symbol>: ELF
-? Enter the required param <amount>: 1000_00000000
+? Enter the required param <symbol>: SEED-100000002
 ```
+
+Then you can see all the information of this seed NFT. Please note ```__seed_owned_symbol``` field, It will as the symbol name for the token you create。
+
+```
+Result:
+{
+  "symbol": "SEED-100000002",
+  "tokenName": "SEED-WKSPNFTBBB-0",
+  "supply": "1",
+  "totalSupply": "1",
+  "decimals": 0,
+  "issuer": "2LNg7aSwwigGWaisUzKjSGdijV9Y6jdtJqrD2PWX3ZQQ2HqsSa",
+  "isBurnable": true,
+  "issueChainId": 9992731,
+  "issued": "1",
+  "externalInfo": {
+    "value": {
+      "__seed_owned_symbol": "WKSPNFTBBB-0",
+      "__seed_exp_time": "1722700961",
+      "__nft_image_url": "https://seed-collecion-testnet.s3.ap-southeast-1.amazonaws.com/SEED-100000002.svg"
+    }
+  },
+  "owner": "2LNg7aSwwigGWaisUzKjSGdijV9Y6jdtJqrD2PWX3ZQQ2HqsSa"
+}
+```
+
+Next, Let's use the same commands to select the ```GetBalance``` method and check the balance of the seed NFT.
+Note that enter the seed NFT symbol.
+
+```sh copy
+Enter the params one by one, type `Enter` to skip optional param:
+? Enter the required param <symbol>: SEED-100000002
+? Enter the required param <owner>: W1ptWN5n5mfdVvh3khTRm9KMJCAUdge9txNyVtyvZaYRYcqc1
+```
+
+###### Get ELF token from faucet
+Create an FT or NFT, a small amount of transaction fee is required. We can get some ELF tokens through the faucet.
+You can go to this url https://testnet-faucet.aelf.io. Then type your address, and get some ELF token.
 
 ###### Create new token
 Run the following commands to create a new token. Please note that the symbol of the created token must be consistent with the symbol applied for in the seed NFT.
 
 ```sh copy
-# The basic format of aelf-command is ```aelf-command send/call```,
-# the "send" represents methods that will modify the contract state,
-# and "call" represents methods that will not modify the state (read-only methods).
-# Additionally, we can combine multiple commands into one command.
-# For example, the following command represents 'aelf-command send {contract.name} -a {account.address} -e {node url}'.
-$ aelf-command send AElf.ContractNames.Token -a {account.address} -e https://aelf-test-node.aelf.io
+aelf-command send ${token_contract} -a ${aelf_address} -e ${aelf_testnet}
 ```
 
-Key in the password. Choose the Create method and key in parameters as follows:
+Key in the password and see all the methods. Choose the ```Create``` method and key in parameters as follows:
 
 ```sh copy
 Enter the params one by one, type `Enter` to skip optional param:
@@ -91,10 +142,10 @@ Let me explain these parameters.
 After creating the token, it is only creating the token's information. We still need to issue it before we can use the token. Run the following commands.
 
 ```sh copy
-aelf-command send AElf.ContractNames.Token -e https://aelf-test-node.aelf.io
+aelf-command send ${token_contract} -a ${aelf_address} -e ${aelf_testnet}
 ```
 
-Key in the password. Choose the Issue method and key in parameters as follows:
+Key in the password. Choose the ```Issue``` method and key in parameters as follows:
 
 ```sh copy
 Enter the params one by one, type `Enter` to skip optional param:
@@ -107,12 +158,12 @@ Enter the params one by one, type `Enter` to skip optional param:
 ## NFT Creation
 
 ###### Create new NFT collection
-Before creating a new NFT, we need to create a new NFT collection.
+Before creating a new NFT, we need to create a new NFT collection. The NFT collection is like a wallet, and NFTs are like cards inside it.
 Run the following commands to create a new NFT collection. NFT collection name should be ```{symbol name}``` + ```-0```. For example, ```TEST-0```.
 Please note that the symbol of the created token must be consistent with the symbol applied for in the seed NFT.
 
 ```sh copy
-$ aelf-command send AElf.ContractNames.Token -a {account.address} -e https://aelf-test-node.aelf.io
+$ aelf-command send ${token_contract} -a ${aelf_address} -e ${aelf_testnet}
 ```
 
 Key in the password. Choose the Create method and key in parameters as follows:
@@ -131,11 +182,13 @@ Enter the params one by one, type `Enter` to skip optional param:
 ? Enter the required param <owner>: W1ptWN5n5mfdVvh3khTRm9KMJCAUdge9txNyVtyvZaYRYcqc1
 ```
 
-Let me explain these parameters.
+Note, the NFT collecion testing image url is https://ipfs.io/ipfs/QmbmuijeSxCjfDssrMrhAT1PRke55PaQJmCasRWdhe2NHi?filename=nc.png
 
-1. symbol: The symbol represents the name of the NFT collection you are creating, it should be ```{symbol name}``` + ```-0```. For example, ```TEST-0```.
+The most of parameters are the same as FT. Let me explain the differences.
+
+1. symbol: The symbol represents the name of the NFT collection you are creating, it should be ```{symbol name}``` + ```-0```. For example, ```TEST-0```. ```-0``` stands for collection, it's fixed.
 2. tokenName: The tokenName stands for the full name of your NFT collection, for example, "NFT-TEST collection" can be a tokenName.
-3. totalSupply: This parameter indicates the total supply of your NFT. After creating the NFT, you will need to perform an "issue" operation to make the token usable. "totalSupply" represents the maximum quantity that can be issued.
+3. totalSupply: This parameter indicates the total supply of your NFT. After creating the NFT, you will need to perform an "issue" operation to make the token usable. "totalSupply" represents the maximum quantity that can be issued. In general, it should be 1.
 4. decimals: The decimals of NFT collection and NFT should be 0.
 5. issuer: The issuer is the address responsible for issuing the NFT collection. You can fill this with your address.
 6. isBurnable: This parameter indicates whether the NFT collection is burnable, i.e., whether it can be destroyed.
@@ -149,10 +202,10 @@ Run the following commands to create a new NFT item. NFT item name should be ```
 Please note that the symbol of the created token must be consistent with the symbol applied for in the seed NFT.
 
 ```sh copy
-$ aelf-command send AElf.ContractNames.Token -a {account.address} -e https://aelf-test-node.aelf.io
+aelf-command send ${token_contract} -a ${aelf_address} -e ${aelf_testnet}
 ```
 
-Key in the password. Choose the Create method and key in parameters as follows:
+Key in the password. Choose the ```Create``` method and key in parameters as follows:
 
 ```sh copy
 Enter the params one by one, type `Enter` to skip optional param:
@@ -162,15 +215,17 @@ Enter the params one by one, type `Enter` to skip optional param:
 ? Enter the required param <decimals>: 0
 ? Enter the required param <issuer>: W1ptWN5n5mfdVvh3khTRm9KMJCAUdge9txNyVtyvZaYRYcqc1
 ? Enter the required param <isBurnable>: false
-? Enter the required param <lockWhiteList>: // todo research
+? Enter the required param <lockWhiteList>:
 ? Enter the required param <issueChainId>: 9992731
 ? Enter the required param <externalInfo.value>: {"__nft_image_url":"https://{nft image url}"}
 ? Enter the required param <owner>: W1ptWN5n5mfdVvh3khTRm9KMJCAUdge9txNyVtyvZaYRYcqc1
 ```
 
-Let me explain these parameters.
+Note, the NFT item testing image url is https://ipfs.io/ipfs/QmSwJcNRgE5snFdoiP6ixbbWoT7oypPoyYMBQxVqkPkpu9?filename=ni.png
 
-1. symbol: The symbol represents the name of the NFT you are creating, it should be ```{symbol name}``` + ```-1/2/3...```. For example, ```TEST-1```.
+The most of parameters are the same as NFT collection. Let me explain the differences.
+
+1. symbol: The symbol represents the name of the NFT you are creating, it should be ```{symbol name}``` + ```-1/2/3...```, it can't be ```-0```. For example, ```TEST-1```.
 2. tokenName: The tokenName stands for the full name of your NFT item, for example, "NFT-TEST item1" can be a tokenName.
 3. totalSupply: This parameter indicates the total supply of your NFT. After creating the NFT, you will need to perform an "issue" operation to make the token usable. "totalSupply" represents the maximum quantity that can be issued.
 4. decimals: The decimals of NFT collection and NFT should be 0.
@@ -185,7 +240,7 @@ Let me explain these parameters.
 After creating the NFT, it is also just creating the NFT information. We still need to issue it before we can use the token. Run the following commands.
 
 ```sh copy
-aelf-command send AElf.ContractNames.Token -e https://aelf-test-node.aelf.io
+aelf-command send ${token_contract} -a ${aelf_address} -e ${aelf_testnet}
 ```
 
 Key in the password. Choose the Issue method and key in parameters as follows:
@@ -198,6 +253,8 @@ Enter the params one by one, type `Enter` to skip optional param:
 ? Enter the required param <to>: {address}
 ```
 
+After that, we can check out NFTs on the explorer https://explorer-test.aelf.io/ .
+
 ## Usage
 
 ###### Transfer token
@@ -205,7 +262,7 @@ Enter the params one by one, type `Enter` to skip optional param:
 Run the following commands to transfer token from issuer to others.
 
 ```sh copy
-aelf-command send AElf.ContractNames.Token -e https://aelf-test-node.aelf.io
+aelf-command send ${token_contract} -a ${aelf_address} -e ${aelf_testnet}
 ```
 
 Key in the password. Choose the Transfer method and key in parameters as follows:
@@ -218,4 +275,4 @@ Enter the params one by one, type `Enter` to skip optional param:
 ? Enter the required param <memo>: transfer
 ```
 
-... display on Portkey app
+After completing all the steps, we can open the app to check FT and NFT.
