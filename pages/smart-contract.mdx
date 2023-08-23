@@ -17,7 +17,7 @@
 
 - Open a terminal and type the following command. You can install the contract template from nuget repo to your local.
 
-```
+```sh copy
 dotnet new install AElf.Contract --nuget-source http://10.0.0.131:8081/repository/nuget-group/index.json
 ```
 
@@ -29,14 +29,14 @@ cd workshop
 
 - Type the following command, and create a new template project locally. You can modify custom parameters of command to define contract names and namespace. ```-n``` stands for contract name, ```-N``` stands for namespace.
 
-```
+```sh copy
 dotnet new aelfcontract -n HelloWorld -N AElf.Contract
 ```
 
 For example, ```-n HelloWorld``` means your contract name will be HelloWorld, ```-N AElf.Contracts.HelloWorld``` means your contract namespace will be AElf.Contracts.HelloWorld.
 Type the following command to understand usage of all the custom parameters.
 
-```
+```sh copy
 dotnet new aelfcontract --help
 ```
 
@@ -110,19 +110,20 @@ RNG is a very important part of the AElf project, AElf currently employs the Ver
 
 You can find the source code of AElf VRF here: https://github.com/AElfProject/AElf/blob/dev/src/AElf.Cryptography/ECVRF/Vrf.cs
 
-In AElf, we have already implemented a wrapper for the VRF algorithm, allowing direct invocation of the `GetRandomHash` function from the `ConsensusContract` at the upper layers to obtain a random number.
-```
+## RNG Implementation in AElf
+
+There are many applications of RNG in AElf projects, we choose a code block from BingoGame to do the demostration:
+
+Firstly it will call GetRandomHash from ConsensusContract
+```sh copy
 var randomHash = State.ConsensusContract.GetRandomHash.Call(new Int64Value
 {
     Value = targetHeight
 });
 ```
-This random number can be verified by anyone possessing a public key, thanks to the characteristics of the VRF: for a given input (commonly referred to as seed or alpha), the same private key always generates the same VRF output. Therefore, the generated proof is unique. Individuals with the public key can use the original input, VRF output, and VRF proof together for validation to confirm that the VRF output indeed originates from that specific input and private key.
 
-## RNG Implementation in AElf
-
-There are many implementations of RNG in AElf projects, we choose a code block from BingoGame to do the demostration:
-```
+Secondly, it will take the RandomHash as input, which is the hash obtained under the VRF algorithm, and convert it into a hexadecimal string named hexString. Next, it will extract three consecutive groups of 8-bit hexadecimal values from this string and interpret them as integer types. Subsequently, through a series of operations, these three integers are transformed into dice values (integers between 1 and 6).
+```sh copy
 private List<int> GetDices(Hash hashValue)
 {
     var hexString = hashValue.ToHex();
@@ -139,113 +140,128 @@ private List<int> GetDices(Hash hashValue)
     return dices;
 }
 ```
-This piece of code takes a `RandomHash` as input, which is the hash obtained under the VRF algorithm, and converts it into a hexadecimal string named `hexString`. Next, it extracts three consecutive groups of 8-bit hexadecimal values from this string and interprets them as integer types. Subsequently, through a series of operations, these three integers are transformed into dice values (integers between 1 and 6).
-
 ## RNG Practice
 Next, we can do a simple practice of RNG on the workshop project we just created. 
 
-Add the following code to the `src/Protobuf/contract/hello_world_contract.proto` file. This line of code will introduce a new method called `RandomCharacter`, which doesn't need any input and produces a string as output.
+Add the following code to the `src/Protobuf/contract/hello_world_contract.proto` file. These lines of code will introduce three new methods called `Initialize`, `CreateCharacter` and `GetMyCharacter` and also define a data structure called Character.
+```sh copy
+    rpc Initialize (google.protobuf.Empty) returns (google.protobuf.Empty);
+    rpc CreateCharacter (google.protobuf.Empty) returns (Character);
 ```
-  rpc CreateRandomCharacter (google.protobuf.Empty) returns (google.protobuf.Empty) {
-  }
-```
-```
-  rpc GetRandomCharacter (google.protobuf.Empty) returns (google.protobuf.StringValue) {
-  option (aelf.is_view) = true;
-  }
-```
-And also add this line of code into HelloWorldState.cs, this will encapsulate AEDPoS consensus contract reference state.
-
-```
-using AElf.Contracts.Consensus.AEDPoS;
-```
-```
-public StringState Character { get; set; }
-internal RandomNumberAccessorContractContainer.RandomNumberAccessorContractReferenceState ConsensusContract { get; set; }
-```
-
-
-Add implementation of CreateRandomCharacter and GetRandomCharacter method in HelloWorld.cs as well:
-```
-public override Empty CreateRandomCharacter(Empty input)
-{
-    State.ConsensusContract.Value =
-            Context.GetContractAddressByName(SmartContractConstants.ConsensusContractSystemName);
-    var currentHeight = Context.CurrentHeight;
-    var randomHash = State.ConsensusContract.GetRandomHash.Call(new Int64Value
-    {
-        Value = currentHeight
-    });
-    var attributes = new List<int>();
-    for (int i = 0; i < 3; i++)
-    {
-    var startIndex = i * 8;
-    var intValue = int.Parse(randomHash.ToHex().Substring(startIndex, 8), System.Globalization.NumberStyles.HexNumber);
-    var attribute = (intValue % 6 + 5) % 6 + 1;
-    attributes.Add(attribute);
+```sh copy
+    rpc GetMyCharacter (google.protobuf.Empty) returns (Character) {
+        option (aelf.is_view) = true;
     }
-    var sum = attributes[0] + attributes[1] + attributes[2];
-    var health = 30 * attributes[0] / sum;
-    var strength = 30 * attributes[1] / sum;
-    var speed = 30 * attributes[2] / sum;
-    var character = new StringValue();
-    character.Value = $"Here is your character, HP is {health}, strength is {strength}, speed is {speed}";
-    State.Character.Value = character.Value;
+```
+```sh copy
+message Character {
+    int32 health = 1;
+    int32 strength = 2;
+    int32 speed = 3;
+}
+```
+And also add these lines of code into HelloWorldState.cs, they will create a storage space for Character and Initialized, import and encapsulate ACS6 reference state.
+
+```sh copy
+using AElf.Standards.ACS6;
+```
+```sh copy
+//create a storage space for Character
+public BoolState Initialized { get; set; }
+public MappedState<Address, Character> Characters { get; set; }
+
+//encapsulate AEDPoS consensus contract reference state
+internal RandomNumberProvideacsrContractContainer.RandomNumberProvideacsrContractReferenceState
+    RandomNumberContract { get; set; }
+```
+
+
+Add implementation of CreateCharacter and GetMyCharacter methods in HelloWorld.cs as well:
+
+The required import in HelloWorld.cs
+```sh copy
+using AElf.Standards.ACS6;
+```
+```sh copy
+public override Empty Initialize(Empty input)
+{
+    Assert(!State.Initialized.Value, "already initialized");
+    State.RandomNumberContract.Value =
+        Context.GetContractAddressByName(SmartContractConstants.ConsensusContractSystemName);
     return new Empty();
 }
-
-public override StringValue GetRandomCharacter(Empty input)
+```
+```sh copy
+public override Character CreateCharacter(Empty input)
 {
-    var value = State.Character.Value;
-    // Return value retrieved
-    return new StringValue
+    var existing = State.Characters[Context.Sender];
+    Assert(existing == null, "already has a character");
+    var randomBytes = State.RandomNumberContract.GetRandomBytes
+        .Call(new Int64Value { Value = Context.CurrentHeight - 1 }.ToBytesValue()).Value.ToByteArray();
+    var hash = HashHelper.ComputeFrom(Context.Sender).Value.ToByteArray();
+
+    var character = new Character
     {
-        Value = value
+        Health = 60 + (randomBytes[0] ^ hash[0]) % 41, // Health is 60 ~ 100
+        Strength = 40 + (randomBytes[1] ^ hash[1]) % 61, // Strength is 40 ~ 100
+        Speed = 100 + (randomBytes[2] ^ hash[2]) % 101 // Strength is 100 ~ 200
     };
+    State.Characters[Context.Sender] = character;
+    return character;
 }
 ```
-This code generates a random character's attributes based on a random hash obtained from the consensus contract. The hash is divided into three segments, each transformed into an attribute. The attributes determine health, strength, and speed proportions, which sum up to 30. The resulting character's attributes are then formatted into a message and returned, providing details such as HP, strength, and speed.
+```sh copy
+public override Character GetMyCharacter(Empty input)
+{
+    return State.Characters[Context.Sender] ?? new Character();
+}
+```
+This code generates a random character's attributes based on a randomBytes obtained from the consensus contract. The hash is divided into three segments, each transformed into an attribute. The attributes determine health, strength, and speed proportions. The resulting character's attributes are then formatted into a Character data structure and returned, providing details of HP, strength, and speed.
 
-Add the required import in HelloWorld.cs
-```
-using System.Collections.Generic;
-```
 
-Next, we need to add a unit test case for the Bet method. We go to the test folder and add this line of code to `test/Protobuf/contract/hello_world_contract.proto`.
+Next, we need to add a unit test case for the Character methods. We go to the test folder and add this line of code to `test/Protobuf/contract/hello_world_contract.proto`.
+```sh copy
+    rpc Initialize (google.protobuf.Empty) returns (google.protobuf.Empty);
+    rpc CreateCharacter (google.protobuf.Empty) returns (Character);
 ```
-  rpc CreateRandomCharacter (google.protobuf.Empty) returns (google.protobuf.Empty) {
-  }
+```sh copy
+    rpc GetMyCharacter (google.protobuf.Empty) returns (Character) {
+        option (aelf.is_view) = true;
+    }
 ```
-```
-  rpc GetRandomCharacter (google.protobuf.Empty) returns (google.protobuf.StringValue) {
-  option (aelf.is_view) = true;
-  }
+```sh copy
+message Character {
+    int32 health = 1;
+    int32 strength = 2;
+    int32 speed = 3;
+}
 ```
 Then add unit test for RandomCharacter method in HelloWorldTests.cs:
-```
-[Fact]
-public async Task Random_Test()
-{
-    // Arrange
-    await HelloWorldStub.CreateRandomCharacter.SendAsync(new Empty());
-    var result = await HelloWorldStub.GetRandomCharacter.CallAsync(new Empty());
-    Console.WriteLine(result.Value);
-}
-```
-
-Add the required import in HelloWorldTests.cs as well
-```
-using System;
+```sh copy
+        [Fact]
+        public async Task Rng_Test()
+        {
+            await HelloWorldStub.Initialize.SendAsync(new Empty());
+            var result = await HelloWorldStub.CreateCharacter.SendAsync(new Empty());
+            var character = await HelloWorldStub.GetMyCharacter.CallAsync(new Empty());
+            
+            Assert.NotEqual(new Character(), character);
+            Assert.Equal(result.Output, character);
+        }
 ```
 ## Call the contract
 
 - Send aelf commands.
-  - Open terminal, type aelf-command send, fill in the node with http://127.0.0.1:8000, address and password are same as before.
+  - Open terminal, type aelf-command send, fill the parameters 
+```sh copy
+aelf-command send 27RVyw1vKbWNdeTMfwFXeAtzQ36eM5c5cgfXzNydhNtD8NSpBk -e http://35.77.60.71:8000 -a 29zekTc31moEh33B6QiFuyPfbmG3fZfgMWoRqEwvgf2EsTPyfK -p xibo123
 ```
-aelf-command call 2LUmicHyH4RXrMjG4beDwuDsiWJESyLkgkwPdGTR8kahRzq5XS -a W1ptWN5n5mfdVvh3khTRm9KMJCAUdge9txNyVtyvZaYRYcqc1 -e http://127.0.0.1:8000
+```sh copy
+aelf-command send 27RVyw1vKbWNdeTMfwFXeAtzQ36eM5c5cgfXzNydhNtD8NSpBk -e http://35.77.60.71:8000 -a 27a3Hcn3esyHwFTdaUNQBL7dH8gg4BkRaZ7uv7SRoLAoLuS7Go -p xibo123
 ```
 ```
 aelf-command [call|send] [contract-address|contract-name] [params]
 -a, --account <account> 
 -e, --endpoint <URI>
+-p, --password <password>
 ```
