@@ -17,7 +17,7 @@
 
 - Open a terminal and type the following command. You can install the contract template from nuget repo to your local.
 
-```
+```sh copy
 dotnet new install AElf.Contract --nuget-source http://10.0.0.131:8081/repository/nuget-group/index.json
 ```
 
@@ -29,14 +29,14 @@ cd workshop
 
 - Type the following command, and create a new template project locally. You can modify custom parameters of command to define contract names and namespace. ```-n``` stands for contract name, ```-N``` stands for namespace.
 
-```
+```sh copy
 dotnet new aelfcontract -n HelloWorld -N AElf.Contract
 ```
 
 For example, ```-n HelloWorld``` means your contract name will be HelloWorld, ```-N AElf.Contracts.HelloWorld``` means your contract namespace will be AElf.Contracts.HelloWorld.
 Type the following command to understand usage of all the custom parameters.
 
-```
+```sh copy
 dotnet new aelfcontract --help
 ```
 
@@ -111,7 +111,7 @@ RNG is a very important part of the AElf project, AElf currently employs the Ver
 You can find the source code of AElf VRF here: https://github.com/AElfProject/AElf/blob/dev/src/AElf.Cryptography/ECVRF/Vrf.cs
 
 In AElf, we have already implemented a wrapper for the VRF algorithm, allowing direct invocation of the `GetRandomHash` function from the `ConsensusContract` at the upper layers to obtain a random number.
-```
+```sh copy
 var randomHash = State.ConsensusContract.GetRandomHash.Call(new Int64Value
 {
     Value = targetHeight
@@ -122,7 +122,7 @@ This random number can be verified by anyone possessing a public key, thanks to 
 ## RNG Implementation in AElf
 
 There are many implementations of RNG in AElf projects, we choose a code block from BingoGame to do the demostration:
-```
+```sh copy
 private List<int> GetDices(Hash hashValue)
 {
     var hexString = hashValue.ToHex();
@@ -144,29 +144,32 @@ This piece of code takes a `RandomHash` as input, which is the hash obtained und
 ## RNG Practice
 Next, we can do a simple practice of RNG on the workshop project we just created. 
 
-Add the following code to the `src/Protobuf/contract/hello_world_contract.proto` file. This line of code will introduce a new method called `RandomCharacter`, which doesn't need any input and produces a string as output.
-```
+Add the following code to the `src/Protobuf/contract/hello_world_contract.proto` file. These lines of code will introduce two new methods called `CreateRandomCharacter` and `GetRandomCharacter`.
+```sh copy
   rpc CreateRandomCharacter (google.protobuf.Empty) returns (google.protobuf.Empty) {
   }
 ```
-```
+```sh copy
   rpc GetRandomCharacter (google.protobuf.Empty) returns (google.protobuf.StringValue) {
   option (aelf.is_view) = true;
   }
 ```
-And also add this line of code into HelloWorldState.cs, this will encapsulate AEDPoS consensus contract reference state.
+And also add these lines of code into HelloWorldState.cs, they will create a storage space for Character, import and encapsulate AEDPoS consensus contract reference state.
 
-```
+```sh copy
 using AElf.Contracts.Consensus.AEDPoS;
 ```
-```
+```sh copy
+//create a storage space for Character
 public StringState Character { get; set; }
+
+//encapsulate AEDPoS consensus contract reference state
 internal RandomNumberAccessorContractContainer.RandomNumberAccessorContractReferenceState ConsensusContract { get; set; }
 ```
 
 
-Add implementation of CreateRandomCharacter and GetRandomCharacter method in HelloWorld.cs as well:
-```
+Add implementation of CreateRandomCharacter and GetRandomCharacter methods in HelloWorld.cs as well:
+```sh copy
 public override Empty CreateRandomCharacter(Empty input)
 {
     State.ConsensusContract.Value =
@@ -187,7 +190,7 @@ public override Empty CreateRandomCharacter(Empty input)
     var sum = attributes[0] + attributes[1] + attributes[2];
     var health = 30 * attributes[0] / sum;
     var strength = 30 * attributes[1] / sum;
-    var speed = 30 * attributes[2] / sum;
+    var speed = 30 - health - strength;
     var character = new StringValue();
     character.Value = $"Here is your character, HP is {health}, strength is {strength}, speed is {speed}";
     State.Character.Value = character.Value;
@@ -207,22 +210,22 @@ public override StringValue GetRandomCharacter(Empty input)
 This code generates a random character's attributes based on a random hash obtained from the consensus contract. The hash is divided into three segments, each transformed into an attribute. The attributes determine health, strength, and speed proportions, which sum up to 30. The resulting character's attributes are then formatted into a message and returned, providing details such as HP, strength, and speed.
 
 Add the required import in HelloWorld.cs
-```
+```sh copy
 using System.Collections.Generic;
 ```
 
-Next, we need to add a unit test case for the Bet method. We go to the test folder and add this line of code to `test/Protobuf/contract/hello_world_contract.proto`.
-```
+Next, we need to add a unit test case for the Character methods. We go to the test folder and add this line of code to `test/Protobuf/contract/hello_world_contract.proto`.
+```sh copy
   rpc CreateRandomCharacter (google.protobuf.Empty) returns (google.protobuf.Empty) {
   }
 ```
-```
+```sh copy
   rpc GetRandomCharacter (google.protobuf.Empty) returns (google.protobuf.StringValue) {
   option (aelf.is_view) = true;
   }
 ```
 Then add unit test for RandomCharacter method in HelloWorldTests.cs:
-```
+```sh copy
 [Fact]
 public async Task Random_Test()
 {
@@ -234,15 +237,15 @@ public async Task Random_Test()
 ```
 
 Add the required import in HelloWorldTests.cs as well
-```
+```sh copy
 using System;
 ```
 ## Call the contract
 
 - Send aelf commands.
-  - Open terminal, type aelf-command send, fill in the node with http://127.0.0.1:8000, address and password are same as before.
-```
-aelf-command call 2LUmicHyH4RXrMjG4beDwuDsiWJESyLkgkwPdGTR8kahRzq5XS -a W1ptWN5n5mfdVvh3khTRm9KMJCAUdge9txNyVtyvZaYRYcqc1 -e http://127.0.0.1:8000
+  - Open terminal, type aelf-command send, fill in the node with http://192.168.66.100:8000, address and password are same as before.
+```sh copy
+aelf-command call 2LUmicHyH4RXrMjG4beDwuDsiWJESyLkgkwPdGTR8kahRzq5XS -a W1ptWN5n5mfdVvh3khTRm9KMJCAUdge9txNyVtyvZaYRYcqc1 -e http://192.168.66.100:8000
 ```
 ```
 aelf-command [call|send] [contract-address|contract-name] [params]
