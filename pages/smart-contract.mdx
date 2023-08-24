@@ -1,8 +1,8 @@
 # Develop, test and call a smart contract
 
-## Development
+## 1. Development
 
-### Preparation
+### 1.1 Preparation
 
 - Install dotnet sdk.
   - Follow this doc https://dotnet.microsoft.com/en-us/download to install dotnet sdk. You can choose the 7.x version.
@@ -13,7 +13,7 @@
   - Type ```node -v``` and ```npm -v```, if return the versions, the installation is successful.
 
 
-### Create new project
+### 1.2 Create new project
 
 - Open a terminal and type the following command. You can install the contract template from nuget repo to your local.
 
@@ -40,10 +40,10 @@ Type the following command to understand usage of all the customised parameters.
 dotnet new aelfcontract --help
 ```
 
-### High level scope of the project
+### 1.3 High level scope of the project
 If you open your project folder, you should see two newly generated directories: src and test. These correspond to the smart contract code and the unit test code for the contract, respectively. 
 
-#### src
+#### 1.3.a src
 The src folder contains several proto files used to describe blockchain smart contract services and data structures. It also includes specific implementations of smart contract methods and definition files for managing contract state in communication with the blockchain, such as HelloWorldState.cs here. 
 
 ```
@@ -54,7 +54,7 @@ The src folder contains several proto files used to describe blockchain smart co
   - HelloWorldState.cs
 ```
 
-#### test
+#### 1.3.b test
 The test folder similarly contains a proto subfolder, along with a setup file used to establish the unit testing environment for blockchain smart contracts. It defines test module classes and a base test class, facilitating context loading, stub class retrieval, and stub acquisition methods. As a result, these classes and methods are employed in unit tests to conduct various tests on the smart contract.
 
 ```
@@ -71,11 +71,11 @@ In the process of writing smart contracts using AElf tools, the recommended appr
 Protos -> implementation -> unit test cases
 ```
 
-### Create or modify project files
+### 1.4 Create or modify project files
 
 - Create new proto files and modify existing project files according to your requirements. 
 
-### Build
+### 1.5 Build
 
 - Run the following command and check the result. If you encounter any errors, please resolve them according to the error messages.
 
@@ -84,17 +84,17 @@ cd src
 dotnet build
 ```
 
-## Testing
+## 2. Testing
 
-### Copy proto files (If you created or made any changes to the *.proto files)
+### 2.1 Copy proto files (If you created or made any changes to the *.proto files)
 
 - With the same method as above, copy proto files from src folder to base, message, stub folders. And update the import path.
 
-### Create and modify class files
+### 2.2 Create and modify class files
 
 - Create new class files and modify existing class files according to your requirements.
 
-### Build and run
+### 2.3 Build and run
 
 - Run the following command and check the result. If you encounter any errors, please resolve them according to the error messages.
 
@@ -105,12 +105,12 @@ dotnet build
 
 - After building successfully, run ```dotnet test``` command. And check the result. If you encounter any errors, please resolve them according to the error messages.
 
-## RNG (Random number generator) Introduction
+## 3. RNG (Random number generator) Introduction
 RNG is a very important part of the AElf project, AElf currently employs the Verifiable Random Function (VRF) algorithm as its underlying mechanism for generating random numbers. The essence of the VRF algorithm is rooted in mathematical operations on elliptic curves. 
 
 You can find the source code of AElf VRF here: https://github.com/AElfProject/AElf/blob/dev/src/AElf.Cryptography/ECVRF/Vrf.cs
 
-## RNG Implementation in AElf
+### 3.1 RNG Implementation in AElf
 
 There are many applications of RNG in AElf projects, we choose the application from BingoGame to do the demostration:
 
@@ -140,7 +140,7 @@ private List<int> GetDices(Hash hashValue)
     return dices;
 }
 ```
-## RNG Practice
+### 3.2 RNG Practice
 Next, we can do a simple practice of RNG on the workshop project we just created. 
 
 Add the following code to the `src/Protobuf/contract/hello_world_contract.proto` file. These lines of code will introduce three new methods called `Initialize`, `CreateCharacter` and `GetMyCharacter` and also define a data structure called Character.
@@ -249,7 +249,7 @@ Then add unit test for RandomCharacter method in HelloWorldTests.cs:
             Assert.Equal(result.Output, character);
         }
 ```
-## Call the contract
+## 4. Call the contract
 
 - Send aelf commands.
   - Open terminal, type aelf-command send, fill the parameters 
