@@ -1,10 +1,10 @@
 # Portkey Sign In
 
-## Preparation
+## 1. Preparation
 
 - Install [Node.js](https://nodejs.org/en/download).
 
-## Create a sample project using react
+## 2. Create a sample project using react
 
 In a terminal:
 
@@ -18,15 +18,15 @@ Enter the project folder.
 cd my-app
 ```
 
-## Install Portkey UI sdk
+## 3. Install Portkey UI sdk
 
 ```sh copy
 npm install @portkey/did-ui-react
 ```
 
-## Integrate SignIn Component
+## 4. Integrate SignIn Component
 
-### Copy below sample code and replace the codes in src/App.js
+### 4.1 Copy below sample code and replace the codes in src/App.js
 
 ```js filename="src/App.js" copy showLineNumbers
 import { SignIn, PortkeyProvider } from "@portkey/did-ui-react";
@@ -35,7 +35,7 @@ import "@portkey/did-ui-react/dist/assets/index.css"; // import portkey css
 import "./App.css";
 
 const App = () => {
-  const ref = useRef();
+  const signInComponentRef = useRef();
   const [wallet, setWallet] = useState();
 
   return (
@@ -43,13 +43,13 @@ const App = () => {
       <div className="my-app">
         <button
           onClick={() => {
-            ref.current?.setOpen(true);
+            signInComponentRef.current?.setOpen(true);
           }}
         >
           Sign In
         </button>
         <SignIn
-          ref={ref}
+          ref={signInComponentRef}
           onFinish={(wallet) => {
             setWallet(wallet);
           }}
@@ -67,9 +67,9 @@ const App = () => {
 export default App;
 ```
 
-### Copy below sample code and replace the codes in src/App.css
+### 4.2 Copy below sample code and replace the codes in src/App.css
 
-import { Callout } from "nextra/components"
+import { Callout } from "nextra/components";
 
 <Callout type="info" emoji="ℹ️">
   For the purposes of this workshop, let's amend the css to the below, so that
@@ -85,7 +85,7 @@ import { Callout } from "nextra/components"
 }
 ```
 
-## Setting up the proxy to connect to testnet for testing
+## 5. Setting up the proxy to connect to testnet for testing
 
 As during Sign In process, there are number of api calls that is retrieving holder info or guardians info from chain.
 
@@ -95,13 +95,13 @@ Edit `package.json` and add the following:
 "proxy": "https://did-portkey-test.portkey.finance" //testnet
 ```
 
-## Start the development server
+## 6. Start the development server
 
 ```sh
 npm run start
 ```
 
-## Result
+## 7. Result
 
 Click on the Sign in button and complete the sign in process.
 

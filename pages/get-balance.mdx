@@ -1,10 +1,10 @@
 # Get Balance
 
-## Preparation
+## 1. Preparation
 
 - Follow the example at [Portkey Sign In](/portkey-sign-in).
 
-## Edit `src/App.js` and replace with the following:
+## 2. Edit `src/App.js` and replace with the following:
 
 ```js filename="src/App.js" copy showLineNumbers
 import { SignIn, PortkeyProvider, did } from "@portkey/did-ui-react";
@@ -21,7 +21,7 @@ const aelf = new AElf(
 );
 
 const App = () => {
-  const ref = useRef();
+  const signInComponentRef = useRef();
   const [wallet, setWallet] = useState();
   const [balance, setBalance] = useState(new BigNumber(0));
   const [message, setMessage] = useState("");
@@ -72,12 +72,12 @@ const App = () => {
       <div className="my-app">
         <button
           onClick={() => {
-            ref.current?.setOpen(true);
+            signInComponentRef.current?.setOpen(true);
           }}
         >
           Sign In
         </button>
-        <SignIn ref={ref} onFinish={onFinish} />
+        <SignIn ref={signInComponentRef} onFinish={onFinish} />
         {wallet ? (
           <>
             <button onClick={() => getBalance(wallet)}>getBalance</button>
@@ -99,7 +99,7 @@ const App = () => {
 export default App;
 ```
 
-## Faucet
+## 3. Faucet
 
 You may top up your testnet wallet using the [Faucet](https://testnet-faucet.aelf.io).
 

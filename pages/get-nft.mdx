@@ -1,10 +1,10 @@
 # Get NFT
 
-## Preparation
+## 1. Preparation
 
 - Follow the example at [Portkey Sign In](/portkey-sign-in).
 
-## Edit `src/App.js` and replace with the following:
+## 2. Edit `src/App.js` and replace with the following:
 
 Modify App.js with the following:
 
@@ -22,7 +22,7 @@ const aelf = new AElf(
 );
 
 const App = () => {
-  const ref = useRef();
+  const signInComponentRef = useRef();
   const [wallet, setWallet] = useState();
   const [message, setMessage] = useState("");
   const [imgUrl, setImgUrl] = useState("");
@@ -71,12 +71,12 @@ const App = () => {
       <div className="my-app">
         <button
           onClick={() => {
-            ref.current?.setOpen(true);
+            signInComponentRef.current?.setOpen(true);
           }}
         >
           Sign In
         </button>
-        <SignIn ref={ref} onFinish={onFinish} />
+        <SignIn ref={signInComponentRef} onFinish={onFinish} />
         {wallet ? (
           <>
             <button onClick={() => getNFT(wallet)}>getNFT</button>
