@@ -109,7 +109,7 @@ For Windows
 # Need to split 2 commands on Windows.
 set "CREATE_PARAMS_FT={\"symbol\":\"%SYMBOL_FT%\",\"tokenName\":\"%SYMBOL_FT%token\",\"totalSupply\":\"1000000000\",\"decimals\":8,\"issuer\":\"%WALLET_ADDRESS%\",\"isBurnable\":\"true\",\"lockWhiteList\":null,\"issueChainId\":9992731,\"externalInfo.value\":null,\"owner\":\"%WALLET_ADDRESS%\"}"
 
-aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRES% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% Create "%CREATE_PARAMS_FT%"
+aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% Create "%CREATE_PARAMS_FT%"
 ```
 
 Let me explain some important parameters.
@@ -147,7 +147,7 @@ For Windows
 # Need to split 2 commands on Windows.
 set "BALANCE_BEFORE_PARAMS_FT={\"symbol\":\"%SYMBOL_FT%\",\"owner\":\"%WALLET_ADDRESS%\"}"
 
-aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRES% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% GetBalance "%BALANCE_BEFORE_PARAMS_FT%"
+aelf-command call %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% GetBalance "%BALANCE_BEFORE_PARAMS_FT%"
 ```
 
 Then run issue command.
@@ -173,7 +173,7 @@ For Windows
 # Need to split 2 commands on Windows.
 set "ISSUE_PARAMS_FT={\"symbol\":\"%SYMBOL_FT%\",\"amount\":100,\"memo\":\"test\",\"to\":\"%WALLET_ADDRESS%\"}"
 
-aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRES% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% Issue "%ISSUE_PARAMS_FT%"
+aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% Issue "%ISSUE_PARAMS_FT%"
 ```
 
 After this, run GetBalance method again, and check the result.
@@ -196,7 +196,7 @@ For Windows
 # Need to split 2 commands on Windows.
 set "BALANCE_AFTER_PARAMS_FT={\"symbol\":\"%SYMBOL_FT%\",\"owner\":\"%WALLET_ADDRESS%\"}"
 
-aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRES% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% GetBalance "%BALANCE_AFTER_PARAMS_FT%"
+aelf-command call %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% GetBalance "%BALANCE_AFTER_PARAMS_FT%"
 ```
 
 ## 3. NFT Creation
@@ -233,9 +233,9 @@ Create "$CREATE_PARAMS_NFT_COLLECTION"
 For Windows
 ```sh copy
 # Need to split 2 commands on Windows.
-set "CREATE_PARAMS_NFT_COLLECTION={\"symbol\":\"$SYMBOL_NFT-0\",\"tokenName\":\"Collecion of $SYMBOL_NFT\",\"totalSupply\":\"1\",\"decimals\":0,\"issuer\":\"$WALLET_ADDRESS\",\"isBurnable\":\"true\",\"lockWhiteList\":null,\"issueChainId\":9992731,\"externalInfo\":{\"value\":{\"__nft_image_url\":\"$NFT_COLLECTION_IMAGE\"}},\"owner\":\"$WALLET_ADDRESS\"}"
+set "CREATE_PARAMS_NFT_COLLECTION={\"symbol\":\"%SYMBOL_NFT%-0\",\"tokenName\":\"Collecion of %SYMBOL_NFT%\",\"totalSupply\":\"1\",\"decimals\":0,\"issuer\":\"%WALLET_ADDRESS%\",\"isBurnable\":\"true\",\"lockWhiteList\":null,\"issueChainId\":9992731,\"externalInfo\":{\"value\":{\"__nft_image_url\":\"%NFT_COLLECTION_IMAGE%\"}},\"owner\":\"%WALLET_ADDRESS%\"}"
 
-aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRES% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% Create "%CREATE_PARAMS_NFT_COLLECTION%"
+aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% Create "%CREATE_PARAMS_NFT_COLLECTION%"
 ```
 
 The most of parameters are the same as FT. Let me explain the differences.
@@ -274,9 +274,9 @@ Create "$CREATE_PARAMS_NFT"
 For Windows
 ```sh copy
 # Need to split 2 commands on Windows.
-set "CREATE_PARAMS_NFT={\"symbol\":\"$SYMBOL_NFT-1\",\"tokenName\":\"$SYMBOL_NFT item\",\"totalSupply\":\"1\",\"decimals\":0,\"issuer\":\"$WALLET_ADDRESS\",\"isBurnable\":\"true\",\"lockWhiteList\":null,\"issueChainId\":9992731,\"externalInfo\":{\"value\":{\"__nft_image_url\":\"$NFT_ITEM_IMAGE\"}},\"owner\":\"$WALLET_ADDRESS\"}"
+set "CREATE_PARAMS_NFT={\"symbol\":\"%SYMBOL_NFT%-1\",\"tokenName\":\"%SYMBOL_NFT% item\",\"totalSupply\":\"1\",\"decimals\":0,\"issuer\":\"%WALLET_ADDRESS%\",\"isBurnable\":\"true\",\"lockWhiteList\":null,\"issueChainId\":9992731,\"externalInfo\":{\"value\":{\"__nft_image_url\":\"%NFT_ITEM_IMAGE%\"}},\"owner\":\"%WALLET_ADDRESS%\"}"
 
-aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRES% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% Create "%CREATE_PARAMS_NFT%"
+aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% Create "%CREATE_PARAMS_NFT%"
 ```
 
 The most of parameters are the same as NFT collection. Let me explain the differences.
@@ -307,7 +307,7 @@ For Windows
 # Need to split 2 commands on Windows.
 set "BALANCE_BEFORE_PARAMS_NFT={\"symbol\":\"%SYMBOL_FT%-1\",\"owner\":\"%WALLET_ADDRESS%\"}"
 
-aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRES% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% GetBalance "%BALANCE_BEFORE_PARAMS_NFT%"
+aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% GetBalance "%BALANCE_BEFORE_PARAMS_NFT%"
 ```
 
 Then run the issue command.
@@ -332,7 +332,7 @@ For Windows
 # Need to split 2 commands on Windows.
 set "ISSUE_PARAMS_NFT={\"symbol\":\"%SYMBOL_NFT%-1\",\"amount\":1,\"memo\":\"test\",\"to\":\"%WALLET_ADDRESS%\"}"
 
-aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRES% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% Issue "%ISSUE_PARAMS_NFT%"
+aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% Issue "%ISSUE_PARAMS_NFT%"
 ```
 
 After this, run GetBalance method again, and check the result.
@@ -355,7 +355,7 @@ For Windows
 # Need to split 2 commands on Windows.
 set "BALANCE_AFTER_PARAMS_NFT={\"symbol\":\"%SYMBOL_FT%-1\",\"owner\":\"%WALLET_ADDRESS%\"}"
 
-aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRES% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% GetBalance "%BALANCE_AFTER_PARAMS_NFT%"
+aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% GetBalance "%BALANCE_AFTER_PARAMS_NFT%"
 ```
 
 ## 4. Token Transfer
@@ -383,7 +383,7 @@ For Windows
 # Need to split 2 commands on Windows.
 set "TRANSFER_PARAMS={\"symbol\":\"%SYMBOL_FT%\",\"amount\":1,\"memo\":\"test\",\"to\":\"%WALLET_ADDRESS%\"}"
 
-aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRES% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% Transfer "%TRANSFER_PARAMS%"
+aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% Transfer "%TRANSFER_PARAMS%"
 ```
 
 After completing all the steps, we can open the app and get result of transfer.
