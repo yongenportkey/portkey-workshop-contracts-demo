@@ -305,9 +305,9 @@ GetBalance "$BALANCE_BEFORE_PARAMS_NFT"
 For Windows
 ```sh copy
 # Need to split 2 commands on Windows.
-set "BALANCE_BEFORE_PARAMS_NFT={\"symbol\":\"%SYMBOL_FT%-1\",\"owner\":\"%WALLET_ADDRESS%\"}"
+set "BALANCE_BEFORE_PARAMS_NFT={\"symbol\":\"%SYMBOL_NFT%-1\",\"owner\":\"%WALLET_ADDRESS%\"}"
 
-aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% GetBalance "%BALANCE_BEFORE_PARAMS_NFT%"
+aelf-command call %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% GetBalance "%BALANCE_BEFORE_PARAMS_NFT%"
 ```
 
 Then run the issue command.
@@ -353,9 +353,9 @@ GetBalance "$BALANCE_AFTER_PARAMS_NFT"
 For Windows
 ```sh copy
 # Need to split 2 commands on Windows.
-set "BALANCE_AFTER_PARAMS_NFT={\"symbol\":\"%SYMBOL_FT%-1\",\"owner\":\"%WALLET_ADDRESS%\"}"
+set "BALANCE_AFTER_PARAMS_NFT={\"symbol\":\"%SYMBOL_NFT%-1\",\"owner\":\"%WALLET_ADDRESS%\"}"
 
-aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% GetBalance "%BALANCE_AFTER_PARAMS_NFT%"
+aelf-command call %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% GetBalance "%BALANCE_AFTER_PARAMS_NFT%"
 ```
 
 ## 4. Token Transfer
