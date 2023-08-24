@@ -1,4 +1,4 @@
-# Create a Token on AElf Chain
+# Token Creation on AElf
 
 ## 1. Preparation
 
@@ -90,7 +90,7 @@ export CREATE_PARAMS_FT=$(cat << EOL
     "symbol": "$SYMBOL_FT",
     "tokenName": "$SYMBOL_FT token",
     "totalSupply": "1000000000",
-    "decimals": "8",
+    "decimals": 8,
     "issuer": "$WALLET_ADDRESS",
     "isBurnable": "true",
     "lockWhiteList": null,
@@ -107,7 +107,7 @@ Create "$CREATE_PARAMS_FT"
 For Windows
 ```sh copy
 # Need to split 2 commands on Windows.
-set "CREATE_PARAMS_FT={\"symbol\":\"%SYMBOL_FT%\",\"tokenName\":\"%SYMBOL_FT%token\",\"totalSupply\":\"1000000000\",\"decimals\":\"8\",\"issuer\":\"%WALLET_ADDRESS%\",\"isBurnable\":\"true\",\"lockWhiteList\":null,\"issueChainId\":9992731,\"externalInfo.value\":null,\"owner\":\"%WALLET_ADDRESS%\"}"
+set "CREATE_PARAMS_FT={\"symbol\":\"%SYMBOL_FT%\",\"tokenName\":\"%SYMBOL_FT%token\",\"totalSupply\":\"1000000000\",\"decimals\":8,\"issuer\":\"%WALLET_ADDRESS%\",\"isBurnable\":\"true\",\"lockWhiteList\":null,\"issueChainId\":9992731,\"externalInfo.value\":null,\"owner\":\"%WALLET_ADDRESS%\"}"
 
 aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRES% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% Create "%CREATE_PARAMS_FT%"
 ```
@@ -216,12 +216,12 @@ export CREATE_PARAMS_NFT_COLLECTION=$(cat << EOL
     "symbol": "$SYMBOL_NFT-0",
     "tokenName": "Collecion of $SYMBOL_NFT",
     "totalSupply": "1",
-    "decimals": "0",
+    "decimals": 0,
     "issuer": "$WALLET_ADDRESS",
     "isBurnable": "true",
     "lockWhiteList": null,
     "issueChainId": 9992731,
-    "externalInfo.value": {"__nft_image_url":"$NFT_COLLECTION_IMAGE"},
+    "externalInfo": {"value":{"__nft_image_url":"$NFT_COLLECTION_IMAGE"}},
     "owner": "$WALLET_ADDRESS"
 }
 EOL
@@ -233,7 +233,7 @@ Create "$CREATE_PARAMS_NFT_COLLECTION"
 For Windows
 ```sh copy
 # Need to split 2 commands on Windows.
-set "CREATE_PARAMS_NFT_COLLECTION={\"symbol\":\"%SYMBOL_NFT%-0\",\"tokenName\":\"Collectionof%SYMBOL_NFT%\",\"totalSupply\":\"1\",\"decimals\":\"0\",\"issuer\":\"%WALLET_ADDRESS%\",\"isBurnable\":\"true\",\"lockWhiteList\":null,\"issueChainId\":9992731,\"externalInfo.value\":{\"__nft_image_url\":\"$NFT_COLLECTION_IMAGE\"},\"owner\":\"%WALLET_ADDRESS%\"}"
+set "CREATE_PARAMS_NFT_COLLECTION={\"symbol\":\"$SYMBOL_NFT-0\",\"tokenName\":\"Collecion of $SYMBOL_NFT\",\"totalSupply\":\"1\",\"decimals\":0,\"issuer\":\"$WALLET_ADDRESS\",\"isBurnable\":\"true\",\"lockWhiteList\":null,\"issueChainId\":9992731,\"externalInfo\":{\"value\":{\"__nft_image_url\":\"$NFT_COLLECTION_IMAGE\"}},\"owner\":\"$WALLET_ADDRESS\"}"
 
 aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRES% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% Create "%CREATE_PARAMS_NFT_COLLECTION%"
 ```
@@ -257,12 +257,12 @@ export CREATE_PARAMS_NFT=$(cat << EOL
     "symbol": "$SYMBOL_NFT-1",
     "tokenName": "$SYMBOL_NFT item",
     "totalSupply": "1",
-    "decimals": "0",
+    "decimals": 0,
     "issuer": "$WALLET_ADDRESS",
     "isBurnable": "true",
     "lockWhiteList": null,
     "issueChainId": 9992731,
-    "externalInfo.value": {"__nft_image_url":"$NFT_ITEM_IMAGE"},
+    "externalInfo": {"value":{"__nft_image_url":"$NFT_ITEM_IMAGE"}},
     "owner": "$WALLET_ADDRESS"
 }
 EOL
@@ -274,7 +274,7 @@ Create "$CREATE_PARAMS_NFT"
 For Windows
 ```sh copy
 # Need to split 2 commands on Windows.
-set "CREATE_PARAMS_NFT={\"symbol\":\"%SYMBOL_NFT%\",\"tokenName\":\"%SYMBOL_NFT%item\",\"totalSupply\":\"1\",\"decimals\":\"0\",\"issuer\":\"%WALLET_ADDRESS%\",\"isBurnable\":\"true\",\"lockWhiteList\":null,\"issueChainId\":9992731,\"externalInfo.value\":{\"__nft_image_url\":\"%NFT_ITEM_IMAGE%\"},\"owner\":\"%WALLET_ADDRESS%\"}"
+set "CREATE_PARAMS_NFT={\"symbol\":\"$SYMBOL_NFT-1\",\"tokenName\":\"$SYMBOL_NFT item\",\"totalSupply\":\"1\",\"decimals\":0,\"issuer\":\"$WALLET_ADDRESS\",\"isBurnable\":\"true\",\"lockWhiteList\":null,\"issueChainId\":9992731,\"externalInfo\":{\"value\":{\"__nft_image_url\":\"$NFT_ITEM_IMAGE\"}},\"owner\":\"$WALLET_ADDRESS\"}"
 
 aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRES% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% Create "%CREATE_PARAMS_NFT%"
 ```
