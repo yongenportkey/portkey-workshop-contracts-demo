@@ -1,11 +1,11 @@
-# Develop, test and deploy a smart contract
+# Develop, test and call a smart contract
 
 ## Development
 
 ### Preparation
 
 - Install dotnet sdk.
-  - Follow this doc https://dotnet.microsoft.com/en-us/download to install dotnet sdk. You can choose the 6.x or 7.x version.
+  - Follow this doc https://dotnet.microsoft.com/en-us/download to install dotnet sdk. You can choose the 7.x version.
   - Type ```dotnet --version```, if return the version of dotnet sdk, the installation is successful.
 
 - Install node.
@@ -27,14 +27,14 @@ mkdir workshop
 cd workshop
 ```
 
-- Type the following command, and create a new template project locally. You can modify custom parameters of command to define contract names and namespace. ```-n``` stands for contract name, ```-N``` stands for namespace.
+- Type the following command, and create a new template project locally. You can modify customised parameters of command to define contract names and namespace. ```-n``` stands for contract name, ```-N``` stands for namespace.
 
 ```sh copy
 dotnet new aelfcontract -n HelloWorld -N AElf.Contract
 ```
 
-For example, ```-n HelloWorld``` means your contract name will be HelloWorld, ```-N AElf.Contracts.HelloWorld``` means your contract namespace will be AElf.Contracts.HelloWorld.
-Type the following command to understand usage of all the custom parameters.
+```-n HelloWorld``` means your contract name will be HelloWorld, ```-N AElf.Contracts.HelloWorld``` means your contract namespace will be AElf.Contracts.HelloWorld.
+Type the following command to understand usage of all the customised parameters.
 
 ```sh copy
 dotnet new aelfcontract --help
@@ -112,7 +112,7 @@ You can find the source code of AElf VRF here: https://github.com/AElfProject/AE
 
 ## RNG Implementation in AElf
 
-There are many applications of RNG in AElf projects, we choose a code block from BingoGame to do the demostration:
+There are many applications of RNG in AElf projects, we choose the application from BingoGame to do the demostration:
 
 Firstly it will call GetRandomHash from ConsensusContract
 ```sh copy
@@ -164,13 +164,14 @@ And also add these lines of code into HelloWorldState.cs, they will create a sto
 
 ```sh copy
 using AElf.Standards.ACS6;
+using AElf.Types;
 ```
 ```sh copy
 //create a storage space for Character
 public BoolState Initialized { get; set; }
 public MappedState<Address, Character> Characters { get; set; }
 
-//encapsulate AEDPoS consensus contract reference state
+//encapsulate ACS6 reference state
 internal RandomNumberProvideacsrContractContainer.RandomNumberProvideacsrContractReferenceState
     RandomNumberContract { get; set; }
 ```
@@ -178,7 +179,6 @@ internal RandomNumberProvideacsrContractContainer.RandomNumberProvideacsrContrac
 
 Add implementation of CreateCharacter and GetMyCharacter methods in HelloWorld.cs as well:
 
-The required import in HelloWorld.cs
 ```sh copy
 using AElf.Standards.ACS6;
 ```
@@ -216,10 +216,10 @@ public override Character GetMyCharacter(Empty input)
     return State.Characters[Context.Sender] ?? new Character();
 }
 ```
-This code generates a random character's attributes based on a randomBytes obtained from the consensus contract. The hash is divided into three segments, each transformed into an attribute. The attributes determine health, strength, and speed proportions. The resulting character's attributes are then formatted into a Character data structure and returned, providing details of HP, strength, and speed.
+This code generates a random character's attributes based on a randomBytes obtained from the ACS6. The 3 element of byte will do exclusive OR operation with 3 elements of a computed hash, each result transformed into an attribute. The attributes determine health, strength, and speed proportions. The resulting character's attributes are then formatted into a Character data structure and returned, providing details of HP, strength, and speed.
 
 
-Next, we need to add a unit test case for the Character methods. We go to the test folder and add this line of code to `test/Protobuf/contract/hello_world_contract.proto`.
+Next, we need to add a unit test case for the Character methods. We go to the test folder and add these lines of code to `test/Protobuf/contract/hello_world_contract.proto`.
 ```sh copy
     rpc Initialize (google.protobuf.Empty) returns (google.protobuf.Empty);
     rpc CreateCharacter (google.protobuf.Empty) returns (Character);
