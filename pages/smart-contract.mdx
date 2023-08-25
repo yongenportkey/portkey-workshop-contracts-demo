@@ -65,7 +65,7 @@ The test folder similarly contains a proto subfolder, along with a setup file us
   - HelloWorldTests.cs
 ```
 
-In the process of writing smart contracts using AElf tools, the recommended approach involves modifying or creating proto files first. Subsequently, the methods defined in the proto files should be implemented, followed by the addition of unit tests and their execution to verify if these tests pass.
+In the process of writing smart contracts using AElf tools, the recommended approach involves modifying or creating proto files first, as on aelf we use grpc format to define the apis in the contract as well as the input and output message types. The interfaces are defined in the protobuf files. Subsequently, the methods defined in the proto files should be implemented, followed by the addition of unit tests and their execution to verify if these tests pass.
 
 ```
 Protos -> implementation -> unit test cases
@@ -110,7 +110,7 @@ RNG is a very important part of the AElf project, AElf currently employs the Ver
 
 You can find the source code of AElf VRF here: https://github.com/AElfProject/AElf/blob/dev/src/AElf.Cryptography/ECVRF/Vrf.cs
 
-### 3.1 RNG Implementation in AElf
+### 3.1 RNG Application in AElf
 
 There are many applications of RNG in AElf projects, we choose the application from BingoGame to do the demostration:
 
