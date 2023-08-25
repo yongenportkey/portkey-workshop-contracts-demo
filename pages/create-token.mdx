@@ -24,9 +24,9 @@ Firstly, before we start the token creation process, we need to do some initiali
 
 Why are we doing this? The reason is that currently, if we want to create an FT or NFT, we need to get a seed NFT. The seed NFT defines the symbol name of the FT or NFT you are going to create. The name of the created FT or NFT must be consistent with the name defined in this seed NFT. we applied for the seed NFT for each person and sent it to your accounts.
 
-Additionally, a small amount of transaction fee is required, so we transfer some ELF tokens to your account in advance. This is to enable everyone to proceed with the subsequent steps.
+Additionally, a small amount of transaction fee is required, so we transfer some ELF tokens to your account in advance. This is to enable everyone to proceed with the subsequent steps. Now let's take a look at this script.
 
-Now let's take a look at this script, and run it. Once the script has been executed, I will teach you how to check the information of your account.
+Then we can run it. Once the script has been executed, I will teach you how to check the information of your account.
 
 For MacOS
 ```sh copy
@@ -38,11 +38,6 @@ For Windows
 ```sh copy
 setup.bat
 ```
-
-Let's check the setup script. 
-
-First part is set up the environment variables, which include wallet address, password, token contract address, seed ft and nft, symbol ft and nft, and nft collection image and nft image.
-Second part is load keystore, it will load the key of aelf account to your local environment.
 
 ###### 2.2 Check account information
 After running the script, let's check your account information.
@@ -240,10 +235,10 @@ aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWO
 
 The most of parameters are the same as FT. Let me explain the differences.
 
-1. symbol: The symbol represents the name of the NFT collection you are creating, it should be ``````<SYMBOL>-0``````. For example, ```TEST-0```. ```-0``` stands for collection, it's fixed.
-2. totalSupply: This parameter indicates the total supply of your NFT. After creating the NFT, you will need to perform an "issue" operation to make the token usable. "totalSupply" represents the maximum quantity that can be issued. In general, it should be 1.
-3. decimals: The decimals of NFT collection and NFT should be 0.
-4. externalInfo.value: This parameter is used to attach an image to the NFT collection.
+1. The symbol represents the name of the NFT collection you are creating, it should be ``````<SYMBOL>-0``````. For example, ```TEST-0```. ```-0``` stands for collection, it's fixed.
+2. The totalSupply represents the maximum quantity that can be issued. For NFT collection, it should be 1.
+3. The decimals of NFT collection and NFT should be 0.
+4. The externalInfo.value is used to attach an image to the NFT collection.
 
 ###### 3.2 Create new NFT item.
 After creating a new NFT collection, we can create a new NFT item.
@@ -281,8 +276,8 @@ aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWO
 
 The most of parameters are the same as NFT collection. Let me explain the differences.
 
-1. symbol: The symbol represents the name of the NFT you are creating, it should be ```<SYMBOL>-1/2/3```, it can't be ```-0```. For example, ```TEST-1```.
-8. externalInfo.value: This parameter is used to attach an image to the NFT.
+1. The symbol represents the name of the NFT you are creating, it should be ```<SYMBOL>-1/2/3```, it can't be ```-0```. For example, ```TEST-1```.
+2. The externalInfo.value is used to attach an image to the NFT.
 
 ###### 3.3 Issue token
 
