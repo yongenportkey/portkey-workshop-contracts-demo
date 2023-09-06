@@ -1,4 +1,4 @@
-# Develop, test and call a smart contract
+# Develop, test, deploy and call a smart contract
 
 ## 1. Development
 
@@ -13,12 +13,12 @@
   - Type ```node -v``` and ```npm -v```, if return the versions, the installation is successful.
 
 
-### 1.2 Create new project
+### 1.2 Create a new project
 
 - Open a terminal and type the following command. You can install the contract template from nuget repo to your local.
 
 ```sh copy
-dotnet new install AElf.Contract --nuget-source http://10.0.0.131:8081/repository/nuget-group/index.json
+dotnet new install AElf.Contract --nuget-source http://10.0.1.187:8081/repository/nuget-group/index.json
 ```
 
 - Create a folder to place the workshop project
@@ -249,7 +249,30 @@ Then add unit test for RandomCharacter method in HelloWorldTests.cs:
             Assert.Equal(result.Output, character);
         }
 ```
-## 4. Call the contract
+## 4. Deploy the contract
+Deployment on AElf test net is very simple, it can be done on the website: https://explorer-test-side02.aelf.io/
+
+Deployment procedure:
+
+1. Go to https://explorer-test-side02.aelf.io/proposal/proposals and login your portkey account
+
+If you haven't don't have test tokens on your account, you may go to  https://testnet-faucet.aelf.io/ to get some free test tokens.
+
+2. Submit a proposal
+
+Click "Apply", and select "Deploy/Update Contract", upload the /AElf.Contracts.HelloWorld.dll.patched file in project folder
+```sh copy
+workshop/src/bin/Debug/net6.0
+```
+
+3. Deploy the contract
+
+After uploading your contarct file, click "Apply" at bottom then click "OK" in pop-up window, it will do code check and deployment automatically.
+
+Here is a gif of the whole deployment process.
+![](/output.gif)
+
+## 5. Call the contract
 
 - Send aelf commands.
   - Open terminal, type aelf-command send, fill the parameters 
