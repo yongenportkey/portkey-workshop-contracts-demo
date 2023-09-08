@@ -3,7 +3,7 @@ title: Smart Contract
 sidebar_position: 6
 ---
 
-# Develop, test, deploy and call a smart contract
+# Develop, deploy and call a smart contract
 
 ## 1. Development
 
@@ -23,7 +23,7 @@ sidebar_position: 6
 - Open a terminal and type the following command. You can install the contract template from nuget repo to your local.
 
 ```bash copy
-dotnet new install AElf.Contract --nuget-source http://10.0.1.187:8081/repository/nuget-group/index.json
+dotnet new install AElf.Contract --nuget-source http://192.168.68.107:8081/repository/nuget-group/index.json
 ```
 
 - Create a folder to place the workshop project
@@ -33,13 +33,14 @@ mkdir workshop
 cd workshop
 ```
 
-- Type the following command, and create a new template project locally. You can modify customised parameters of command to define contract names and namespace. `-n` stands for contract name, `-N` stands for namespace.
+- Type the following command, and create a new template project locally
 
 ```bash copy
-dotnet new aelfcontract -n HelloWorld -N AElf.Contract
+dotnet new aelfcontract -n HelloWorld
 ```
 
-`-n HelloWorld` means your contract name will be HelloWorld, `-N AElf.Contracts.HelloWorld` means your contract namespace will be AElf.Contracts.HelloWorld.
+You can add customised parameters of command to define contract names and namespace, e.g. -n HelloWorld , which means contract name will be HelloWorld, -N AElf.Contracts.HelloWorld, which means namespace will be AElf.Contracts.HelloWorld.
+
 Type the following command to understand usage of all the customised parameters.
 
 ```bash copy
@@ -93,67 +94,23 @@ cd src
 dotnet build
 ```
 
-## 2. Testing
-
-### 2.1 Copy proto files (If you created or made any changes to the \*.proto files)
-
-- With the same method as above, copy proto files from src folder to base, message, stub folders. And update the import path.
-
-### 2.2 Create and modify class files
-
-- Create new class files and modify existing class files according to your requirements.
-
-### 2.3 Build and run
-
-- Run the following command and check the result. If you encounter any errors, please resolve them according to the error messages.
-
-```bash copy
-cd test
-dotnet build
-```
-
 - After building successfully, run `dotnet test` command. And check the result. If you encounter any errors, please resolve them according to the error messages.
 
-## 3. RNG (Random number generator) Introduction
+## 2. RNG (Random number generator) Introduction
 
 RNG is a very important part of the AElf project, AElf currently employs the Verifiable Random Function (VRF) algorithm as its underlying mechanism for generating random numbers. The essence of the VRF algorithm is rooted in mathematical operations on elliptic curves.
 
 You can find the source code of AElf VRF here: https://github.com/AElfProject/AElf/blob/dev/src/AElf.Cryptography/ECVRF/Vrf.cs
 
-### 3.1 RNG Application in AElf
+### 2.1 RNG Application in AElf
 
-There are many applications of RNG in AElf projects, we choose the application from BingoGame to do the demostration:
+There are many applications of RNG in AElf projects, basic flow is:
 
-Firstly it will call GetRandomHash from ConsensusContract
-
-```csharp copy
-var randomHash = State.ConsensusContract.GetRandomHash.Call(new Int64Value
-{
-    Value = targetHeight
-});
+```
+Get Random Hash/Bytes -> one/more random numbers
 ```
 
-Secondly, it will take the RandomHash as input, which is the hash obtained under the VRF algorithm, and convert it into a hexadecimal string named hexString. Next, it will extract three consecutive groups of 8-bit hexadecimal values from this string and interpret them as integer types. Subsequently, through a series of operations, these three integers are transformed into dice values (integers between 1 and 6).
-
-```csharp copy
-private List<int> GetDices(Hash hashValue)
-{
-    var hexString = hashValue.ToHex();
-    var dices = new List<int>();
-
-    for (int i = 0; i < 3; i++)
-    {
-        var startIndex = i * 8;
-        var intValue = int.Parse(hexString.Substring(startIndex, 8), System.Globalization.NumberStyles.HexNumber);
-        var dice = (intValue % 6 + 5) % 6 + 1;
-        dices.Add(dice);
-    }
-
-    return dices;
-}
-```
-
-### 3.2 RNG Practice
+### 2.2 RNG Practice
 
 Next, we can do a simple practice of RNG on the workshop project we just created.
 
@@ -276,7 +233,7 @@ Then add unit test for RandomCharacter method in HelloWorldTests.cs:
         }
 ```
 
-## 4. Deploy the contract
+## 3. Deploy the contract
 
 Deployment on AElf test net is very simple, it can be done on the website: https://explorer-test-side02.aelf.io/
 
@@ -301,7 +258,7 @@ After uploading your contarct file, click "Apply" at bottom then click "OK" in p
 Here is a gif of the whole deployment process.
 ![](/img/output.gif)
 
-## 5. Call the contract
+## 4. Call the contract
 
 - Send aelf commands.
   - Open terminal, type aelf-command send, fill the parameters
