@@ -46,7 +46,7 @@ source setup.sh
   </TabItem>
   <TabItem value="windows" label="Windows">
 
-```bash copy
+```powershell copy
 setup.bat
 ```
 
@@ -72,7 +72,7 @@ echo $WALLET_ADDRESS
   </TabItem>
   <TabItem value="windows" label="Windows">
 
-```bash copy
+```powershell copy
 echo %SEED_FOR_FT%^
 echo %SEED_FOR_NFT%^
 echo %SYMBOL_FT%^
@@ -127,7 +127,7 @@ Create "$CREATE_PARAMS_FT"
   </TabItem>
   <TabItem value="windows" label="Windows">
 
-```bash copy
+```powershell copy
 # Need to split 2 commands on Windows.
 set "CREATE_PARAMS_FT={\"symbol\":\"%SYMBOL_FT%\",\"tokenName\":\"%SYMBOL_FT%token\",\"totalSupply\":\"1000000000\",\"decimals\":8,\"issuer\":\"%WALLET_ADDRESS%\",\"isBurnable\":\"true\",\"lockWhiteList\":null,\"issueChainId\":9992731,\"externalInfo.value\":null,\"owner\":\"%WALLET_ADDRESS%\"}"
 
@@ -155,7 +155,7 @@ aelf-command event <transactionId> -e $TESTNET_ENDPOINT
   </TabItem>
   <TabItem value="windows" label="Windows">
 
-```bash copy
+```powershell copy
 aelf-command event <transactionId> -e %TESTNET_ENDPOINT%
 ```
 
@@ -185,7 +185,7 @@ GetBalance "$BALANCE_BEFORE_PARAMS_FT"
   </TabItem>
   <TabItem value="windows" label="Windows">
 
-```bash copy
+```powershell copy
 # Need to split 2 commands on Windows.
 set "BALANCE_BEFORE_PARAMS_FT={\"symbol\":\"%SYMBOL_FT%\",\"owner\":\"%WALLET_ADDRESS%\"}"
 
@@ -217,7 +217,7 @@ Issue "$ISSUE_PARAMS_FT"
   </TabItem>
   <TabItem value="windows" label="Windows">
 
-```bash copy
+```powershell copy
 # Need to split 2 commands on Windows.
 set "ISSUE_PARAMS_FT={\"symbol\":\"%SYMBOL_FT%\",\"amount\":100,\"memo\":\"test\",\"to\":\"%WALLET_ADDRESS%\"}"
 
@@ -247,7 +247,7 @@ GetBalance "$BALANCE_AFTER_PARAMS_FT"
   </TabItem>
   <TabItem value="windows" label="Windows">
 
-```bash copy
+```powershell copy
 # Need to split 2 commands on Windows.
 set "BALANCE_AFTER_PARAMS_FT={\"symbol\":\"%SYMBOL_FT%\",\"owner\":\"%WALLET_ADDRESS%\"}"
 
@@ -294,7 +294,7 @@ Create "$CREATE_PARAMS_NFT_COLLECTION"
   </TabItem>
   <TabItem value="windows" label="Windows">
 
-```bash copy
+```powershell copy
 # Need to split 2 commands on Windows.
 set "CREATE_PARAMS_NFT_COLLECTION={\"symbol\":\"%SYMBOL_NFT%-0\",\"tokenName\":\"Collecion of %SYMBOL_NFT%\",\"totalSupply\":\"1\",\"decimals\":0,\"issuer\":\"%WALLET_ADDRESS%\",\"isBurnable\":\"true\",\"lockWhiteList\":null,\"issueChainId\":9992731,\"externalInfo\":{\"value\":{\"__nft_image_url\":\"%NFT_COLLECTION_IMAGE%\"}},\"owner\":\"%WALLET_ADDRESS%\"}"
 
@@ -343,7 +343,7 @@ Create "$CREATE_PARAMS_NFT"
   </TabItem>
   <TabItem value="windows" label="Windows">
 
-```bash copy
+```powershell copy
 # Need to split 2 commands on Windows.
 set "CREATE_PARAMS_NFT={\"symbol\":\"%SYMBOL_NFT%-1\",\"tokenName\":\"%SYMBOL_NFT% item\",\"totalSupply\":\"1\",\"decimals\":0,\"issuer\":\"%WALLET_ADDRESS%\",\"isBurnable\":\"true\",\"lockWhiteList\":null,\"issueChainId\":9992731,\"externalInfo\":{\"value\":{\"__nft_image_url\":\"%NFT_ITEM_IMAGE%\"}},\"owner\":\"%WALLET_ADDRESS%\"}"
 
@@ -381,7 +381,7 @@ GetBalance "$BALANCE_BEFORE_PARAMS_NFT"
   </TabItem>
   <TabItem value="windows" label="Windows">
 
-```bash copy
+```powershell copy
 # Need to split 2 commands on Windows.
 set "BALANCE_BEFORE_PARAMS_NFT={\"symbol\":\"%SYMBOL_NFT%-1\",\"owner\":\"%WALLET_ADDRESS%\"}"
 
@@ -413,7 +413,7 @@ Issue "$ISSUE_PARAMS_NFT"
   </TabItem>
   <TabItem value="windows" label="Windows">
 
-```bash copy
+```powershell copy
 # Need to split 2 commands on Windows.
 set "ISSUE_PARAMS_NFT={\"symbol\":\"%SYMBOL_NFT%-1\",\"amount\":1,\"memo\":\"test\",\"to\":\"%WALLET_ADDRESS%\"}"
 
@@ -443,7 +443,7 @@ GetBalance "$BALANCE_AFTER_PARAMS_NFT"
   </TabItem>
   <TabItem value="windows" label="Windows">
 
-```bash copy
+```powershell copy
 # Need to split 2 commands on Windows.
 set "BALANCE_AFTER_PARAMS_NFT={\"symbol\":\"%SYMBOL_NFT%-1\",\"owner\":\"%WALLET_ADDRESS%\"}"
 
@@ -478,7 +478,7 @@ Transfer "$TRANSFER_PARAMS"
   </TabItem>
   <TabItem value="windows" label="Windows">
 
-```bash copy
+```powershell copy
 # Need to split 2 commands on Windows.
 set "TRANSFER_PARAMS={\"symbol\":\"%SYMBOL_FT%\",\"amount\":1,\"memo\":\"test\",\"to\":\"%WALLET_ADDRESS%\"}"
 
