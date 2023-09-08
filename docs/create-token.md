@@ -143,18 +143,24 @@ aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWO
 
 #### 2.3.1 Use `event` to check the result
 
+:::tip
+
+You may also check the transaction result using AElf Explorer: https://explorer-test.aelf.io/.
+
+:::
+
 <Tabs groupId="os">
   <TabItem value="macOS" label="Mac OS">
 
 ```bash copy
-aelf-command event <transactionId> -e $TESTNET_ENDPOINT
+aelf-command event -e $TESTNET_ENDPOINT <transactionId>
 ```
 
   </TabItem>
   <TabItem value="windows" label="Windows">
 
 ```powershell copy
-aelf-command event <transactionId> -e %TESTNET_ENDPOINT%
+aelf-command event -e %TESTNET_ENDPOINT% <transactionId>
 ```
 
   </TabItem>
