@@ -47,27 +47,54 @@ const config = {
       navbar: {
         title: "Portkey Workshop",
         logo: {
-          alt: "My Site Logo",
+          alt: "Portkey Workshop logo",
           src: "img/logo.svg",
         },
-        items: [
-          {
-            type: "docSidebar",
-            sidebarId: "tutorialSidebar",
-            position: "left",
-            label: "Tutorial",
-          },
-        ],
       },
       footer: {
         style: "dark",
         links: [
           {
-            title: "Docs",
+            title: "Home",
             items: [
               {
-                label: "Tutorial",
+                label: "Intro",
                 to: "/docs/intro",
+              },
+            ],
+          },
+          {
+            title: "Token",
+            items: [
+              {
+                label: "Create Token",
+                to: "/docs/create-token",
+              },
+            ],
+          },
+          {
+            title: "UI",
+            items: [
+              {
+                label: "Portkey Sign In",
+                to: "/docs/sign-in",
+              },
+              {
+                label: "Get Balance",
+                to: "/docs/get-balance",
+              },
+              {
+                label: "Get NFT",
+                to: "/docs/get-nft",
+              },
+            ],
+          },
+          {
+            title: "Smart Contract",
+            items: [
+              {
+                label: "Smart Contract",
+                to: "/docs/smart-contract",
               },
             ],
           },
