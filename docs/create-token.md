@@ -268,7 +268,7 @@ aelf-command call %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWO
 
 Before creating a new NFT, we need to create a new NFT collection.
 
-![NFT-diagram](/img/NFT-diagram.png "NFT diagram")
+![NFT-diagram](/img/NFT-diagram.jpeg "NFT diagram")
 
 Run the following commands to create a new NFT collection.
 
