@@ -19,7 +19,7 @@ import TabItem from '@theme/TabItem';
 
 Run the following command to install it.
 
-```sh copy
+```bash copy
 npm i aelf-command -g
 ```
 
@@ -38,7 +38,7 @@ Then we can run it. Once the script has been executed, I will teach you how to c
 <Tabs groupId="os">
   <TabItem value="macOS" label="Mac OS">
 
-```sh copy
+```bash copy
 chmod +x setup.sh
 source setup.sh
 ```
@@ -46,7 +46,7 @@ source setup.sh
   </TabItem>
   <TabItem value="windows" label="Windows">
 
-```sh copy
+```bash copy
 setup.bat
 ```
 
@@ -61,7 +61,7 @@ Firstly run the following commands to check them.
 <Tabs groupId="os">
   <TabItem value="macOS" label="Mac OS">
 
-```sh copy
+```bash copy
 echo $SEED_FOR_FT
 echo $SEED_FOR_NFT
 echo $SYMBOL_FT
@@ -72,7 +72,7 @@ echo $WALLET_ADDRESS
   </TabItem>
   <TabItem value="windows" label="Windows">
 
-```sh copy
+```bash copy
 echo %SEED_FOR_FT%^
 echo %SEED_FOR_NFT%^
 echo %SYMBOL_FT%^
@@ -89,7 +89,7 @@ Then you will see your account information.
 
 Let me introduce the aelf-command usage first.
 
-```sh copy
+```bash copy
 # The basic format of aelf-command is aelf-command send/call,
 # Then followed by a contract name, it stands for the target contract of this command. For example, here is the token contract.
 # Then -a $WALLET_ADDRESS -p $WALLET_PASSWORD, which represents your account and password.
@@ -104,7 +104,7 @@ Run the following commands to create a new FT. Please note that the symbol of th
 <Tabs groupId="os">
   <TabItem value="macOS" label="Mac OS">
 
-```sh copy
+```bash copy
 export CREATE_PARAMS_FT=$(cat << EOL
 {
     "symbol": "$SYMBOL_FT",
@@ -127,7 +127,7 @@ Create "$CREATE_PARAMS_FT"
   </TabItem>
   <TabItem value="windows" label="Windows">
 
-```sh copy
+```bash copy
 # Need to split 2 commands on Windows.
 set "CREATE_PARAMS_FT={\"symbol\":\"%SYMBOL_FT%\",\"tokenName\":\"%SYMBOL_FT%token\",\"totalSupply\":\"1000000000\",\"decimals\":8,\"issuer\":\"%WALLET_ADDRESS%\",\"isBurnable\":\"true\",\"lockWhiteList\":null,\"issueChainId\":9992731,\"externalInfo.value\":null,\"owner\":\"%WALLET_ADDRESS%\"}"
 
@@ -148,14 +148,14 @@ After running the command, you can use `event` to check the result. Like this
 <Tabs groupId="os">
   <TabItem value="macOS" label="Mac OS">
 
-```sh copy
+```bash copy
 aelf-command event <transactionId> -e $TESTNET_ENDPOINT
 ```
 
   </TabItem>
   <TabItem value="windows" label="Windows">
 
-```sh copy
+```bash copy
 aelf-command event <transactionId> -e %TESTNET_ENDPOINT%
 ```
 
@@ -170,7 +170,7 @@ For you understand issue clearly, we will check the balance before issuing and a
 <Tabs groupId="os">
   <TabItem value="macOS" label="Mac OS">
 
-```sh copy
+```bash copy
 export BALANCE_BEFORE_PARAMS_FT=$(cat << EOL
 {
     "symbol": "$SYMBOL_FT",
@@ -185,7 +185,7 @@ GetBalance "$BALANCE_BEFORE_PARAMS_FT"
   </TabItem>
   <TabItem value="windows" label="Windows">
 
-```sh copy
+```bash copy
 # Need to split 2 commands on Windows.
 set "BALANCE_BEFORE_PARAMS_FT={\"symbol\":\"%SYMBOL_FT%\",\"owner\":\"%WALLET_ADDRESS%\"}"
 
@@ -200,7 +200,7 @@ Then run issue command.
 <Tabs groupId="os">
   <TabItem value="macOS" label="Mac OS">
 
-```sh copy
+```bash copy
 export ISSUE_PARAMS_FT=$(cat << EOL
 {
     "symbol": "$SYMBOL_FT",
@@ -217,7 +217,7 @@ Issue "$ISSUE_PARAMS_FT"
   </TabItem>
   <TabItem value="windows" label="Windows">
 
-```sh copy
+```bash copy
 # Need to split 2 commands on Windows.
 set "ISSUE_PARAMS_FT={\"symbol\":\"%SYMBOL_FT%\",\"amount\":100,\"memo\":\"test\",\"to\":\"%WALLET_ADDRESS%\"}"
 
@@ -232,7 +232,7 @@ After this, run GetBalance method again, and check the result.
 <Tabs groupId="os">
   <TabItem value="macOS" label="Mac OS">
 
-```sh copy
+```bash copy
 export BALANCE_AFTER_PARAMS_FT=$(cat << EOL
 {
     "symbol": "$SYMBOL_FT",
@@ -247,7 +247,7 @@ GetBalance "$BALANCE_AFTER_PARAMS_FT"
   </TabItem>
   <TabItem value="windows" label="Windows">
 
-```sh copy
+```bash copy
 # Need to split 2 commands on Windows.
 set "BALANCE_AFTER_PARAMS_FT={\"symbol\":\"%SYMBOL_FT%\",\"owner\":\"%WALLET_ADDRESS%\"}"
 
@@ -271,7 +271,7 @@ Please note that the symbol of the created token must be consistent with the sym
 <Tabs groupId="os">
   <TabItem value="macOS" label="Mac OS">
 
-```sh copy
+```bash copy
 export CREATE_PARAMS_NFT_COLLECTION=$(cat << EOL
 {
     "symbol": "$SYMBOL_NFT-0",
@@ -294,7 +294,7 @@ Create "$CREATE_PARAMS_NFT_COLLECTION"
   </TabItem>
   <TabItem value="windows" label="Windows">
 
-```sh copy
+```bash copy
 # Need to split 2 commands on Windows.
 set "CREATE_PARAMS_NFT_COLLECTION={\"symbol\":\"%SYMBOL_NFT%-0\",\"tokenName\":\"Collecion of %SYMBOL_NFT%\",\"totalSupply\":\"1\",\"decimals\":0,\"issuer\":\"%WALLET_ADDRESS%\",\"isBurnable\":\"true\",\"lockWhiteList\":null,\"issueChainId\":9992731,\"externalInfo\":{\"value\":{\"__nft_image_url\":\"%NFT_COLLECTION_IMAGE%\"}},\"owner\":\"%WALLET_ADDRESS%\"}"
 
@@ -320,7 +320,7 @@ Please note that the symbol of the created token must be consistent with the sym
 <Tabs groupId="os">
   <TabItem value="macOS" label="Mac OS">
 
-```sh copy
+```bash copy
 export CREATE_PARAMS_NFT=$(cat << EOL
 {
     "symbol": "$SYMBOL_NFT-1",
@@ -343,7 +343,7 @@ Create "$CREATE_PARAMS_NFT"
   </TabItem>
   <TabItem value="windows" label="Windows">
 
-```sh copy
+```bash copy
 # Need to split 2 commands on Windows.
 set "CREATE_PARAMS_NFT={\"symbol\":\"%SYMBOL_NFT%-1\",\"tokenName\":\"%SYMBOL_NFT% item\",\"totalSupply\":\"1\",\"decimals\":0,\"issuer\":\"%WALLET_ADDRESS%\",\"isBurnable\":\"true\",\"lockWhiteList\":null,\"issueChainId\":9992731,\"externalInfo\":{\"value\":{\"__nft_image_url\":\"%NFT_ITEM_IMAGE%\"}},\"owner\":\"%WALLET_ADDRESS%\"}"
 
@@ -366,7 +366,7 @@ we also check the balance before issuing and after issuing so that you can see t
 <Tabs groupId="os">
   <TabItem value="macOS" label="Mac OS">
 
-```sh copy
+```bash copy
 export BALANCE_BEFORE_PARAMS_NFT=$(cat << EOL
 {
     "symbol": "$SYMBOL_NFT-1",
@@ -381,7 +381,7 @@ GetBalance "$BALANCE_BEFORE_PARAMS_NFT"
   </TabItem>
   <TabItem value="windows" label="Windows">
 
-```sh copy
+```bash copy
 # Need to split 2 commands on Windows.
 set "BALANCE_BEFORE_PARAMS_NFT={\"symbol\":\"%SYMBOL_NFT%-1\",\"owner\":\"%WALLET_ADDRESS%\"}"
 
@@ -396,7 +396,7 @@ Then run the issue command.
 <Tabs groupId="os">
   <TabItem value="macOS" label="Mac OS">
 
-```sh copy
+```bash copy
 export ISSUE_PARAMS_NFT=$(cat << EOL
 {
     "symbol": "$SYMBOL_NFT-1",
@@ -413,7 +413,7 @@ Issue "$ISSUE_PARAMS_NFT"
   </TabItem>
   <TabItem value="windows" label="Windows">
 
-```sh copy
+```bash copy
 # Need to split 2 commands on Windows.
 set "ISSUE_PARAMS_NFT={\"symbol\":\"%SYMBOL_NFT%-1\",\"amount\":1,\"memo\":\"test\",\"to\":\"%WALLET_ADDRESS%\"}"
 
@@ -428,7 +428,7 @@ After this, run GetBalance method again, and check the result.
 <Tabs groupId="os">
   <TabItem value="macOS" label="Mac OS">
 
-```sh copy
+```bash copy
 export BALANCE_AFTER_PARAMS_NFT=$(cat << EOL
 {
     "symbol": "$SYMBOL_NFT-1",
@@ -443,7 +443,7 @@ GetBalance "$BALANCE_AFTER_PARAMS_NFT"
   </TabItem>
   <TabItem value="windows" label="Windows">
 
-```sh copy
+```bash copy
 # Need to split 2 commands on Windows.
 set "BALANCE_AFTER_PARAMS_NFT={\"symbol\":\"%SYMBOL_NFT%-1\",\"owner\":\"%WALLET_ADDRESS%\"}"
 
@@ -461,7 +461,7 @@ Here I'll use Transfer FT token as an example. Firstly, you need to find your po
 <Tabs groupId="os">
   <TabItem value="macOS" label="Mac OS">
 
-```sh copy
+```bash copy
 export TRANSFER_PARAMS=$(cat << EOL
 {
     "symbol": "$SYMBOL_FT",
@@ -478,7 +478,7 @@ Transfer "$TRANSFER_PARAMS"
   </TabItem>
   <TabItem value="windows" label="Windows">
 
-```sh copy
+```bash copy
 # Need to split 2 commands on Windows.
 set "TRANSFER_PARAMS={\"symbol\":\"%SYMBOL_FT%\",\"amount\":1,\"memo\":\"test\",\"to\":\"%WALLET_ADDRESS%\"}"
 

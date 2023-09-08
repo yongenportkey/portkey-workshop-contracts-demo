@@ -22,27 +22,27 @@ sidebar_position: 6
 
 - Open a terminal and type the following command. You can install the contract template from nuget repo to your local.
 
-```sh copy
+```bash copy
 dotnet new install AElf.Contract --nuget-source http://10.0.1.187:8081/repository/nuget-group/index.json
 ```
 
 - Create a folder to place the workshop project
 
-```
+```bash copy
 mkdir workshop
 cd workshop
 ```
 
 - Type the following command, and create a new template project locally. You can modify customised parameters of command to define contract names and namespace. `-n` stands for contract name, `-N` stands for namespace.
 
-```sh copy
+```bash copy
 dotnet new aelfcontract -n HelloWorld -N AElf.Contract
 ```
 
 `-n HelloWorld` means your contract name will be HelloWorld, `-N AElf.Contracts.HelloWorld` means your contract namespace will be AElf.Contracts.HelloWorld.
 Type the following command to understand usage of all the customised parameters.
 
-```sh copy
+```bash copy
 dotnet new aelfcontract --help
 ```
 
@@ -88,7 +88,7 @@ Protos -> implementation -> unit test cases
 
 - Run the following command and check the result. If you encounter any errors, please resolve them according to the error messages.
 
-```
+```bash copy
 cd src
 dotnet build
 ```
@@ -107,7 +107,7 @@ dotnet build
 
 - Run the following command and check the result. If you encounter any errors, please resolve them according to the error messages.
 
-```
+```bash copy
 cd test
 dotnet build
 ```
@@ -126,7 +126,7 @@ There are many applications of RNG in AElf projects, we choose the application f
 
 Firstly it will call GetRandomHash from ConsensusContract
 
-```sh copy
+```csharp copy
 var randomHash = State.ConsensusContract.GetRandomHash.Call(new Int64Value
 {
     Value = targetHeight
@@ -135,7 +135,7 @@ var randomHash = State.ConsensusContract.GetRandomHash.Call(new Int64Value
 
 Secondly, it will take the RandomHash as input, which is the hash obtained under the VRF algorithm, and convert it into a hexadecimal string named hexString. Next, it will extract three consecutive groups of 8-bit hexadecimal values from this string and interpret them as integer types. Subsequently, through a series of operations, these three integers are transformed into dice values (integers between 1 and 6).
 
-```sh copy
+```csharp copy
 private List<int> GetDices(Hash hashValue)
 {
     var hexString = hashValue.ToHex();
@@ -159,18 +159,18 @@ Next, we can do a simple practice of RNG on the workshop project we just created
 
 Add the following code to the `src/Protobuf/contract/hello_world_contract.proto` file. These lines of code will introduce three new methods called `Initialize`, `CreateCharacter` and `GetMyCharacter` and also define a data structure called Character.
 
-```sh copy
+```protobuf copy
     rpc Initialize (google.protobuf.Empty) returns (google.protobuf.Empty);
     rpc CreateCharacter (google.protobuf.Empty) returns (Character);
 ```
 
-```sh copy
+```protobuf copy
     rpc GetMyCharacter (google.protobuf.Empty) returns (Character) {
         option (aelf.is_view) = true;
     }
 ```
 
-```sh copy
+```protobuf copy
 message Character {
     int32 health = 1;
     int32 strength = 2;
@@ -180,12 +180,12 @@ message Character {
 
 And also add these lines of code into HelloWorldState.cs, they will create a storage space for Character and Initialized, import and encapsulate ACS6 reference state.
 
-```sh copy
+```csharp copy
 using AElf.Standards.ACS6;
 using AElf.Types;
 ```
 
-```sh copy
+```csharp copy
 //create a storage space for Character
 public BoolState Initialized { get; set; }
 public MappedState<Address, Character> Characters { get; set; }
@@ -197,11 +197,11 @@ internal RandomNumberProvideacsrContractContainer.RandomNumberProvideacsrContrac
 
 Add implementation of CreateCharacter and GetMyCharacter methods in HelloWorld.cs as well:
 
-```sh copy
+```csharp copy
 using AElf.Standards.ACS6;
 ```
 
-```sh copy
+```csharp copy
 public override Empty Initialize(Empty input)
 {
     Assert(!State.Initialized.Value, "already initialized");
@@ -211,7 +211,7 @@ public override Empty Initialize(Empty input)
 }
 ```
 
-```sh copy
+```csharp copy
 public override Character CreateCharacter(Empty input)
 {
     var existing = State.Characters[Context.Sender];
@@ -231,7 +231,7 @@ public override Character CreateCharacter(Empty input)
 }
 ```
 
-```sh copy
+```csharp copy
 public override Character GetMyCharacter(Empty input)
 {
     return State.Characters[Context.Sender] ?? new Character();
@@ -242,18 +242,18 @@ This code generates a random character's attributes based on a randomBytes obtai
 
 Next, we need to add a unit test case for the Character methods. We go to the test folder and add these lines of code to `test/Protobuf/contract/hello_world_contract.proto`.
 
-```sh copy
+```protobuf copy
     rpc Initialize (google.protobuf.Empty) returns (google.protobuf.Empty);
     rpc CreateCharacter (google.protobuf.Empty) returns (Character);
 ```
 
-```sh copy
+```protobuf copy
     rpc GetMyCharacter (google.protobuf.Empty) returns (Character) {
         option (aelf.is_view) = true;
     }
 ```
 
-```sh copy
+```protobuf copy
 message Character {
     int32 health = 1;
     int32 strength = 2;
@@ -263,7 +263,7 @@ message Character {
 
 Then add unit test for RandomCharacter method in HelloWorldTests.cs:
 
-```sh copy
+```csharp copy
         [Fact]
         public async Task Rng_Test()
         {
@@ -290,7 +290,7 @@ If you haven't don't have test tokens on your account, you may go to https://tes
 
 Click "Apply", and select "Deploy/Update Contract", upload the /AElf.Contracts.HelloWorld.dll.patched file in project folder
 
-```sh copy
+```bash copy
 workshop/src/bin/Debug/net6.0
 ```
 
@@ -306,11 +306,11 @@ Here is a gif of the whole deployment process.
 - Send aelf commands.
   - Open terminal, type aelf-command send, fill the parameters
 
-```sh copy
+```bash copy
 aelf-command send 27RVyw1vKbWNdeTMfwFXeAtzQ36eM5c5cgfXzNydhNtD8NSpBk -e http://35.77.60.71:8000 -a 29zekTc31moEh33B6QiFuyPfbmG3fZfgMWoRqEwvgf2EsTPyfK -p xibo123
 ```
 
-```sh copy
+```bash copy
 aelf-command send 27RVyw1vKbWNdeTMfwFXeAtzQ36eM5c5cgfXzNydhNtD8NSpBk -e http://35.77.60.71:8000 -a 27a3Hcn3esyHwFTdaUNQBL7dH8gg4BkRaZ7uv7SRoLAoLuS7Go -p xibo123
 ```
 

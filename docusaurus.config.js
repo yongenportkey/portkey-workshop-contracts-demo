@@ -75,6 +75,7 @@ const config = {
         copyright: `Copyright © ${new Date().getFullYear()} Portkey.`,
       },
       prism: {
+        additionalLanguages: ["csharp", "protobuf"],
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
       },

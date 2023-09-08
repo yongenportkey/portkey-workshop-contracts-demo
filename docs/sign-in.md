@@ -12,19 +12,19 @@ sidebar_position: 3
 
 In a terminal:
 
-```sh copy
+```bash copy
 npx create-react-app my-app
 ```
 
 Enter the project folder.
 
-```sh copy
+```bash copy
 cd my-app
 ```
 
 ## 3. Install Portkey UI sdk
 
-```sh copy
+```bash copy
 npm install @portkey/did-ui-react
 ```
 
@@ -101,7 +101,7 @@ Edit `package.json` and add the following:
 
 ## 6. Start the development server
 
-```sh
+```bash
 npm run start
 ```
 
