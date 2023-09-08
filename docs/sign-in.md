@@ -6,7 +6,10 @@ sidebar_position: 3
 
 ## 1. Preparation
 
-- Install [Node.js](https://nodejs.org/en/download).
+### 1.1 Install node
+
+- Follow this doc https://nodejs.org/en/download to install node and npm.
+- Type `node -v` and `npm -v`, if return the versions, the installation is successful.
 
 ## 2. Create a sample project using react
 
