@@ -8,68 +8,83 @@ sidebar_position: 4
 
 - Follow the example at [Portkey Sign In](/docs/sign-in).
 
-## 2. Edit `src/App.js` and replace with the following:
+## 2. Add a new file `src/Balance.js` and copy/paste the following:
 
-```js filename="src/App.js" copy showLineNumbers
-import { SignIn, PortkeyProvider, did } from "@portkey/did-ui-react";
-import { useRef, useCallback, useState } from "react";
-import "@portkey/did-ui-react/dist/assets/index.css"; // import portkey css
+```jsx title="src/Balance.js" showLineNumbers
+import { did } from "@portkey/did-ui-react";
+import { getContractBasic } from "@portkey/contracts";
+import { useState } from "react";
 import BigNumber from "bignumber.js";
-import AElf from "aelf-sdk";
-import "./App.css";
+import { aelf } from "@portkey/utils";
+import { CHAIN_ID } from "./App";
 
-const CHAIN_ID = "AELF";
-
-const aelf = new AElf(
-  new AElf.providers.HttpProvider("https://aelf-test-node.aelf.io")
-);
-
-const App = () => {
-  const signInComponentRef = useRef();
-  const [wallet, setWallet] = useState();
+export const Balance = ({ wallet }) => {
   const [balance, setBalance] = useState(new BigNumber(0));
-  const [message, setMessage] = useState("");
 
-  const getBalance = async (wallet) => {
-    const viewWallet = AElf.wallet.createNewWallet();
-    setMessage("");
-
+  const getBalance = async () => {
     try {
-      setMessage("Fetching chainsInfo...");
       const chainsInfo = await did.services.getChainsInfo();
       const chainInfo = chainsInfo.find((chain) => chain.chainId === CHAIN_ID);
 
-      setMessage("Fetching multiTokenContract...");
-      const multiTokenContract = await aelf.chain.contractAt(
-        chainInfo.defaultToken.address,
-        viewWallet
-      );
-
-      setMessage("Fetching caInfo...");
       const caInfo = await did.didWallet.getHolderInfoByContract({
         caHash: wallet.caInfo.caHash,
         chainId: CHAIN_ID,
       });
 
-      setMessage("Fetching GetBalance...");
-      const result = await multiTokenContract.GetBalance.call({
+      const multiTokenContract = await getContractBasic({
+        contractAddress: chainInfo.defaultToken.address,
+        rpcUrl: "https://aelf-test-node.aelf.io",
+        account: aelf.getWallet(did.didWallet.managementAccount.privateKey),
+      });
+
+      const { data } = await multiTokenContract.callViewMethod("GetBalance", {
         symbol: "ELF",
         owner: caInfo.caAddress,
       });
 
-      const balance = new BigNumber(result?.balance).dividedBy(10 ** 8);
+      /**
+       * for ELF, it is 8 decimals
+       */
+      const decimals = chainInfo.defaultToken.decimals;
+
+      /**
+       * use BigNumber to store and manipulate the balance to get the actual balance
+       */
+      const balance = new BigNumber(data?.balance).dividedBy(10 ** decimals);
 
       setBalance(balance);
-      setMessage("");
     } catch (err) {
-      setMessage(err);
+      console.log(err);
     }
   };
 
-  const onFinish = useCallback((didWallet) => {
-    setWallet(didWallet);
-    getBalance(didWallet);
-  }, []);
+  if (!wallet) return null;
+
+  return (
+    <>
+      <button onClick={() => getBalance(wallet)}>getBalance</button>
+      <p>Balance: {balance.toFixed(2)} ELF</p>
+    </>
+  );
+};
+```
+
+## 3. Edit `src/App.js`:
+
+```jsx title="src/App.js" showLineNumbers
+import { SignIn, PortkeyProvider } from "@portkey/did-ui-react";
+import { useRef, useCallback, useState } from "react";
+import "@portkey/did-ui-react/dist/assets/index.css"; // import portkey css
+import "./App.css";
+// highlight-next-line
+import { Balance } from "./Balance";
+
+// highlight-next-line
+export const CHAIN_ID = "AELF";
+
+const App = () => {
+  const signInComponentRef = useRef();
+  const [wallet, setWallet] = useState();
 
   return (
     <PortkeyProvider networkType={"TESTNET"}>
@@ -81,20 +96,22 @@ const App = () => {
         >
           Sign In
         </button>
-        <SignIn ref={signInComponentRef} onFinish={onFinish} />
+        <SignIn
+          ref={signInComponentRef}
+          onFinish={(wallet) => {
+            setWallet(wallet);
+          }}
+        />
+        // highlight-start
         {wallet ? (
           <>
-            <button onClick={() => getBalance(wallet)}>getBalance</button>
             <p>
               Wallet address: ELF_{wallet.caInfo.caAddress}_{CHAIN_ID}
             </p>
-            {message ? (
-              <p>{message}</p>
-            ) : (
-              <p>Balance: {balance.toFixed(2)} ELF</p>
-            )}
+            <Balance wallet={wallet} />
           </>
         ) : null}
+        // highlight-end
       </div>
     </PortkeyProvider>
   );

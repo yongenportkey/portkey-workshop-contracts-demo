@@ -35,11 +35,13 @@ npm install @portkey/did-ui-react
 
 ### 4.1 Copy below sample code and replace the codes in src/App.js
 
-```js filename="src/App.js" copy showLineNumbers
+```jsx title="src/App.js" showLineNumbers
 import { SignIn, PortkeyProvider } from "@portkey/did-ui-react";
 import { useRef, useState } from "react";
 import "@portkey/did-ui-react/dist/assets/index.css"; // import portkey css
 import "./App.css";
+
+const CHAIN_ID = "AELF";
 
 const App = () => {
   const signInComponentRef = useRef();
@@ -61,11 +63,11 @@ const App = () => {
             setWallet(wallet);
           }}
         />
-        {wallet && (
+        {wallet ? (
           <p>
-            Wallet address: ELF_{wallet?.caInfo.caAddress}_{wallet?.chainId}
+            Wallet address: ELF_{wallet.caInfo.caAddress}_{CHAIN_ID}
           </p>
-        )}
+        ) : null}
       </div>
     </PortkeyProvider>
   );
