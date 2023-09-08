@@ -27,13 +27,7 @@ npm i aelf-command -g
 
 ### 2.1 Initialization
 
-Before we start the token creation process, we need to do some initialization steps. We have prepared an initialization script for each developer present here, which needs to be run first. In this script, you will do some actions, such as setting up environment variables (including your address, testnet URL, and contract name), and load the aelf account we've applied for you to your local environment.
-
-Why are we doing this? The reason is that currently, if we want to create an FT or NFT, we need to get a seed NFT. The seed NFT defines the symbol name of the FT or NFT you are going to create. The name of the created FT or NFT must be consistent with the name defined in this seed NFT. we applied for the seed NFT for each person and sent it to your accounts.
-
-Additionally, a small amount of transaction fee is required, so we transfer some ELF tokens to your account in advance. This is to enable everyone to proceed with the subsequent steps. Now let's take a look at this script.
-
-Then we can run it. Once the script has been executed, I will teach you how to check the information of your account.
+Run the following command to setup local environment variables and the keystore.
 
 <Tabs groupId="os">
   <TabItem value="macOS" label="Mac OS">
@@ -87,9 +81,7 @@ Then you will see your account information.
 
 ### 2.3 Create new FT
 
-Let me introduce the aelf-command usage first.
-
-```bash copy
+```bash
 # The basic format of aelf-command is aelf-command send/call,
 # Then followed by a contract name, it stands for the target contract of this command. For example, here is the token contract.
 # Then -a $WALLET_ADDRESS -p $WALLET_PASSWORD, which represents your account and password.
@@ -99,7 +91,13 @@ aelf-command send $TOKEN_CONTRACT_ADDRESS -a $WALLET_ADDRESS -p $WALLET_PASSWORD
 Create "$CREATE_PARAMS_FT"
 ```
 
-Run the following commands to create a new FT. Please note that the symbol of the created token must be consistent with the symbol applied for in the seed NFT.
+Run the following commands to create a new FT.
+
+:::tip
+
+Please note that the symbol of the created token must be consistent with the symbol applied for in the seed NFT.
+
+:::
 
 <Tabs groupId="os">
   <TabItem value="macOS" label="Mac OS">
@@ -109,7 +107,7 @@ export CREATE_PARAMS_FT=$(cat << EOL
 {
     "symbol": "$SYMBOL_FT",
     "tokenName": "$SYMBOL_FT token",
-    "totalSupply": "1000000000",
+    "totalSupply": "10000000000",
     "decimals": 8,
     "issuer": "$WALLET_ADDRESS",
     "isBurnable": "true",
@@ -129,7 +127,7 @@ Create "$CREATE_PARAMS_FT"
 
 ```powershell copy
 # Need to split 2 commands on Windows.
-set "CREATE_PARAMS_FT={\"symbol\":\"%SYMBOL_FT%\",\"tokenName\":\"%SYMBOL_FT%token\",\"totalSupply\":\"1000000000\",\"decimals\":8,\"issuer\":\"%WALLET_ADDRESS%\",\"isBurnable\":\"true\",\"lockWhiteList\":null,\"issueChainId\":9992731,\"externalInfo.value\":null,\"owner\":\"%WALLET_ADDRESS%\"}"
+set "CREATE_PARAMS_FT={\"symbol\":\"%SYMBOL_FT%\",\"tokenName\":\"%SYMBOL_FT%token\",\"totalSupply\":\"10000000000\",\"decimals\":8,\"issuer\":\"%WALLET_ADDRESS%\",\"isBurnable\":\"true\",\"lockWhiteList\":null,\"issueChainId\":9992731,\"externalInfo.value\":null,\"owner\":\"%WALLET_ADDRESS%\"}"
 
 aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% Create "%CREATE_PARAMS_FT%"
 ```
@@ -137,13 +135,13 @@ aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWO
   </TabItem>
 </Tabs>
 
-Let me explain some important parameters.
+| Parameter   | Description                                                                                              |
+| ----------- | -------------------------------------------------------------------------------------------------------- |
+| symbol      | The symbol represents the name of the FT you are creating, it should be the same as defined in seed NFT. |
+| totalSupply | The totalSupply represents the maximum quantity that can be issued.                                      |
+| decimals    | The decimals stands for the maximum number of decimal places your FT can have. For ELF, it's 8.          |
 
-1. symbol: The symbol represents the name of the FT you are creating, it should be the same as defined in seed NFT.
-2. totalSupply: The totalSupply represents the maximum quantity that can be issued.
-3. decimals: The decimals stands for the maximum number of decimal places your FT can have. For ELF, it's 8.
-
-After running the command, you can use `event` to check the result. Like this
+#### 2.3.1 Use `event` to check the result
 
 <Tabs groupId="os">
   <TabItem value="macOS" label="Mac OS">
@@ -164,8 +162,9 @@ aelf-command event <transactionId> -e %TESTNET_ENDPOINT%
 
 ### 2.4 Issue token
 
-After creating, it is only registering the metadata of this token. We still need to issue it.
-For you understand issue clearly, we will check the balance before issuing and after issuing so that you can see the difference. Run the following commands.
+Follow the steps below to issue token.
+
+#### 2.4.1 Check Balance
 
 <Tabs groupId="os">
   <TabItem value="macOS" label="Mac OS">
@@ -195,7 +194,7 @@ aelf-command call %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWO
   </TabItem>
 </Tabs>
 
-Then run issue command.
+#### 2.4.2 Issue
 
 <Tabs groupId="os">
   <TabItem value="macOS" label="Mac OS">
@@ -204,7 +203,7 @@ Then run issue command.
 export ISSUE_PARAMS_FT=$(cat << EOL
 {
     "symbol": "$SYMBOL_FT",
-    "amount": 100,
+    "amount": 10000000000,
     "memo": "test",
     "to": "$WALLET_ADDRESS"
 }
@@ -219,7 +218,7 @@ Issue "$ISSUE_PARAMS_FT"
 
 ```powershell copy
 # Need to split 2 commands on Windows.
-set "ISSUE_PARAMS_FT={\"symbol\":\"%SYMBOL_FT%\",\"amount\":100,\"memo\":\"test\",\"to\":\"%WALLET_ADDRESS%\"}"
+set "ISSUE_PARAMS_FT={\"symbol\":\"%SYMBOL_FT%\",\"amount\":10000000000,\"memo\":\"test\",\"to\":\"%WALLET_ADDRESS%\"}"
 
 aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% Issue "%ISSUE_PARAMS_FT%"
 ```
@@ -227,7 +226,7 @@ aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWO
   </TabItem>
 </Tabs>
 
-After this, run GetBalance method again, and check the result.
+#### 2.4.3 Check balance again
 
 <Tabs groupId="os">
   <TabItem value="macOS" label="Mac OS">
@@ -261,12 +260,19 @@ aelf-command call %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWO
 
 ### 3.1 Create new NFT collection
 
-Before creating a new NFT, we need to create a new NFT collection. The NFT collection is like a box, and NFTs are like cards inside it.
+Before creating a new NFT, we need to create a new NFT collection.
 
 ![NFT-diagram](/img/NFT-diagram.png "NFT diagram")
 
-Run the following commands to create a new NFT collection. NFT collection name should be `<SYMBOL>-0`. For example, `TEST-0`.
+Run the following commands to create a new NFT collection.
+
+NFT collection name should be `<SYMBOL>-0`. For example, `TEST-0`.
+
+:::tip
+
 Please note that the symbol of the created token must be consistent with the symbol applied for in the seed NFT.
+
+:::
 
 <Tabs groupId="os">
   <TabItem value="macOS" label="Mac OS">
@@ -304,18 +310,24 @@ aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWO
   </TabItem>
 </Tabs>
 
-The most of parameters are the same as FT. Let me explain the differences.
-
-1. The symbol represents the name of the NFT collection you are creating, it should be `<SYMBOL>-0`. For example, `TEST-0`. `-0` stands for collection, it's fixed.
-2. The totalSupply represents the maximum quantity that can be issued. For NFT collection, it should be 1.
-3. The decimals of NFT collection and NFT should be 0.
-4. The externalInfo.value is used to attach an image to the NFT collection.
+| Parameter          | Description                                                                                                                                                      |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| symbol             | The symbol represents the name of the NFT collection you are creating, it should be `<SYMBOL>-0`. For example, `TEST-0`. `-0` stands for collection, it's fixed. |
+| totalSupply        | The totalSupply represents the maximum quantity that can be issued. For NFT collection, it should be 1.                                                          |
+| decimals           | The decimals of NFT collection and NFT should be 0.                                                                                                              |
+| externalInfo.value | The externalInfo.value is used to attach an image to the NFT collection.                                                                                         |
 
 ### 3.2 Create new NFT item.
 
-After creating a new NFT collection, we can create a new NFT item.
-Run the following commands to create a new NFT item. NFT item name should be `<SYMBOL>-1/2/3`. For example, `TEST-1`.
+Run the following commands to create a new NFT item.
+
+NFT item name should be `<SYMBOL>-1/2/3`. For example, `TEST-1`.
+
+:::tip
+
 Please note that the symbol of the created token must be consistent with the symbol applied for in the seed NFT.
+
+:::
 
 <Tabs groupId="os">
   <TabItem value="macOS" label="Mac OS">
@@ -353,15 +365,16 @@ aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWO
   </TabItem>
 </Tabs>
 
-The most of parameters are the same as NFT collection. Let me explain the differences.
-
-1. The symbol represents the name of the NFT you are creating, it should be `<SYMBOL>-1/2/3`, it can't be `-0`. For example, `TEST-1`.
-2. The externalInfo.value is used to attach an image to the NFT.
+| Parameter          | Description                                                                                                                         |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| symbol             | The symbol represents the name of the NFT you are creating, it should be `<SYMBOL>-1/2/3`, it can't be `-0`. For example, `TEST-1`. |
+| externalInfo.value | The externalInfo.value is used to attach an image to the NFT.                                                                       |
 
 ### 3.3 Issue token
 
-After creating the NFT, it is also just creating the NFT metadata. We still need to issue it before we can use the token.
-we also check the balance before issuing and after issuing so that you can see the difference. Run the following commands.
+Follow the steps below to issue token.
+
+#### 3.3.1 Check Balance
 
 <Tabs groupId="os">
   <TabItem value="macOS" label="Mac OS">
@@ -391,7 +404,7 @@ aelf-command call %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWO
   </TabItem>
 </Tabs>
 
-Then run the issue command.
+#### 3.3.2 Issue
 
 <Tabs groupId="os">
   <TabItem value="macOS" label="Mac OS">
@@ -423,7 +436,7 @@ aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWO
   </TabItem>
 </Tabs>
 
-After this, run GetBalance method again, and check the result.
+#### 3.3.3 Check balance again
 
 <Tabs groupId="os">
   <TabItem value="macOS" label="Mac OS">
@@ -455,8 +468,13 @@ aelf-command call %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWO
 
 ## 4. Token Transfer
 
-We will transfer the FT or NFT from your current address to your portkey wallet address.
-Here I'll use Transfer FT token as an example. Firstly, you need to find your portkey wallet address.
+Transfer the FT or NFT from your current address to your portkey wallet address.
+
+:::tip
+
+If you have not installed the portkey extension, please visit https://chrome.google.com/webstore/detail/portkey-did-crypto-nft/hpjiiechbbhefmpggegmahejiiphbmij?hl=en-GB on Chrome to install.
+
+:::
 
 <Tabs groupId="os">
   <TabItem value="macOS" label="Mac OS">
@@ -465,7 +483,7 @@ Here I'll use Transfer FT token as an example. Firstly, you need to find your po
 export TRANSFER_PARAMS=$(cat << EOL
 {
     "symbol": "$SYMBOL_FT",
-    "amount": 1,
+    "amount": 1000000000,
     "memo": "test",
     "to": "$WALLET_ADDRESS"
 }
@@ -480,7 +498,7 @@ Transfer "$TRANSFER_PARAMS"
 
 ```powershell copy
 # Need to split 2 commands on Windows.
-set "TRANSFER_PARAMS={\"symbol\":\"%SYMBOL_FT%\",\"amount\":1,\"memo\":\"test\",\"to\":\"%WALLET_ADDRESS%\"}"
+set "TRANSFER_PARAMS={\"symbol\":\"%SYMBOL_FT%\",\"amount\":1000000000,\"memo\":\"test\",\"to\":\"%WALLET_ADDRESS%\"}"
 
 aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% Transfer "%TRANSFER_PARAMS%"
 ```
