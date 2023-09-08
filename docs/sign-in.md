@@ -1,3 +1,7 @@
+---
+sidebar_position: 3
+---
+
 # Portkey Sign In
 
 ## 1. Preparation
@@ -69,13 +73,13 @@ export default App;
 
 ### 4.2 Copy below sample code and replace the codes in src/App.css
 
-import { Callout } from "nextra/components";
+:::tip
 
-<Callout type="info" emoji="ℹ️">
-  For the purposes of this workshop, let's amend the css to the below, so that
-  we can see it clearly on screen. It is up to the DApp developer to implement
-  their own styling in their projects.
-</Callout>
+For the purposes of this workshop, let's amend the css to the below, so that
+we can see it clearly on screen. It is up to the DApp developer to implement
+their own styling in their projects.
+
+:::
 
 ```css filename="src/App.css" copy showLineNumbers
 .my-app button,

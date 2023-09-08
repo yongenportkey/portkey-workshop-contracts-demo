@@ -1,3 +1,8 @@
+---
+title: Smart Contract
+sidebar_position: 6
+---
+
 # Develop, test, deploy and call a smart contract
 
 ## 1. Development
@@ -5,13 +10,13 @@
 ### 1.1 Preparation
 
 - Install dotnet sdk.
+
   - Follow this doc https://dotnet.microsoft.com/en-us/download to install dotnet sdk. You can choose the 7.x version.
-  - Type ```dotnet --version```, if return the version of dotnet sdk, the installation is successful.
+  - Type `dotnet --version`, if return the version of dotnet sdk, the installation is successful.
 
 - Install node.
   - Follow this doc https://nodejs.org/en/download to install node and npm.
-  - Type ```node -v``` and ```npm -v```, if return the versions, the installation is successful.
-
+  - Type `node -v` and `npm -v`, if return the versions, the installation is successful.
 
 ### 1.2 Create a new project
 
@@ -22,18 +27,19 @@ dotnet new install AElf.Contract --nuget-source http://10.0.1.187:8081/repositor
 ```
 
 - Create a folder to place the workshop project
+
 ```
 mkdir workshop
 cd workshop
 ```
 
-- Type the following command, and create a new template project locally. You can modify customised parameters of command to define contract names and namespace. ```-n``` stands for contract name, ```-N``` stands for namespace.
+- Type the following command, and create a new template project locally. You can modify customised parameters of command to define contract names and namespace. `-n` stands for contract name, `-N` stands for namespace.
 
 ```sh copy
 dotnet new aelfcontract -n HelloWorld -N AElf.Contract
 ```
 
-```-n HelloWorld``` means your contract name will be HelloWorld, ```-N AElf.Contracts.HelloWorld``` means your contract namespace will be AElf.Contracts.HelloWorld.
+`-n HelloWorld` means your contract name will be HelloWorld, `-N AElf.Contracts.HelloWorld` means your contract namespace will be AElf.Contracts.HelloWorld.
 Type the following command to understand usage of all the customised parameters.
 
 ```sh copy
@@ -41,10 +47,12 @@ dotnet new aelfcontract --help
 ```
 
 ### 1.3 High level scope of the project
-If you open your project folder, you should see two newly generated directories: src and test. These correspond to the smart contract code and the unit test code for the contract, respectively. 
+
+If you open your project folder, you should see two newly generated directories: src and test. These correspond to the smart contract code and the unit test code for the contract, respectively.
 
 #### 1.3.a src
-The src folder contains several proto files used to describe blockchain smart contract services and data structures. It also includes specific implementations of smart contract methods and definition files for managing contract state in communication with the blockchain, such as HelloWorldState.cs here. 
+
+The src folder contains several proto files used to describe blockchain smart contract services and data structures. It also includes specific implementations of smart contract methods and definition files for managing contract state in communication with the blockchain, such as HelloWorldState.cs here.
 
 ```
 - src
@@ -55,6 +63,7 @@ The src folder contains several proto files used to describe blockchain smart co
 ```
 
 #### 1.3.b test
+
 The test folder similarly contains a proto subfolder, along with a setup file used to establish the unit testing environment for blockchain smart contracts. It defines test module classes and a base test class, facilitating context loading, stub class retrieval, and stub acquisition methods. As a result, these classes and methods are employed in unit tests to conduct various tests on the smart contract.
 
 ```
@@ -73,7 +82,7 @@ Protos -> implementation -> unit test cases
 
 ### 1.4 Create or modify project files
 
-- Create new proto files and modify existing project files according to your requirements. 
+- Create new proto files and modify existing project files according to your requirements.
 
 ### 1.5 Build
 
@@ -86,7 +95,7 @@ dotnet build
 
 ## 2. Testing
 
-### 2.1 Copy proto files (If you created or made any changes to the *.proto files)
+### 2.1 Copy proto files (If you created or made any changes to the \*.proto files)
 
 - With the same method as above, copy proto files from src folder to base, message, stub folders. And update the import path.
 
@@ -103,10 +112,11 @@ cd test
 dotnet build
 ```
 
-- After building successfully, run ```dotnet test``` command. And check the result. If you encounter any errors, please resolve them according to the error messages.
+- After building successfully, run `dotnet test` command. And check the result. If you encounter any errors, please resolve them according to the error messages.
 
 ## 3. RNG (Random number generator) Introduction
-RNG is a very important part of the AElf project, AElf currently employs the Verifiable Random Function (VRF) algorithm as its underlying mechanism for generating random numbers. The essence of the VRF algorithm is rooted in mathematical operations on elliptic curves. 
+
+RNG is a very important part of the AElf project, AElf currently employs the Verifiable Random Function (VRF) algorithm as its underlying mechanism for generating random numbers. The essence of the VRF algorithm is rooted in mathematical operations on elliptic curves.
 
 You can find the source code of AElf VRF here: https://github.com/AElfProject/AElf/blob/dev/src/AElf.Cryptography/ECVRF/Vrf.cs
 
@@ -115,6 +125,7 @@ You can find the source code of AElf VRF here: https://github.com/AElfProject/AE
 There are many applications of RNG in AElf projects, we choose the application from BingoGame to do the demostration:
 
 Firstly it will call GetRandomHash from ConsensusContract
+
 ```sh copy
 var randomHash = State.ConsensusContract.GetRandomHash.Call(new Int64Value
 {
@@ -123,6 +134,7 @@ var randomHash = State.ConsensusContract.GetRandomHash.Call(new Int64Value
 ```
 
 Secondly, it will take the RandomHash as input, which is the hash obtained under the VRF algorithm, and convert it into a hexadecimal string named hexString. Next, it will extract three consecutive groups of 8-bit hexadecimal values from this string and interpret them as integer types. Subsequently, through a series of operations, these three integers are transformed into dice values (integers between 1 and 6).
+
 ```sh copy
 private List<int> GetDices(Hash hashValue)
 {
@@ -140,19 +152,24 @@ private List<int> GetDices(Hash hashValue)
     return dices;
 }
 ```
+
 ### 3.2 RNG Practice
-Next, we can do a simple practice of RNG on the workshop project we just created. 
+
+Next, we can do a simple practice of RNG on the workshop project we just created.
 
 Add the following code to the `src/Protobuf/contract/hello_world_contract.proto` file. These lines of code will introduce three new methods called `Initialize`, `CreateCharacter` and `GetMyCharacter` and also define a data structure called Character.
+
 ```sh copy
     rpc Initialize (google.protobuf.Empty) returns (google.protobuf.Empty);
     rpc CreateCharacter (google.protobuf.Empty) returns (Character);
 ```
+
 ```sh copy
     rpc GetMyCharacter (google.protobuf.Empty) returns (Character) {
         option (aelf.is_view) = true;
     }
 ```
+
 ```sh copy
 message Character {
     int32 health = 1;
@@ -160,12 +177,14 @@ message Character {
     int32 speed = 3;
 }
 ```
+
 And also add these lines of code into HelloWorldState.cs, they will create a storage space for Character and Initialized, import and encapsulate ACS6 reference state.
 
 ```sh copy
 using AElf.Standards.ACS6;
 using AElf.Types;
 ```
+
 ```sh copy
 //create a storage space for Character
 public BoolState Initialized { get; set; }
@@ -176,12 +195,12 @@ internal RandomNumberProvideacsrContractContainer.RandomNumberProvideacsrContrac
     RandomNumberContract { get; set; }
 ```
 
-
 Add implementation of CreateCharacter and GetMyCharacter methods in HelloWorld.cs as well:
 
 ```sh copy
 using AElf.Standards.ACS6;
 ```
+
 ```sh copy
 public override Empty Initialize(Empty input)
 {
@@ -191,6 +210,7 @@ public override Empty Initialize(Empty input)
     return new Empty();
 }
 ```
+
 ```sh copy
 public override Character CreateCharacter(Empty input)
 {
@@ -210,25 +230,29 @@ public override Character CreateCharacter(Empty input)
     return character;
 }
 ```
+
 ```sh copy
 public override Character GetMyCharacter(Empty input)
 {
     return State.Characters[Context.Sender] ?? new Character();
 }
 ```
+
 This code generates a random character's attributes based on a randomBytes obtained from the ACS6. The 3 element of byte will do exclusive OR operation with 3 elements of a computed hash, each result transformed into an attribute. The attributes determine health, strength, and speed proportions. The resulting character's attributes are then formatted into a Character data structure and returned, providing details of HP, strength, and speed.
 
-
 Next, we need to add a unit test case for the Character methods. We go to the test folder and add these lines of code to `test/Protobuf/contract/hello_world_contract.proto`.
+
 ```sh copy
     rpc Initialize (google.protobuf.Empty) returns (google.protobuf.Empty);
     rpc CreateCharacter (google.protobuf.Empty) returns (Character);
 ```
+
 ```sh copy
     rpc GetMyCharacter (google.protobuf.Empty) returns (Character) {
         option (aelf.is_view) = true;
     }
 ```
+
 ```sh copy
 message Character {
     int32 health = 1;
@@ -236,7 +260,9 @@ message Character {
     int32 speed = 3;
 }
 ```
+
 Then add unit test for RandomCharacter method in HelloWorldTests.cs:
+
 ```sh copy
         [Fact]
         public async Task Rng_Test()
@@ -244,23 +270,26 @@ Then add unit test for RandomCharacter method in HelloWorldTests.cs:
             await HelloWorldStub.Initialize.SendAsync(new Empty());
             var result = await HelloWorldStub.CreateCharacter.SendAsync(new Empty());
             var character = await HelloWorldStub.GetMyCharacter.CallAsync(new Empty());
-            
+
             Assert.NotEqual(new Character(), character);
             Assert.Equal(result.Output, character);
         }
 ```
+
 ## 4. Deploy the contract
+
 Deployment on AElf test net is very simple, it can be done on the website: https://explorer-test-side02.aelf.io/
 
 Deployment procedure:
 
 1. Go to https://explorer-test-side02.aelf.io/proposal/proposals and login your portkey account
 
-If you haven't don't have test tokens on your account, you may go to  https://testnet-faucet.aelf.io/ to get some free test tokens.
+If you haven't don't have test tokens on your account, you may go to https://testnet-faucet.aelf.io/ to get some free test tokens.
 
 2. Submit a proposal
 
 Click "Apply", and select "Deploy/Update Contract", upload the /AElf.Contracts.HelloWorld.dll.patched file in project folder
+
 ```sh copy
 workshop/src/bin/Debug/net6.0
 ```
@@ -270,21 +299,24 @@ workshop/src/bin/Debug/net6.0
 After uploading your contarct file, click "Apply" at bottom then click "OK" in pop-up window, it will do code check and deployment automatically.
 
 Here is a gif of the whole deployment process.
-![](/output.gif)
+![](/img/output.gif)
 
 ## 5. Call the contract
 
 - Send aelf commands.
-  - Open terminal, type aelf-command send, fill the parameters 
+  - Open terminal, type aelf-command send, fill the parameters
+
 ```sh copy
 aelf-command send 27RVyw1vKbWNdeTMfwFXeAtzQ36eM5c5cgfXzNydhNtD8NSpBk -e http://35.77.60.71:8000 -a 29zekTc31moEh33B6QiFuyPfbmG3fZfgMWoRqEwvgf2EsTPyfK -p xibo123
 ```
+
 ```sh copy
 aelf-command send 27RVyw1vKbWNdeTMfwFXeAtzQ36eM5c5cgfXzNydhNtD8NSpBk -e http://35.77.60.71:8000 -a 27a3Hcn3esyHwFTdaUNQBL7dH8gg4BkRaZ7uv7SRoLAoLuS7Go -p xibo123
 ```
+
 ```
 aelf-command [call|send] [contract-address|contract-name] [params]
--a, --account <account> 
+-a, --account <account>
 -e, --endpoint <URI>
 -p, --password <password>
 ```

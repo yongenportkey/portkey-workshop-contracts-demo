@@ -1,8 +1,12 @@
+---
+sidebar_position: 4
+---
+
 # Get Balance
 
 ## 1. Preparation
 
-- Follow the example at [Portkey Sign In](/portkey-sign-in).
+- Follow the example at [Portkey Sign In](/docs/sign-in).
 
 ## 2. Edit `src/App.js` and replace with the following:
 
