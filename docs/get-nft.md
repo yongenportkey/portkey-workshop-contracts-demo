@@ -49,6 +49,7 @@ function Nft({ provider }: { provider: IPortkeyProvider | null }) {
         };
         owner: string;
       }>("GetTokenInfo", {
+        // highlight-next-line
         symbol: "AELFWSNFTAC-1",
         owner: accounts?.AELF?.[0],
       });
