@@ -87,6 +87,6 @@ npm run dev
 
 ## 7. Result
 
-Click on the connect button.
+Click on the `connect` button.
 
 If successful, the chrome extension should pop up requesting the user to connect to the application.
