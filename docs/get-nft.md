@@ -6,9 +6,9 @@ sidebar_position: 5
 
 ## 1. Preparation
 
-- Follow the example at [Portkey Sign In](/docs/sign-in).
+- Follow the example at [Get Balance](/docs/get-balance).
 
-## 2. Add a new file `src/Nft.js` and copy/paste the following:
+## 2. Add a new file `src/Nft.tsx` and copy/paste the following:
 
 :::warning
 
@@ -16,104 +16,117 @@ Amend the NFT symbol highlighted below to your own.
 
 :::
 
-```jsx title="src/Nft.js" showLineNumbers
-import { did } from "@portkey/did-ui-react";
-import { getContractBasic } from "@portkey/contracts";
+```tsx title="src/Nft.tsx" showLineNumbers
+import { IPortkeyProvider, MethodsBase } from "@portkey/provider-types";
 import { useState } from "react";
-import { aelf } from "@portkey/utils";
-import { CHAIN_ID } from "./App";
+import useTokenContract from "./useTokenContract";
 
-export const Nft = ({ wallet }) => {
-  const [imgUrl, setImgUrl] = useState("");
+function Nft({ provider }: { provider: IPortkeyProvider | null }) {
+  const [imgUrl, setImgUrl] = useState<string>();
+  const tokenContract = useTokenContract(provider);
 
-  const getNft = async () => {
+  const onClick = async () => {
     try {
-      const chainsInfo = await did.services.getChainsInfo();
-      const chainInfo = chainsInfo.find((chain) => chain.chainId === CHAIN_ID);
-
-      const caInfo = await did.didWallet.getHolderInfoByContract({
-        caHash: wallet.caInfo.caHash,
-        chainId: CHAIN_ID,
+      const accounts = await provider?.request({
+        method: MethodsBase.ACCOUNTS,
       });
+      if (!accounts) throw new Error("No accounts");
 
-      const multiTokenContract = await getContractBasic({
-        contractAddress: chainInfo.defaultToken.address,
-        rpcUrl: "https://aelf-test-node.aelf.io",
-        account: aelf.getWallet(did.didWallet.managementAccount.privateKey),
-      });
-
-      const { data } = await multiTokenContract.callViewMethod("GetTokenInfo", {
-        // highlight-next-line
+      const result = await tokenContract?.callViewMethod<{
+        symbol: string;
+        tokenName: string;
+        supply: string;
+        totalSupply: string;
+        decimals: number;
+        issuer: string;
+        isBurnable: boolean;
+        issueChainId: number;
+        issued: string;
+        externalInfo: {
+          value: {
+            __nft_image_url: string;
+          };
+        };
+        owner: string;
+      }>("GetTokenInfo", {
         symbol: "AELFWSNFTAC-1",
-        owner: caInfo.caAddress,
+        owner: accounts?.AELF?.[0],
       });
 
-      setImgUrl(data?.externalInfo?.value?.["__nft_image_url"]);
-    } catch (err) {
-      console.log(err);
+      if (result) {
+        const imgUrl = result.data?.externalInfo.value.__nft_image_url;
+
+        if (imgUrl) {
+          setImgUrl(imgUrl);
+        }
+      }
+    } catch (error) {
+      console.log(error, "====error");
     }
   };
 
-  if (!wallet) return null;
+  if (!provider) return null;
 
   return (
     <>
-      <button onClick={() => getNft(wallet)}>getNFT</button>
-      <img src={imgUrl} width="600" alt="NFT image" />
+      <button onClick={onClick}>Get NFT</button>
+      <div>
+        Your NFT is: <img src={imgUrl} alt="nft" />
+      </div>
     </>
   );
-};
+}
+
+export default Nft;
 ```
 
-## 3. Edit `src/App.js`:
+## 3. Edit `src/App.tsx`:
 
-```jsx title="src/App.js" showLineNumbers
-import { SignIn, PortkeyProvider } from "@portkey/did-ui-react";
-import { useRef, useState } from "react";
-import "@portkey/did-ui-react/dist/assets/index.css"; // import portkey css
+```jsx title="src/App.tsx" showLineNumbers
+import { useEffect, useState } from "react";
+import { IPortkeyProvider, MethodsBase } from "@portkey/provider-types";
 import "./App.css";
+import detectProvider from "@portkey/detect-provider";
+import Balance from "./Balance";
 // highlight-next-line
-import { Nft } from "./Nft";
+import Nft from "./Nft";
 
-export const CHAIN_ID = "AELF";
+function App() {
+  const [provider, setProvider] = (useState < IPortkeyProvider) | (null > null);
 
-const App = () => {
-  const signInComponentRef = useRef();
-  const [wallet, setWallet] = useState();
+  const init = async () => {
+    try {
+      setProvider(await detectProvider());
+    } catch (error) {
+      console.log(error, "=====error");
+    }
+  };
+
+  const connect = async () => {
+    await provider?.request({
+      method: MethodsBase.REQUEST_ACCOUNTS,
+    });
+  };
+
+  useEffect(() => {
+    if (!provider) init();
+  }, [provider]);
+
+  if (!provider) return <>Provider not found.</>;
 
   return (
-    <PortkeyProvider networkType={"TESTNET"}>
-      <div className="my-app">
-        <button
-          onClick={() => {
-            signInComponentRef.current?.setOpen(true);
-          }}
-        >
-          Sign In
-        </button>
-        <SignIn
-          ref={signInComponentRef}
-          onFinish={(wallet) => {
-            setWallet(wallet);
-          }}
-        />
-        {wallet ? (
-          <>
-            <p>
-              Wallet address: ELF_{wallet.caInfo.caAddress}_{CHAIN_ID}
-            </p>
-            // highlight-next-line
-            <Nft wallet={wallet} />
-          </>
-        ) : null}
-      </div>
-    </PortkeyProvider>
+    <>
+      <button onClick={connect}>Connect</button>
+      <Balance provider={provider} />
+      // highlight-next-line
+      <Nft provider={provider} />
+    </>
   );
-};
+}
 
 export default App;
 ```
 
-After Sign in, click on the getNFT button.
+After Sign in, click on the `Get NFT` button.
 
 If the NFT exists, it will be displayed in the page.

@@ -8,114 +8,160 @@ sidebar_position: 4
 
 - Follow the example at [Portkey Sign In](/docs/sign-in).
 
-## 2. Add a new file `src/Balance.js` and copy/paste the following:
+## 2. Add new files
 
-```jsx title="src/Balance.js" showLineNumbers
-import { did } from "@portkey/did-ui-react";
-import { getContractBasic } from "@portkey/contracts";
-import { useState } from "react";
+### 2.1. Token Contract Hook
+
+This hook will return an instance of the token contract for other components to use.
+
+```tsx title="src/useTokenContract.ts" showLineNumbers
+import { IPortkeyProvider, IChain } from "@portkey/provider-types";
+import { useEffect, useState } from "react";
+import AElf from "aelf-sdk";
+
+function useTokenContract(provider: IPortkeyProvider | null) {
+  const [tokenContract, setTokenContract] =
+    useState<ReturnType<IChain["getContract"]>>();
+
+  useEffect(() => {
+    (async () => {
+      if (!provider) return null;
+
+      try {
+        // 1. get the chain AELF using provider.getChain
+        const chain = await provider?.getChain("AELF");
+        if (!chain) throw new Error("No chain");
+
+        // 2. get the chainStatus
+        const chainStatus = await chain?.getChainStatus();
+        if (!chainStatus) throw new Error("No chain status");
+
+        // 3. get chainStatus.GenesisContractAddress
+        const genesisContractAddress = chainStatus?.GenesisContractAddress;
+        if (!genesisContractAddress)
+          throw new Error("No genesis contract address");
+
+        // 4. get the genesis contract
+        const genesisContract = chain?.getContract(genesisContractAddress);
+        if (!genesisContract) throw new Error("No genesis contract");
+
+        // 5. call view method GetContractAddressByName to get the token contract address
+        const { data: tokenContractAddress } =
+          await genesisContract.callViewMethod<string>(
+            "GetContractAddressByName",
+            AElf.utils.sha256("AElf.ContractNames.Token")
+          );
+        if (!tokenContractAddress) throw new Error("No token contract address");
+
+        // 6. get the token contract
+        const tokenContract = chain?.getContract(tokenContractAddress);
+        setTokenContract(tokenContract);
+      } catch (error) {
+        console.log(error, "====error");
+      }
+    })();
+  }, [provider]);
+
+  return tokenContract;
+}
+
+export default useTokenContract;
+```
+
+### 2.2. Add a new file `src/Balance.tsx` and copy/paste the following:
+
+```tsx title="src/Balance.tsx" showLineNumbers
+import { IPortkeyProvider, MethodsBase } from "@portkey/provider-types";
 import BigNumber from "bignumber.js";
-import { aelf } from "@portkey/utils";
-import { CHAIN_ID } from "./App";
+import { useState } from "react";
+import useTokenContract from "./useTokenContract";
 
-export const Balance = ({ wallet }) => {
-  const [balance, setBalance] = useState(new BigNumber(0));
+function Balance({ provider }: { provider: IPortkeyProvider | null }) {
+  const [balance, setBalance] = useState<string>();
+  const tokenContract = useTokenContract(provider);
 
-  const getBalance = async () => {
+  const onClick = async () => {
     try {
-      const chainsInfo = await did.services.getChainsInfo();
-      const chainInfo = chainsInfo.find((chain) => chain.chainId === CHAIN_ID);
-
-      const caInfo = await did.didWallet.getHolderInfoByContract({
-        caHash: wallet.caInfo.caHash,
-        chainId: CHAIN_ID,
+      const accounts = await provider?.request({
+        method: MethodsBase.ACCOUNTS,
       });
+      if (!accounts) throw new Error("No accounts");
 
-      const multiTokenContract = await getContractBasic({
-        contractAddress: chainInfo.defaultToken.address,
-        rpcUrl: "https://aelf-test-node.aelf.io",
-        account: aelf.getWallet(did.didWallet.managementAccount.privateKey),
-      });
-
-      const { data } = await multiTokenContract.callViewMethod("GetBalance", {
+      const result = await tokenContract?.callViewMethod<{
+        balance: string;
+        owner: string;
+        symbol: string;
+      }>("GetBalance", {
         symbol: "ELF",
-        owner: caInfo.caAddress,
+        owner: accounts?.AELF?.[0],
       });
 
-      /**
-       * for ELF, it is 8 decimals
-       */
-      const decimals = chainInfo.defaultToken.decimals;
+      if (result) {
+        const balance = result.data?.balance;
 
-      /**
-       * use BigNumber to store and manipulate the balance to get the actual balance
-       */
-      const balance = new BigNumber(data?.balance).dividedBy(10 ** decimals);
-
-      setBalance(balance);
-    } catch (err) {
-      console.log(err);
+        if (balance) {
+          setBalance(new BigNumber(balance).dividedBy(10 ** 8).toFixed(2));
+        }
+      }
+    } catch (error) {
+      console.log(error, "====error");
     }
   };
 
-  if (!wallet) return null;
+  if (!provider) return null;
 
   return (
     <>
-      <button onClick={() => getBalance(wallet)}>getBalance</button>
-      <p>Balance: {balance.toFixed(2)} ELF</p>
+      <button onClick={onClick}>Get Balance</button>
+      <div>Your balance is: {balance}</div>
     </>
   );
-};
+}
+
+export default Balance;
 ```
 
-## 3. Edit `src/App.js`:
+## 3. Edit `src/App.tsx`:
 
-```jsx title="src/App.js" showLineNumbers
-import { SignIn, PortkeyProvider } from "@portkey/did-ui-react";
-import { useRef, useCallback, useState } from "react";
-import "@portkey/did-ui-react/dist/assets/index.css"; // import portkey css
+```tsx title="src/App.tsx" showLineNumbers
+import { useEffect, useState } from "react";
+import { IPortkeyProvider, MethodsBase } from "@portkey/provider-types";
 import "./App.css";
+import detectProvider from "@portkey/detect-provider";
 // highlight-next-line
-import { Balance } from "./Balance";
+import Balance from "./Balance";
 
-// highlight-next-line
-export const CHAIN_ID = "AELF";
+function App() {
+  const [provider, setProvider] = useState<IPortkeyProvider | null>(null);
 
-const App = () => {
-  const signInComponentRef = useRef();
-  const [wallet, setWallet] = useState();
+  const init = async () => {
+    try {
+      setProvider(await detectProvider());
+    } catch (error) {
+      console.log(error, "=====error");
+    }
+  };
+
+  const connect = async () => {
+    await provider?.request({
+      method: MethodsBase.REQUEST_ACCOUNTS,
+    });
+  };
+
+  useEffect(() => {
+    if (!provider) init();
+  }, [provider]);
+
+  if (!provider) return <>Provider not found.</>;
 
   return (
-    <PortkeyProvider networkType={"TESTNET"}>
-      <div className="my-app">
-        <button
-          onClick={() => {
-            signInComponentRef.current?.setOpen(true);
-          }}
-        >
-          Sign In
-        </button>
-        <SignIn
-          ref={signInComponentRef}
-          onFinish={(wallet) => {
-            setWallet(wallet);
-          }}
-        />
-        // highlight-start
-        {wallet ? (
-          <>
-            <p>
-              Wallet address: ELF_{wallet.caInfo.caAddress}_{CHAIN_ID}
-            </p>
-            <Balance wallet={wallet} />
-          </>
-        ) : null}
-        // highlight-end
-      </div>
-    </PortkeyProvider>
+    <>
+      <button onClick={connect}>Connect</button>
+      // highlight-next-line
+      <Balance provider={provider} />
+    </>
   );
-};
+}
 
 export default App;
 ```
@@ -124,4 +170,4 @@ export default App;
 
 You may top up your testnet wallet using the [Faucet](https://testnet-faucet.aelf.io).
 
-After topping up, you can click the `getBalance` button to retrieve the new balance.
+After topping up, you can click the `Get Balance` button to retrieve the new balance.
