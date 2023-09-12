@@ -166,7 +166,7 @@ function App() {
 export default App;
 ```
 
-## 3. Faucet
+## 4. Faucet
 
 You may top up your testnet wallet using the [Faucet](https://testnet-faucet.aelf.io).
 
