@@ -93,7 +93,7 @@ import Balance from "./Balance";
 import Nft from "./Nft";
 
 function App() {
-  const [provider, setProvider] = (useState < IPortkeyProvider) | (null > null);
+  const [provider, setProvider] = useState<IPortkeyProvider | null>(null);
 
   const init = async () => {
     try {
