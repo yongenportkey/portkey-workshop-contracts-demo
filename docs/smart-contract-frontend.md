@@ -45,14 +45,10 @@ function useSmartContract(provider: IPortkeyProvider | null) {
         const chain = await provider?.getChain("tDVW");
         if (!chain) throw new Error("No chain");
 
-        // 2. get the chainStatus
-        const chainStatus = await chain?.getChainStatus();
-        if (!chainStatus) throw new Error("No chain status");
-
         // highlight-next-line
         const address = "27RVyw1vKbWNdeTMfwFXeAtzQ36eM5c5cgfXzNydhNtD8NSpBk";
 
-        // 3. get the character contract
+        // 2. get the character contract
         const characterContract = chain?.getContract(address);
         setSmartContract(characterContract);
       } catch (error) {
