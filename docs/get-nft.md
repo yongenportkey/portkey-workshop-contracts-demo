@@ -83,7 +83,7 @@ export default Nft;
 
 ## 3. Edit `src/App.tsx`:
 
-```jsx title="src/App.tsx" showLineNumbers
+```tsx title="src/App.tsx" showLineNumbers
 import { useEffect, useState } from "react";
 import { IPortkeyProvider, MethodsBase } from "@portkey/provider-types";
 import "./App.css";
