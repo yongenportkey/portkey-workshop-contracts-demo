@@ -1,6 +1,6 @@
 ---
 title: Smart Contract
-sidebar_position: 6
+sidebar_position: 7
 ---
 
 # Develop, deploy and call a smart contract
@@ -9,14 +9,8 @@ sidebar_position: 6
 
 ### 1.1 Preparation
 
-- Install dotnet sdk.
-
-  - Follow this doc https://dotnet.microsoft.com/en-us/download to install dotnet sdk. You can choose the 7.x version.
-  - Type `dotnet --version`, if return the version of dotnet sdk, the installation is successful.
-
-- Install node.
-  - Follow this doc https://nodejs.org/en/download to install node and npm.
-  - Type `node -v` and `npm -v`, if return the versions, the installation is successful.
+- Follow the guide at [Environment Setup](/docs/environment-setup).
+- The commands in this tutorial should be executed within the Dev Container terminal.
 
 ### 1.2 Create a new project
 

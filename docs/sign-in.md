@@ -1,15 +1,15 @@
 ---
-sidebar_position: 3
+sidebar_position: 4
 ---
 
 # Portkey Sign In
 
 ## 1. Preparation
 
-### 1.1 Install node
+### 1.1 Setup environment
 
-- Follow this doc https://nodejs.org/en/download to install node and npm.
-- Type `node -v` and `npm -v`, if return the versions, the installation is successful.
+- Follow the guide at [Environment Setup](/docs/environment-setup).
+- The commands in this tutorial should be executed within the Dev Container terminal.
 
 ## 2. Create a sample project using react
 
