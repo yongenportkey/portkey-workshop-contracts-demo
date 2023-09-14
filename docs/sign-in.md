@@ -79,13 +79,13 @@ function App() {
 export default App;
 ```
 
-## 6. Start the development server
+## 5. Start the development server
 
 ```bash
 npm run dev
 ```
 
-## 7. Result
+## 6. Result
 
 Click on the `connect` button.
 

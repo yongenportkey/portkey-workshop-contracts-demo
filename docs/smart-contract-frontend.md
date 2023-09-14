@@ -3,7 +3,7 @@ title: Smart Contract on Frontend
 sidebar_position: 7
 ---
 
-# Working with the deployed smart contract
+# Interacting with the deployed smart contract on the frontend
 
 ## 1. Preparation
 
@@ -41,7 +41,7 @@ function useSmartContract(provider: IPortkeyProvider | null) {
       if (!provider) return null;
 
       try {
-        // 1. get the chain TDVW using provider.getChain
+        // 1. get the sidechain tDVW using provider.getChain
         const chain = await provider?.getChain("tDVW");
         if (!chain) throw new Error("No chain");
 
