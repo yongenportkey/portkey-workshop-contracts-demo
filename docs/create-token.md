@@ -14,6 +14,7 @@ import TabItem from '@theme/TabItem';
 
 - Follow the guide at [Environment Setup](/docs/environment-setup).
 - The commands in this tutorial should be executed within the Dev Container terminal.
+- Please follow the example for MacOS since we are developing inside a linux docker image.
 
 ## 2. FT Creation
 
