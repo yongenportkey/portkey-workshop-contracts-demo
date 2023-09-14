@@ -47,15 +47,15 @@ Click on the extension, and on the right panel, click on `Install` to install it
 
 ## 6. Configure the Dev Container
 
-### 6.1. Add a new folder `.devcontainers`
+### 6.1. Add a new folder `.devcontainer`
 
 ```bash
-mkdir .devcontainers
+mkdir .devcontainer
 ```
 
-### 6.2. Add `devcontainers.json`
+### 6.2. Add `devcontainer.json`
 
-Create a new file `devcontainers.json` inside the `.devcontainers` folder:
+Create a new file `devcontainer.json` inside the `.devcontainer` folder:
 
 ```json title=.devcontainer/devcontainer.json
 {
