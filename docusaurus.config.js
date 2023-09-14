@@ -49,10 +49,6 @@ const config = {
       image: "img/docusaurus-social-card.jpg",
       navbar: {
         title: "aelfinity workshop",
-        logo: {
-          alt: "aelfinity workshop logo",
-          src: "img/logo.svg",
-        },
       },
       footer: {
         style: "dark",
