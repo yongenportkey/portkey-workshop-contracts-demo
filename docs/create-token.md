@@ -33,7 +33,6 @@ Run the following command to setup local environment variables and the keystore.
   <TabItem value="macOS" label="Mac OS">
 
 ```bash copy
-chmod +x setup.sh
 source setup.sh
 ```
 
