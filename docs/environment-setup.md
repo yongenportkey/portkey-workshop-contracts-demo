@@ -28,12 +28,12 @@ Open a new Terminal/Command Prompt, and create a new folder for our workshop:
 
 ```bash
 cd ~
-mkdir portkey-workshop
-cd portkey-workshop
+mkdir aelfinity-workshop
+cd aelfinity-workshop
 code .
 ```
 
-The last command will open the current folder `portkey-workshop` in Visual Studio Code.
+The last command will open the current folder `aelfinity-workshop` in Visual Studio Code.
 
 ## 6. Install the `Dev Containers` extension
 
@@ -87,7 +87,7 @@ Choose version `7`.
 
 After a while, a `.devcontainer` folder appears, visible in the Explorer panel.
 
-![.devcontainer](/img/devcontainer.png)
+![.devcontainer](/img/folder.png)
 
 ### 7.3. Customise the container configuration template
 

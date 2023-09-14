@@ -6,8 +6,8 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: "Portkey Workshop",
-  tagline: "Portkey Workshop documentation",
+  title: "aelfinity workshop",
+  tagline: "aelfinity workshop documentation",
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
@@ -48,9 +48,9 @@ const config = {
       // Replace with your project's social card
       image: "img/docusaurus-social-card.jpg",
       navbar: {
-        title: "Portkey Workshop",
+        title: "aelfinity workshop",
         logo: {
-          alt: "Portkey Workshop logo",
+          alt: "aelfinity workshop logo",
           src: "img/logo.svg",
         },
       },
@@ -106,7 +106,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Portkey.`,
+        copyright: `Copyright © ${new Date().getFullYear()} aelfinity workshop.`,
       },
       prism: {
         additionalLanguages: ["csharp", "protobuf", "powershell"],

@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Introduction
 
-This is a demo site created for the Portkey Developer workshop.
+This is a demo site created for the aelfinity workshop.
 
 # Objective
 
