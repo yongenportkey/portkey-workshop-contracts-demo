@@ -99,6 +99,10 @@ const config = {
                 label: "Smart Contract",
                 to: "/docs/smart-contract",
               },
+              {
+                label: "Frontend",
+                to: "/docs/smart-contract-frontend",
+              },
             ],
           },
         ],
