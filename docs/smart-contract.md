@@ -17,7 +17,7 @@ sidebar_position: 7
 - Open a terminal and type the following command. You can install the contract template from nuget repo to your local.
 
 ```bash copy
-dotnet new install AElf.Contract --nuget-source http://192.168.68.107:8081/repository/nuget-group/index.json
+dotnet new install AElf.ContractTemplates
 ```
 
 - Create a folder to place the workshop project
