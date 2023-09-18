@@ -81,7 +81,7 @@ function SmartContract({ provider }: { provider: IPortkeyProvider | null }) {
       });
       if (!accounts) throw new Error("No accounts");
 
-      const account = accounts?.AELF?.[0]!;
+      const account = accounts?.tDVW?.[0]!;
       if (!account) throw new Error("No account");
 
       // 1. if not initialized, it will be initialized
@@ -91,9 +91,10 @@ function SmartContract({ provider }: { provider: IPortkeyProvider | null }) {
       await characterContract?.callSendMethod("CreateCharacter", account, {});
 
       // 3. get character
-      const result = await characterContract?.callViewMethod("GetMyCharacter", {
-        sync: true,
-      });
+      const result = await characterContract?.callViewMethod(
+        "GetMyCharacter",
+        ""
+      );
       setResult(result);
     } catch (error) {
       console.log(error, "====error");
