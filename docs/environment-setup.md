@@ -22,13 +22,12 @@ Once you have downloaded the software above, please install in your local machin
 
 Ensure that Docker is started.
 
-## 4. Create a new folder
+## 4. Clone the starting repository
 
-Open a new Terminal/Command Prompt, and create a new folder for our workshop:
+Open a new Terminal/Command Prompt, and clone the starting repository:
 
 ```bash
-cd ~
-mkdir aelfinity-workshop
+git clone https://github.com/yongenaelf/aelfinity-workshop.git
 cd aelfinity-workshop
 code .
 ```
