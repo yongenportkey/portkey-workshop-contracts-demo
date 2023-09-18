@@ -81,6 +81,29 @@ export default App;
 
 ## 5. Start the development server
 
+:::tip
+
+Windows only: If your OS is Windows, add the following to `vite.config.ts`:
+
+```typescript
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react-swc";
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react()],
+  // highlight-start
+  server: {
+    watch: {
+      usePolling: true,
+    },
+  },
+  // highlight-end
+});
+```
+
+:::
+
 ```bash
 npm run dev
 ```
