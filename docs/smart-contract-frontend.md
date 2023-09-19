@@ -70,9 +70,15 @@ import { IPortkeyProvider, MethodsBase } from "@portkey/provider-types";
 import useSmartContract from "./useSmartContract";
 import { useState } from "react";
 
+interface ICharacter {
+  health: number;
+  strength: number;
+  speed: number;
+}
+
 function SmartContract({ provider }: { provider: IPortkeyProvider | null }) {
   const characterContract = useSmartContract(provider);
-  const [result, setResult] = useState<object>();
+  const [result, setResult] = useState<ICharacter>();
 
   const onClick = async () => {
     try {
@@ -91,23 +97,30 @@ function SmartContract({ provider }: { provider: IPortkeyProvider | null }) {
       await characterContract?.callSendMethod("CreateCharacter", account, {});
 
       // 3. get character
-      const result = await characterContract?.callViewMethod(
+      const result = await characterContract?.callViewMethod<ICharacter>(
         "GetMyCharacter",
         account
       );
-      setResult(result);
+
+      setResult(result?.data);
     } catch (error) {
-      console.log(error, "====error");
+      console.error(error, "====error");
     }
   };
 
   if (!provider) return null;
 
   return (
-    <>
+    <div>
       <button onClick={onClick}>Get Character</button>
-      <div>Your character is: {JSON.stringify(result)}</div>
-    </>
+      <div>
+        Your character is:
+        <br />
+        <div>Health: {result?.health}</div>
+        <div>Strength: {result?.strength}</div>
+        <div>Speed: {result?.speed}</div>
+      </div>
+    </div>
   );
 }
 
