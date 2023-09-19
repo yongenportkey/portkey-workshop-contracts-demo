@@ -46,7 +46,7 @@ function useSmartContract(provider: IPortkeyProvider | null) {
         if (!chain) throw new Error("No chain");
 
         // highlight-next-line
-        const address = "27RVyw1vKbWNdeTMfwFXeAtzQ36eM5c5cgfXzNydhNtD8NSpBk";
+        const address = "xqrvvgzTom5sbt5HTtiYSgxHoSAkdPK38D6iWmVvGpnoYrv7P";
 
         // 2. get the character contract
         const characterContract = chain?.getContract(address);
@@ -93,7 +93,7 @@ function SmartContract({ provider }: { provider: IPortkeyProvider | null }) {
       // 3. get character
       const result = await characterContract?.callViewMethod(
         "GetMyCharacter",
-        ""
+        account
       );
       setResult(result);
     } catch (error) {
