@@ -44,25 +44,7 @@ Search for the extension `Dev Containers` by Microsoft.
 
 Click on the extension, and on the right panel, click on `Install` to install it.
 
-## 6. Configure the Dev Container
-
-### 6.1. Add a new folder `.devcontainer`
-
-```bash
-mkdir .devcontainer
-```
-
-### 6.2. Add `devcontainer.json`
-
-Create a new file `devcontainer.json` inside the `.devcontainer` folder:
-
-```json title=.devcontainer/devcontainer.json
-{
-  "image": "aelf/aelfinity-workshop"
-}
-```
-
-### 6.3. Start the Dev Container
+## 6. Start the Dev Container
 
 Open the Command Palette (View > Command Palette) and search for the following command:
 
