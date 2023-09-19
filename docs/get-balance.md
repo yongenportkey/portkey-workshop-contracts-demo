@@ -28,7 +28,7 @@ function useTokenContract(provider: IPortkeyProvider | null, chainId: ChainId) {
       if (!provider) return null;
 
       try {
-        // 1. get the chain AELF using provider.getChain
+        // 1. get the chain using provider.getChain
         const chain = await provider?.getChain(chainId);
         if (!chain) throw new Error("No chain");
 
