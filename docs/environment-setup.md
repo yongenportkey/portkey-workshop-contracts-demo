@@ -11,6 +11,7 @@ This will allow us to iterate faster without polluting the environment of the ho
 
 ## 1. Download
 
+- [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 - [VS Code](https://code.visualstudio.com/)
 - [Docker](https://www.docker.com/)
 
