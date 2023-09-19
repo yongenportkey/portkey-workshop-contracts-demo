@@ -15,11 +15,11 @@ sidebar_position: 5
 This hook will return an instance of the token contract for other components to use.
 
 ```tsx title="src/useTokenContract.ts" showLineNumbers
-import { IPortkeyProvider, IChain } from "@portkey/provider-types";
+import { IPortkeyProvider, IChain, ChainId } from "@portkey/provider-types";
 import { useEffect, useState } from "react";
 import AElf from "aelf-sdk";
 
-function useTokenContract(provider: IPortkeyProvider | null) {
+function useTokenContract(provider: IPortkeyProvider | null, chainId: ChainId) {
   const [tokenContract, setTokenContract] =
     useState<ReturnType<IChain["getContract"]>>();
 
@@ -29,7 +29,7 @@ function useTokenContract(provider: IPortkeyProvider | null) {
 
       try {
         // 1. get the chain AELF using provider.getChain
-        const chain = await provider?.getChain("AELF");
+        const chain = await provider?.getChain(chainId);
         if (!chain) throw new Error("No chain");
 
         // 2. get the chainStatus
@@ -60,7 +60,7 @@ function useTokenContract(provider: IPortkeyProvider | null) {
         console.log(error, "====error");
       }
     })();
-  }, [provider]);
+  }, [provider, chainId]);
 
   return tokenContract;
 }
@@ -71,16 +71,27 @@ export default useTokenContract;
 ### 2.2. Add a new file `src/Balance.tsx` and copy/paste the following:
 
 ```tsx title="src/Balance.tsx" showLineNumbers
-import { IPortkeyProvider, MethodsBase } from "@portkey/provider-types";
+import {
+  IPortkeyProvider,
+  MethodsBase,
+  ChainId,
+} from "@portkey/provider-types";
 import BigNumber from "bignumber.js";
 import { useState } from "react";
 import useTokenContract from "./useTokenContract";
 
-function Balance({ provider }: { provider: IPortkeyProvider | null }) {
+function Balance({
+  provider,
+  chainId,
+}: {
+  provider: IPortkeyProvider | null;
+  chainId: ChainId;
+}) {
   const [balance, setBalance] = useState<string>();
-  const tokenContract = useTokenContract(provider);
+  const tokenContract = useTokenContract(provider, chainId);
 
   const onClick = async () => {
+    setBalance("Fetching...");
     try {
       const accounts = await provider?.request({
         method: MethodsBase.ACCOUNTS,
@@ -93,28 +104,29 @@ function Balance({ provider }: { provider: IPortkeyProvider | null }) {
         symbol: string;
       }>("GetBalance", {
         symbol: "ELF",
-        owner: accounts?.AELF?.[0],
+        owner: accounts?.[chainId]?.[0],
       });
 
       if (result) {
         const balance = result.data?.balance;
 
         if (balance) {
-          setBalance(new BigNumber(balance).dividedBy(10 ** 8).toFixed(2));
+          setBalance(new BigNumber(balance).dividedBy(10 ** 8).toFixed(5));
         }
       }
     } catch (error) {
       console.log(error, "====error");
+      setBalance("Failed.");
     }
   };
 
   if (!provider) return null;
 
   return (
-    <>
-      <button onClick={onClick}>Get Balance</button>
-      <div>Your balance is: {balance}</div>
-    </>
+    <div>
+      <button onClick={onClick}>Get {chainId} Balance</button>
+      <div>{balance}</div>
+    </div>
   );
 }
 
@@ -157,8 +169,12 @@ function App() {
   return (
     <>
       <button onClick={connect}>Connect</button>
-      // highlight-next-line
-      <Balance provider={provider} />
+      // highlight-start
+      <div style={{ display: "flex" }}>
+        <Balance provider={provider} chainId="AELF" />
+        <Balance provider={provider} chainId="tDVW" />
+      </div>
+      // highlight-end
     </>
   );
 }

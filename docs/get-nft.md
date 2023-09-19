@@ -118,7 +118,10 @@ function App() {
   return (
     <>
       <button onClick={connect}>Connect</button>
-      <Balance provider={provider} />
+      <div style={{ display: "flex" }}>
+        <Balance provider={provider} chainId="AELF" />
+        <Balance provider={provider} chainId="tDVW" />
+      </div>
       // highlight-next-line
       <Nft provider={provider} />
     </>
