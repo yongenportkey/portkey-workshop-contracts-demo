@@ -21,7 +21,11 @@ Once you have downloaded the software above, please install in your local machin
 
 ## 3. Start Docker
 
-Ensure that Docker is started.
+Ensure that Docker is started. At a terminal/command prompt, run the following command to pull the image:
+
+```bash
+docker pull yongenaelf/aelfinity-workshop
+```
 
 ## 4. Clone the starting repository
 
@@ -59,7 +63,7 @@ Wait for a few minutes for the container to start.
 
 ## 7. Using the Dev Container
 
-You may now open a new terminal within VS Code by using the shortcut `Command+Shift+P` on macOS or `Ctrl+Shift+P` on Windows.
+You may now open a new terminal within VS Code.
 
 ### 7.1. `aelf-command`
 
