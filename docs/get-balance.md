@@ -83,9 +83,11 @@ import useTokenContract from "./useTokenContract";
 function Balance({
   provider,
   chainId,
+  symbol,
 }: {
   provider: IPortkeyProvider | null;
   chainId: ChainId;
+  symbol: string;
 }) {
   const [balance, setBalance] = useState<string>();
   const tokenContract = useTokenContract(provider, chainId);
@@ -103,7 +105,7 @@ function Balance({
         owner: string;
         symbol: string;
       }>("GetBalance", {
-        symbol: "ELF",
+        symbol,
         owner: accounts?.[chainId]?.[0],
       });
 
@@ -124,8 +126,12 @@ function Balance({
 
   return (
     <div>
-      <button onClick={onClick}>Get {chainId} Balance</button>
-      <div>{balance}</div>
+      <button onClick={onClick}>
+        Get {chainId} {symbol} Balance
+      </button>
+      <div>
+        {balance} {symbol}
+      </div>
     </div>
   );
 }
@@ -171,15 +177,14 @@ function App() {
       <button onClick={connect}>Connect</button>
       // highlight-start
       <div style={{ display: "flex" }}>
-        <Balance provider={provider} chainId="AELF" />
-        <Balance provider={provider} chainId="tDVW" />
+        <Balance provider={provider} chainId="AELF" symbol="ELF" />
+        <Balance provider={provider} chainId="tDVW" symbol="ELF" />
+        <Balance provider={provider} chainId="AELF" symbol="AELFWSFTBF" />
       </div>
       // highlight-end
     </>
   );
 }
-
-export default App;
 ```
 
 ## 4. Faucet

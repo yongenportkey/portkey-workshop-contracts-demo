@@ -119,8 +119,9 @@ function App() {
     <>
       <button onClick={connect}>Connect</button>
       <div style={{ display: "flex" }}>
-        <Balance provider={provider} chainId="AELF" />
-        <Balance provider={provider} chainId="tDVW" />
+        <Balance provider={provider} chainId="AELF" symbol="ELF" />
+        <Balance provider={provider} chainId="tDVW" symbol="ELF" />
+        <Balance provider={provider} chainId="AELF" symbol="AELFWSFTBF" />
       </div>
       // highlight-next-line
       <Nft provider={provider} />
