@@ -21,20 +21,20 @@ sidebar_position: 7
 
 ### 1.2 Create a new project
 
-- Download the AElf templates first
+- Download the AElf templates first, this will install a package contains serveral AElf smart contract templates.
 
 ```sh copy
 dotnet new install AElf.ContractTemplates
 ```
 
-- Create a folder insider the container to place the workshop project
+- Create a folder to place the workshop project
 
 ```bash copy
 mkdir workshop
 cd workshop
 ```
 
-- Type the following command, and create a new template project locally
+- Run the following command, and create a new template project locally
 
 ```bash copy
 dotnet new aelf -n HelloWorld
@@ -42,18 +42,43 @@ dotnet new aelf -n HelloWorld
 
 ### 1.3 High level scope of the project
 
-If you open your project folder, you should see two newly generated directories: src and test. These correspond to the smart contract code and the unit test code for the contract, respectively.
+If you open your project folder, you should see two newly generated directories: `src` and `test`. These correspond to the smart contract code and the unit test code for the contract, respectively.
+```
+.
+├── src
+│   ├── HelloWorld.cs
+│   ├── HelloWorld.csproj
+│   ├── HelloWorldState.cs
+│   └── Protobuf
+│       ├── contract
+│       │   └── hello_world_contract.proto
+│       └── message
+│           └── authority_info.proto
+└── test
+    ├── HelloWorld.Tests.csproj
+    ├── HelloWorldTests.cs
+    ├── Protobuf
+    │   ├── message
+    │   │   └── authority_info.proto
+    │   └── stub
+    │       └── hello_world_contract.proto
+    └── _Setup.cs
+```
 
 #### 1.3.a src
 
 The src folder contains several proto files used to describe blockchain smart contract services and data structures. It also includes specific implementations of smart contract methods and definition files for managing contract state in communication with the blockchain, such as HelloWorldState.cs here.
 
 ```
-- src
-  - Protobuf
-  - AElf.Contracts.HelloWorld.csproj
-  - HelloWorld.cs
-  - HelloWorldState.cs
+src
+├── Protobuf
+│   ├── contract
+│   │   └── hello_world_contract.proto
+│   └── message
+│       └── authority_info.proto
+├── workshop.cs
+├── workshop.csproj
+└── workshopState.cs
 ```
 
 #### 1.3.b test
@@ -61,11 +86,15 @@ The src folder contains several proto files used to describe blockchain smart co
 The test folder similarly contains a proto subfolder, along with a setup file used to establish the unit testing environment for blockchain smart contracts. It defines test module classes and a base test class, facilitating context loading, stub class retrieval, and stub acquisition methods. As a result, these classes and methods are employed in unit tests to conduct various tests on the smart contract.
 
 ```
-- test
-  - Protobuf
-  - _Setup.cs
-  - AElf.Contracts.HelloWorld.Tests.csproj
-  - HelloWorldTests.cs
+test
+├── Protobuf
+│   ├── message
+│   │   └── authority_info.proto
+│   └── stub
+│       └── hello_world_contract.proto
+├── _Setup.cs
+├── workshop.Tests.csproj
+└── workshopTests.cs
 ```
 
 In the process of writing smart contracts using AElf tools, the recommended approach involves modifying or creating proto files first, as on aelf we use grpc format to define the apis in the contract as well as the input and output message types. The interfaces are defined in the protobuf files. Subsequently, the methods defined in the proto files should be implemented, followed by the addition of unit tests and their execution to verify if these tests pass.
@@ -107,7 +136,7 @@ Get Random Hash/Bytes -> one/more random numbers
 
 Next, we can do a simple practice of RNG on the workshop project we just created.
 
-Firstly, we need create a new subfolder called `reference` under workshop/Protobuf folder.
+Firstly, we need create a new subfolder called `reference` under `workshop/Protobuf` folder.
 
 Then create a new file called `acs6.proto`, this is a standard aelf package for getting random bytes.
 ```protobuf copy
@@ -333,7 +362,7 @@ Deployment procedure:
 
 1. Implement acs12.proto
 
-We need create a new file called `acs12.proto` under `src/Protobuf/`reference folder, this is a standard aelf package for showing users gas fee. `Acs12.proto` is necessary for depoyment on AElf test net.
+We need create a new file called `acs12.proto` under `src/Protobuf/reference` folder, this is a standard aelf package for showing users gas fee. `Acs12.proto` is necessary for depoyment on AElf test net.
 
 ```protobuf copy
 /**
