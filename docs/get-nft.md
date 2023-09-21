@@ -23,7 +23,7 @@ import useTokenContract from "./useTokenContract";
 
 function Nft({ provider }: { provider: IPortkeyProvider | null }) {
   const [imgUrl, setImgUrl] = useState<string>();
-  const tokenContract = useTokenContract(provider);
+  const tokenContract = useTokenContract(provider, "AELF");
 
   const onClick = async () => {
     try {
