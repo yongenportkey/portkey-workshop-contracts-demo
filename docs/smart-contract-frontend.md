@@ -70,6 +70,42 @@ import { IPortkeyProvider, MethodsBase } from "@portkey/provider-types";
 import useSmartContract from "./useSmartContract";
 import { useState } from "react";
 
+function Pie({
+  number,
+  color,
+  display,
+}: {
+  number: number;
+  color: string;
+  display: number;
+}) {
+  return (
+    <svg height="200" width="200" viewBox="0 0 20 20">
+      <circle r="10" cx="10" cy="10" fill="transparent" />
+      <circle
+        r="5"
+        cx="10"
+        cy="10"
+        fill="transparent"
+        stroke={color}
+        stroke-width="10"
+        stroke-dasharray={`calc(${number} * 31.4 / 100) 31.4`}
+        transform="rotate(-90) translate(-20)"
+      />
+      <text
+        x="10"
+        y="15"
+        style={{
+          fill: "white",
+          fontSize: "3px",
+        }}
+      >
+        {display}
+      </text>
+    </svg>
+  );
+}
+
 interface ICharacter {
   health: number;
   strength: number;
@@ -79,6 +115,7 @@ interface ICharacter {
 function SmartContract({ provider }: { provider: IPortkeyProvider | null }) {
   const characterContract = useSmartContract(provider);
   const [result, setResult] = useState<ICharacter>();
+  const [initialized, setInitialized] = useState(false);
 
   const onClick = async () => {
     try {
@@ -91,7 +128,10 @@ function SmartContract({ provider }: { provider: IPortkeyProvider | null }) {
       if (!account) throw new Error("No account");
 
       // 1. if not initialized, it will be initialized
-      await characterContract?.callSendMethod("Initialize", account, {});
+      if (!initialized) {
+        await characterContract?.callSendMethod("Initialize", account, {});
+        setInitialized(true);
+      }
 
       // 2. if a character has not been created yet, it will create a character
       await characterContract?.callSendMethod("CreateCharacter", account, {});
@@ -113,12 +153,34 @@ function SmartContract({ provider }: { provider: IPortkeyProvider | null }) {
   return (
     <div>
       <button onClick={onClick}>Get Character</button>
-      <div>
-        Your character is:
-        <br />
-        <div>Health: {result?.health}</div>
-        <div>Strength: {result?.strength}</div>
-        <div>Speed: {result?.speed}</div>
+      <div style={{ display: "flex" }}>
+        <div>
+          Health:
+          <br />
+          <Pie
+            number={result?.health ?? 0}
+            color="tomato"
+            display={result?.health ?? 0}
+          />
+        </div>
+        <div>
+          Strength:
+          <br />
+          <Pie
+            number={result?.strength ?? 0}
+            color="green"
+            display={result?.strength ?? 0}
+          />
+        </div>
+        <div>
+          Speed:
+          <br />
+          <Pie
+            number={(result?.speed ?? 0) / 2.0}
+            color="blue"
+            display={result?.speed ?? 0}
+          />
+        </div>
       </div>
     </div>
   );
