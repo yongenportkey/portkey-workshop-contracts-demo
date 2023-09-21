@@ -21,20 +21,20 @@ sidebar_position: 7
 
 ### 1.2 Create a new project
 
-- Download the AElf templates first
+- Download the AElf templates first, this will install a package contains serveral AElf smart contract templates.
 
 ```sh copy
 dotnet new install AElf.ContractTemplates
 ```
 
-- Create a folder insider the container to place the workshop project
+- Create a folder to place the workshop project
 
 ```bash copy
 mkdir workshop
 cd workshop
 ```
 
-- Type the following command, and create a new template project locally
+- Run the following command, and create a new template project locally
 
 ```bash copy
 dotnet new aelf -n HelloWorld
@@ -42,7 +42,7 @@ dotnet new aelf -n HelloWorld
 
 ### 1.3 High level scope of the project
 
-If you open your project folder, you should see two newly generated directories: src and test. These correspond to the smart contract code and the unit test code for the contract, respectively.
+If you open your project folder, you should see two newly generated directories: `src` and `test`. These correspond to the smart contract code and the unit test code for the contract, respectively.
 
 #### 1.3.a src
 
@@ -107,7 +107,7 @@ Get Random Hash/Bytes -> one/more random numbers
 
 Next, we can do a simple practice of RNG on the workshop project we just created.
 
-Firstly, we need create a new subfolder called `reference` under workshop/Protobuf folder.
+Firstly, we need create a new subfolder called `reference` under `workshop/Protobuf` folder.
 
 Then create a new file called `acs6.proto`, this is a standard aelf package for getting random bytes.
 ```protobuf copy
@@ -333,7 +333,7 @@ Deployment procedure:
 
 1. Implement acs12.proto
 
-We need create a new file called `acs12.proto` under `src/Protobuf/`reference folder, this is a standard aelf package for showing users gas fee. `Acs12.proto` is necessary for depoyment on AElf test net.
+We need create a new file called `acs12.proto` under `src/Protobuf/reference` folder, this is a standard aelf package for showing users gas fee. `Acs12.proto` is necessary for depoyment on AElf test net.
 
 ```protobuf copy
 /**
