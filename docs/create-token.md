@@ -134,11 +134,11 @@ aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWO
   </TabItem>
 </Tabs>
 
-| Parameter   | Description                                                                                              |
-| ----------- | -------------------------------------------------------------------------------------------------------- |
-| symbol      | The symbol represents the name of the FT you are creating, it should be the same as defined in seed NFT. |
-| totalSupply | The totalSupply represents the maximum quantity that can be issued.                                      |
-| decimals    | The decimals stands for the maximum number of decimal places your FT can have. For ELF, it's 8.          |
+| Parameter   | Description                                                                                             |
+| ----------- | ------------------------------------------------------------------------------------------------------- |
+| symbol      | The symbol represents the name of the FT you are creating, it should be the same as defined in seed FT. |
+| totalSupply | The totalSupply represents the maximum quantity that can be issued.                                     |
+| decimals    | The decimals stands for the maximum number of decimal places your FT can have. For ELF, it's 8.         |
 
 #### 2.3.1 Use `event` to check the result
 
@@ -481,6 +481,8 @@ If you have not installed the portkey extension, please visit https://chrome.goo
 
 :::
 
+### 4.1. Transfer FT
+
 <Tabs groupId="os">
   <TabItem value="macOS" label="Mac OS">
 
@@ -504,6 +506,38 @@ Transfer "$TRANSFER_PARAMS"
 ```powershell copy
 # Need to split 2 commands on Windows.
 set "TRANSFER_PARAMS={\"symbol\":\"%SYMBOL_FT%\",\"amount\":1000000000,\"memo\":\"test\",\"to\":\"%WALLET_ADDRESS%\"}"
+
+aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% Transfer "%TRANSFER_PARAMS%"
+```
+
+  </TabItem>
+</Tabs>
+
+### 4.2. Transfer NFT
+
+<Tabs groupId="os">
+  <TabItem value="macOS" label="Mac OS">
+
+```bash copy
+export TRANSFER_PARAMS=$(cat << EOL
+{
+    "symbol": "$SYMBOL_NFT-1",
+    "amount": 1,
+    "memo": "test",
+    "to": "$WALLET_ADDRESS"
+}
+EOL
+)
+aelf-command send $TOKEN_CONTRACT_ADDRESS -a $WALLET_ADDRESS -p $WALLET_PASSWORD -e $TESTNET_ENDPOINT \
+Transfer "$TRANSFER_PARAMS"
+```
+
+  </TabItem>
+  <TabItem value="windows" label="Windows">
+
+```powershell copy
+# Need to split 2 commands on Windows.
+set "TRANSFER_PARAMS={\"symbol\":\"%SYMBOL_NFT%-1\",\"amount\":1,\"memo\":\"test\",\"to\":\"%WALLET_ADDRESS%\"}"
 
 aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% Transfer "%TRANSFER_PARAMS%"
 ```
