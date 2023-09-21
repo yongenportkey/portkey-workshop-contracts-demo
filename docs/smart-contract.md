@@ -9,18 +9,25 @@ sidebar_position: 7
 
 ### 1.1 Preparation
 
-- Follow the guide at [Environment Setup](/docs/environment-setup).
-- The commands in this tutorial should be executed within the Dev Container terminal.
+
+- Install dotnet sdk.
+
+  - Follow this doc https://dotnet.microsoft.com/en-us/download to install dotnet sdk. You can choose the 7.x version.
+  - Type `dotnet --version`, if return the version of dotnet sdk, the installation is successful.
+
+- Install node.
+  - Follow this doc https://nodejs.org/en/download to install node and npm.
+  - Type `node -v` and `npm -v`, if return the versions, the installation is successful.
 
 ### 1.2 Create a new project
 
-- Open a terminal and type the following command. You can install the contract template from nuget repo to your local.
+- Type the following command, and create a new template project locally. You can modify customised parameters of command to define contract names and namespace. `-n` stands for contract name, `-N` stands for namespace.
 
-```bash copy
-dotnet new install AElf.ContractTemplates
+```sh copy
+dotnet new aelfcontract -n HelloWorld -N AElf.Contract
 ```
 
-- Create a folder to place the workshop project
+- Create a folder insider the container to place the workshop project
 
 ```bash copy
 mkdir workshop
@@ -30,15 +37,7 @@ cd workshop
 - Type the following command, and create a new template project locally
 
 ```bash copy
-dotnet new aelfcontract -n HelloWorld
-```
-
-You can add customised parameters of command to define contract names and namespace, e.g. -n HelloWorld , which means contract name will be HelloWorld, -N AElf.Contracts.HelloWorld, which means namespace will be AElf.Contracts.HelloWorld.
-
-Type the following command to understand usage of all the customised parameters.
-
-```bash copy
-dotnet new aelfcontract --help
+dotnet new aelf -n HelloWorld
 ```
 
 ### 1.3 High level scope of the project
@@ -108,124 +107,223 @@ Get Random Hash/Bytes -> one/more random numbers
 
 Next, we can do a simple practice of RNG on the workshop project we just created.
 
-Add the following code to the `src/Protobuf/contract/hello_world_contract.proto` file. These lines of code will introduce three new methods called `Initialize`, `CreateCharacter` and `GetMyCharacter` and also define a data structure called Character.
+Firstly, we need create a new subfolder called `reference` under workshop/Protobuf folder.
 
+Then create a new file called `acs6.proto`, this is a standard aelf package for getting random bytes.
 ```protobuf copy
-    rpc Initialize (google.protobuf.Empty) returns (google.protobuf.Empty);
-    rpc CreateCharacter (google.protobuf.Empty) returns (Character);
-```
+syntax = "proto3";
 
-```protobuf copy
-    rpc GetMyCharacter (google.protobuf.Empty) returns (Character) {
+package acs6;
+
+import "aelf/options.proto";
+import "aelf/core.proto";
+import "google/protobuf/wrappers.proto";
+
+option (aelf.identity) = "acs6";
+option csharp_namespace = "AElf.Standards.ACS6";
+
+service RandomNumberProvideacsrContract {
+    rpc GetRandomBytes (google.protobuf.BytesValue) returns (google.protobuf.BytesValue) {
         option (aelf.is_view) = true;
     }
+}
+
+// Events
+
+message RandomBytesGenerated {
+    option (aelf.is_event) = true;
+    bytes argument = 1;
+    bytes random_bytes = 2;
+}
 ```
+
+Replace the `src/Protobuf/contract/hello_world_contract.proto` file by following codes. These heighlighted lines of code will introduce three new methods called `Initialize`, `CreateCharacter` and `GetMyCharacter` and also define a data structure called Character.
 
 ```protobuf copy
+syntax = "proto3";
+
+import "aelf/core.proto";
+import "aelf/options.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+// The namespace of this class
+option csharp_namespace = "AElf.Contracts.HelloWorld";
+
+service HelloWorld {
+  // The name of the state class the smart contract is going to use to access blockchain state
+  option (aelf.csharp_state) = "AElf.Contracts.HelloWorld.HelloWorldState";
+
+  // Actions (methods that modify contract state)
+  // Stores the value in contract state
+  rpc Update (google.protobuf.StringValue) returns (google.protobuf.Empty) {
+  }
+  // highlight-next-line
+  rpc Initialize (google.protobuf.Empty) returns (google.protobuf.Empty);
+  // highlight-next-line
+  rpc CreateCharacter (google.protobuf.Empty) returns (Character);
+
+  // Views (methods that don't modify contract state)
+  // Get the value stored from contract state
+  rpc Read (google.protobuf.Empty) returns (google.protobuf.StringValue) {
+    option (aelf.is_view) = true;
+  }
+  // highlight-next-line
+  rpc GetMyCharacter (aelf.Address) returns (Character) {
+    // highlight-next-line
+    option (aelf.is_view) = true;
+    // highlight-next-line
+  }
+}
+
+// An event that will be emitted from contract method call
+message UpdatedMessage {
+  option (aelf.is_event) = true;
+  string value = 1;
+}
+// highlight-next-line
 message Character {
+    // highlight-next-line
     int32 health = 1;
+    // highlight-next-line
     int32 strength = 2;
+    // highlight-next-line
     int32 speed = 3;
+    // highlight-next-line
 }
 ```
 
-And also add these lines of code into HelloWorldState.cs, they will create a storage space for Character and Initialized, import and encapsulate ACS6 reference state.
+
+Replace `HelloWorldState.cs` by following codes, these heighlighted lines of code will create a storage space for Character and Initialized, import and encapsulate ACS6 reference state.
 
 ```csharp copy
+using AElf.Sdk.CSharp.State;
 using AElf.Standards.ACS6;
 using AElf.Types;
-```
 
-```csharp copy
-//create a storage space for Character
-public BoolState Initialized { get; set; }
-public MappedState<Address, Character> Characters { get; set; }
-
-//encapsulate ACS6 reference state
-internal RandomNumberProvideacsrContractContainer.RandomNumberProvideacsrContractReferenceState
-    RandomNumberContract { get; set; }
-```
-
-Add implementation of CreateCharacter and GetMyCharacter methods in HelloWorld.cs as well:
-
-```csharp copy
-using AElf.Standards.ACS6;
-```
-
-```csharp copy
-public override Empty Initialize(Empty input)
+namespace AElf.Contracts.HelloWorld
 {
-    Assert(!State.Initialized.Value, "already initialized");
-    State.RandomNumberContract.Value =
-        Context.GetContractAddressByName(SmartContractConstants.ConsensusContractSystemName);
-    return new Empty();
-}
-```
-
-```csharp copy
-public override Character CreateCharacter(Empty input)
-{
-    var existing = State.Characters[Context.Sender];
-    Assert(existing == null, "already has a character");
-    var randomBytes = State.RandomNumberContract.GetRandomBytes
-        .Call(new Int64Value { Value = Context.CurrentHeight - 1 }.ToBytesValue()).Value.ToByteArray();
-    var hash = HashHelper.ComputeFrom(Context.Sender).Value.ToByteArray();
-
-    var character = new Character
+    // The state class is access the blockchain state
+    public class HelloWorldState : ContractState 
     {
-        Health = 60 + (randomBytes[0] ^ hash[0]) % 41, // Health is 60 ~ 100
-        Strength = 40 + (randomBytes[1] ^ hash[1]) % 61, // Strength is 40 ~ 100
-        Speed = 100 + (randomBytes[2] ^ hash[2]) % 101 // Strength is 100 ~ 200
-    };
-    State.Characters[Context.Sender] = character;
-    return character;
+        // A state that holds string value
+        public StringState Message { get; set; }
+        //create a storage space for Character
+        // highlight-next-line
+        public BoolState Initialized { get; set; }
+        // highlight-next-line
+        public MappedState<Address, Character> Characters { get; set; }
+
+        //encapsulate ACS6 reference state
+        // highlight-next-line
+        internal RandomNumberProvideacsrContractContainer.RandomNumberProvideacsrContractReferenceState
+        // highlight-next-line
+            RandomNumberContract { get; set; }
+    }
 }
 ```
 
+Add implementation of CreateCharacter and GetMyCharacter methods in `HelloWorld.cs` as well:
 ```csharp copy
-public override Character GetMyCharacter(Empty input)
+using AElf.Sdk.CSharp;
+using Google.Protobuf.WellKnownTypes;
+using AElf.Types;
+
+namespace AElf.Contracts.HelloWorld
 {
-    return State.Characters[Context.Sender] ?? new Character();
+    // Contract class must inherit the base class generated from the proto file
+    public class HelloWorld : HelloWorldContainer.HelloWorldBase
+    {
+        // adding this line is for preparing the contract deployment later, 
+        // to differentiate each person's contract. 
+        // This is because our testnet does not allow the deployment of two identical contracts.
+        // highlight-next-line
+        const string author = "xibo";
+        // A method that modifies the contract state
+        public override Empty Update(StringValue input)
+        {
+            // Set the message value in the contract state
+            State.Message.Value = input.Value;
+            // Emit an event to notify listeners about something happened during the execution of this method
+            Context.Fire(new UpdatedMessage
+            {
+                Value = input.Value
+            });
+            return new Empty();
+        }
+
+        // A method that read the contract state
+        public override StringValue Read(Empty input)
+        {
+            // Retrieve the value from the state
+            var value = State.Message.Value;
+            // Wrap the value in the return type
+            return new StringValue
+            {
+                Value = value
+            };
+        }
+        // highlight-next-line
+        public override Empty Initialize(Empty input)
+        // highlight-next-line
+        {
+            // highlight-next-line
+            Assert(!State.Initialized.Value, "already initialized");
+            // highlight-next-line
+            State.RandomNumberContract.Value =
+            // highlight-next-line
+                Context.GetContractAddressByName(SmartContractConstants.ConsensusContractSystemName);
+                // highlight-next-line
+            return new Empty();
+            // highlight-next-line
+        }
+
+        // highlight-next-line
+        public override Character CreateCharacter(Empty input)
+        // highlight-next-line
+        {
+            // highlight-next-line
+            var existing = State.Characters[Context.Sender];
+            // highlight-next-line
+            Assert(existing == null, "already has a character");
+            // highlight-next-line
+            var randomBytes = State.RandomNumberContract.GetRandomBytes
+            // highlight-next-line
+                .Call(new Int64Value { Value = Context.CurrentHeight - 1 }.ToBytesValue()).Value.ToByteArray();
+                // highlight-next-line
+            var hash = HashHelper.ComputeFrom(Context.Sender).Value.ToByteArray();
+            // highlight-next-line
+            var character = new Character
+            // highlight-next-line
+            {
+                // highlight-next-line
+                Health = 60 + (randomBytes[0] ^ hash[0]) % 41, // Health is 60 ~ 100
+                // highlight-next-line
+                Strength = 40 + (randomBytes[1] ^ hash[1]) % 61, // Strength is 40 ~ 100
+                // highlight-next-line
+                Speed = 100 + (randomBytes[2] ^ hash[2]) % 101 // Speed is 100 ~ 200
+                // highlight-next-line
+            };
+            // highlight-next-line
+            State.Characters[Context.Sender] = character;
+            // highlight-next-line
+            return character;
+            // highlight-next-line
+        }
+
+        // highlight-next-line
+        public override Character GetMyCharacter(Address input)
+        // highlight-next-line
+        {
+            // highlight-next-line
+            return State.Characters[Context.Sender] ?? new Character();
+            // highlight-next-line
+        }
+    }
+    
 }
 ```
 
 This code generates a random character's attributes based on a randomBytes obtained from the ACS6. The 3 element of byte will do exclusive OR operation with 3 elements of a computed hash, each result transformed into an attribute. The attributes determine health, strength, and speed proportions. The resulting character's attributes are then formatted into a Character data structure and returned, providing details of HP, strength, and speed.
-
-Next, we need to add a unit test case for the Character methods. We go to the test folder and add these lines of code to `test/Protobuf/contract/hello_world_contract.proto`.
-
-```protobuf copy
-    rpc Initialize (google.protobuf.Empty) returns (google.protobuf.Empty);
-    rpc CreateCharacter (google.protobuf.Empty) returns (Character);
-```
-
-```protobuf copy
-    rpc GetMyCharacter (google.protobuf.Empty) returns (Character) {
-        option (aelf.is_view) = true;
-    }
-```
-
-```protobuf copy
-message Character {
-    int32 health = 1;
-    int32 strength = 2;
-    int32 speed = 3;
-}
-```
-
-Then add unit test for RandomCharacter method in HelloWorldTests.cs:
-
-```csharp copy
-        [Fact]
-        public async Task Rng_Test()
-        {
-            await HelloWorldStub.Initialize.SendAsync(new Empty());
-            var result = await HelloWorldStub.CreateCharacter.SendAsync(new Empty());
-            var character = await HelloWorldStub.GetMyCharacter.CallAsync(new Empty());
-
-            Assert.NotEqual(new Character(), character);
-            Assert.Equal(result.Output, character);
-        }
-```
 
 ## 3. Deploy the contract
 
@@ -233,21 +331,119 @@ Deployment on AElf test net is very simple, it can be done on the website: https
 
 Deployment procedure:
 
-1. Go to https://explorer-test-side02.aelf.io/proposal/proposals and login your portkey account
+1. Implement acs12.proto
+
+We need create a new file called `acs12.proto` under `src/Protobuf/`reference folder, this is a standard aelf package for showing users gas fee. `Acs12.proto` is necessary for depoyment on AElf test net.
+
+```protobuf copy
+/**
+ * AElf Standards ACS12(User Contract Standard)
+ *
+ * Used to manage user contract.
+ */
+syntax = "proto3";
+
+package acs12;
+
+import public "aelf/options.proto";
+import public "google/protobuf/empty.proto";
+import public "google/protobuf/wrappers.proto";
+import "aelf/core.proto";
+
+option (aelf.identity) = "acs12";
+option csharp_namespace = "AElf.Standards.ACS12";
+
+service UserContract{
+    
+}
+
+//Specified method fee for user contract.
+message UserContractMethodFees {
+  // List of fees to be charged.
+  repeated UserContractMethodFee fees = 2;
+  // Optional based on the implementation of SetConfiguration method.
+  bool is_size_fee_free = 3;
+}
+
+message UserContractMethodFee {
+  // The token symbol of the method fee.
+  string symbol = 1;
+  // The amount of fees to be charged.
+  int64 basic_fee = 2;
+}
+```
+
+Then we can add implementation to `hello_world_contract.proto` 
+```protobuf copy
+syntax = "proto3";
+
+import "aelf/core.proto";
+import "aelf/options.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+// highlight-next-line
+import "Protobuf/reference/acs12.proto";
+// The namespace of this class
+option csharp_namespace = "AElf.Contracts.HelloWorld";
+
+service HelloWorld {
+  // The name of the state class the smart contract is going to use to access blockchain state
+  option (aelf.csharp_state) = "AElf.Contracts.HelloWorld.HelloWorldState";
+  // highlight-next-line
+  option (aelf.base) = "Protobuf/reference/acs12.proto";
+  // Actions (methods that modify contract state)
+  // Stores the value in contract state
+  rpc Update (google.protobuf.StringValue) returns (google.protobuf.Empty) {
+  }
+  rpc Initialize (google.protobuf.Empty) returns (google.protobuf.Empty);
+  rpc CreateCharacter (google.protobuf.Empty) returns (Character);
+
+  // Views (methods that don't modify contract state)
+  // Get the value stored from contract state
+  rpc Read (google.protobuf.Empty) returns (google.protobuf.StringValue) {
+    option (aelf.is_view) = true;
+  }
+  rpc GetMyCharacter (aelf.Address) returns (Character) {
+    option (aelf.is_view) = true;
+  }
+}
+
+// An event that will be emitted from contract method call
+message UpdatedMessage {
+  option (aelf.is_event) = true;
+  string value = 1;
+}
+message Character {
+    int32 health = 1;
+    int32 strength = 2;
+    int32 speed = 3;
+}
+```
+
+Then build under src folder again.
+```bash copy
+dotnet build
+```
+
+2. Go to https://explorer-test-side02.aelf.io/proposal/proposals and login your portkey account
 
 If you haven't don't have test tokens on your account, you may go to https://testnet-faucet.aelf.io/ to get some free test tokens.
 
-2. Submit a proposal
+3. Submit a proposal
 
-Click "Apply", and select "Deploy/Update Contract", upload the /AElf.Contracts.HelloWorld.dll.patched file in project folder
+Click "Apply", and select "Deploy/Update Contract", upload the `/AElf.Contracts.HelloWorld.dll.patched` file in project folder
 
 ```bash copy
 workshop/src/bin/Debug/net6.0
 ```
 
-3. Deploy the contract
+4. Deploy the contract
 
 After uploading your contarct file, click "Apply" at bottom then click "OK" in pop-up window, it will do code check and deployment automatically.
+
+:::warning
+Please do not close the pop-up window until it's done, the address will be shown in pop-up window.
+:::
 
 Here is a gif of the whole deployment process.
 ![](/img/output.gif)
@@ -257,12 +453,28 @@ Here is a gif of the whole deployment process.
 - Send aelf commands.
   - Open terminal, type aelf-command send, fill the parameters
 
+Initialize
 ```bash copy
-aelf-command send 27RVyw1vKbWNdeTMfwFXeAtzQ36eM5c5cgfXzNydhNtD8NSpBk -e http://35.77.60.71:8000 -a 29zekTc31moEh33B6QiFuyPfbmG3fZfgMWoRqEwvgf2EsTPyfK -p xibo123
+aelf-command send "$DEMO_CONTRACT_ADDRESS" -e "$TESTNET_SIDECHAIN_ENDPOINT%" -a "$WALLET_ADDRESS" -p "$WALLET_PASSWORD" Initialize
 ```
 
+CreateCharater
 ```bash copy
-aelf-command send 27RVyw1vKbWNdeTMfwFXeAtzQ36eM5c5cgfXzNydhNtD8NSpBk -e http://35.77.60.71:8000 -a 27a3Hcn3esyHwFTdaUNQBL7dH8gg4BkRaZ7uv7SRoLAoLuS7Go -p xibo123
+aelf-command send "$DEMO_CONTRACT_ADDRESS" -e "$TESTNET_SIDECHAIN_ENDPOINT%" -a "$WALLET_ADDRESS" -p "$WALLET_PASSWORD" CreateCharacter
+```
+
+GetMyCharacter
+```bash copy
+export GETCHAR_PARAMS=$(cat << EOL
+"$WALLET_ADDRESS"
+EOL
+)
+aelf-command call "$DEMO_CONTRACT_ADDRESS" -e "$TESTNET_SIDECHAIN_ENDPOINT%" -a "$WALLET_ADDRESS" -p "$WALLET_PASSWORD" GetMyCharacter "$GETCHAR_PARAMS"
+```
+
+Here is an example of my own account:
+```bash copy
+aelf-command send 2od863gNGon8cwzRWfVqVH2XgDzrePXEiZwyY6PfEYM8sFnbYw -e http://35.77.60.71:8000 -a 29zekTc31moEh33B6QiFuyPfbmG3fZfgMWoRqEwvgf2EsTPyfK -p xibo123
 ```
 
 ```
