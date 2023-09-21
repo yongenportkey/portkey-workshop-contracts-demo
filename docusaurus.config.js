@@ -60,10 +60,6 @@ const config = {
                 label: "Intro",
                 to: "/docs/intro",
               },
-              {
-                label: "Environment Setup",
-                to: "/docs/environment-setup",
-              },
             ],
           },
           {
