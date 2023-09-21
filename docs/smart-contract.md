@@ -21,10 +21,10 @@ sidebar_position: 7
 
 ### 1.2 Create a new project
 
-- Type the following command, and create a new template project locally. You can modify customised parameters of command to define contract names and namespace. `-n` stands for contract name, `-N` stands for namespace.
+- Download the AElf templates first
 
 ```sh copy
-dotnet new aelfcontract -n HelloWorld -N AElf.Contract
+dotnet new install AElf.ContractTemplates
 ```
 
 - Create a folder insider the container to place the workshop project
