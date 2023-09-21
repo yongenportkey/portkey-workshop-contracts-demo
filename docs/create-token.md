@@ -1,6 +1,6 @@
 ---
 title: Create Token
-sidebar_position: 3
+sidebar_position: 2
 ---
 
 import Tabs from '@theme/Tabs';
@@ -10,11 +10,18 @@ import TabItem from '@theme/TabItem';
 
 ## 1. Preparation
 
-### 1.1 Setup environment
+### 1.1 Install node
 
-- Follow the guide at [Environment Setup](/docs/environment-setup).
-- The commands in this tutorial should be executed within the Dev Container terminal.
-- Please follow the example for MacOS since we are developing inside a linux docker image.
+- Follow this doc https://nodejs.org/en/download to install node and npm.
+- Type `node -v` and `npm -v`, if return the versions, the installation is successful.
+
+### 1.2 Install aelf-command tool
+
+Run the following command to install it.
+
+```bash copy
+npm i aelf-command -g
+```
 
 ## 2. FT Creation
 
