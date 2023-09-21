@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # Portkey Sign In
 
-## 2. Create a sample project using react
+## 1. Create a sample project using react
 
 In a terminal:
 
@@ -18,7 +18,7 @@ Enter the project folder.
 cd my-app
 ```
 
-## 3. Install SDKs
+## 2. Install SDKs
 
 ```bash copy
 npm install @portkey/detect-provider aelf-sdk
@@ -29,9 +29,9 @@ npm install @portkey/detect-provider aelf-sdk
 | @portkey/detect-provider | This library allows the developer to interact with the Portkey chrome extension.                                                |
 | aelf-sdk                 | aelf-sdk.js is a collection of libraries which allow you to interact with a local or remote aelf node, using a HTTP connection. |
 
-## 4. Integrate SignIn Component
+## 3. Integrate SignIn Component
 
-### 4.1 Copy below sample code and replace the codes in src/App.tsx
+### 3.1 Copy below sample code and replace the codes in src/App.tsx
 
 ```tsx title="src/App.tsx" showLineNumbers
 import { useEffect, useState } from "react";
@@ -72,13 +72,13 @@ function App() {
 export default App;
 ```
 
-## 5. Start the development server
+## 4. Start the development server
 
 ```bash
 npm run dev
 ```
 
-## 6. Result
+## 5. Result
 
 Click on the `connect` button.
 
