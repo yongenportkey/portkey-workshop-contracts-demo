@@ -86,7 +86,7 @@ Then you will see your account information.
 # Then -a $WALLET_ADDRESS -p $WALLET_PASSWORD, which represents your account and password.
 # Next, it's endpoint, which is a url.
 # Finally, Create "$CREATE_PARAMS_FT" means method name and parameters.
-aelf-command send $TOKEN_CONTRACT_ADDRESS -a $WALLET_ADDRESS -p $WALLET_PASSWORD -e $TESTNET_ENDPOINT \
+aelf-command send $TOKEN_CONTRACT_ADDRESS -a $WALLET_ADDRESS -p $WALLET_PASSWORD -e $ENDPOINT \
 Create "$CREATE_PARAMS_FT"
 ```
 
@@ -117,7 +117,7 @@ export CREATE_PARAMS_FT=$(cat << EOL
 }
 EOL
 )
-aelf-command send $TOKEN_CONTRACT_ADDRESS -a $WALLET_ADDRESS -p $WALLET_PASSWORD -e $TESTNET_ENDPOINT \
+aelf-command send $TOKEN_CONTRACT_ADDRESS -a $WALLET_ADDRESS -p $WALLET_PASSWORD -e $ENDPOINT \
 Create "$CREATE_PARAMS_FT"
 ```
 
@@ -128,7 +128,7 @@ Create "$CREATE_PARAMS_FT"
 # Need to split 2 commands on Windows.
 set "CREATE_PARAMS_FT={\"symbol\":\"%SYMBOL_FT%\",\"tokenName\":\"%SYMBOL_FT%token\",\"totalSupply\":\"10000000000\",\"decimals\":8,\"issuer\":\"%WALLET_ADDRESS%\",\"isBurnable\":\"true\",\"lockWhiteList\":null,\"issueChainId\":9992731,\"externalInfo.value\":null,\"owner\":\"%WALLET_ADDRESS%\"}"
 
-aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% Create "%CREATE_PARAMS_FT%"
+aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %ENDPOINT% Create "%CREATE_PARAMS_FT%"
 ```
 
   </TabItem>
@@ -152,14 +152,14 @@ You may also check the transaction result using AElf Explorer: https://explorer-
   <TabItem value="macOS" label="Mac OS">
 
 ```bash copy
-aelf-command event -e $TESTNET_ENDPOINT <transactionId>
+aelf-command event -e $ENDPOINT <transactionId>
 ```
 
   </TabItem>
   <TabItem value="windows" label="Windows">
 
 ```powershell copy
-aelf-command event -e %TESTNET_ENDPOINT% <transactionId>
+aelf-command event -e %ENDPOINT% <transactionId>
 ```
 
   </TabItem>
@@ -182,7 +182,7 @@ export BALANCE_BEFORE_PARAMS_FT=$(cat << EOL
 }
 EOL
 )
-aelf-command call $TOKEN_CONTRACT_ADDRESS -a $WALLET_ADDRESS -p $WALLET_PASSWORD -e $TESTNET_ENDPOINT \
+aelf-command call $TOKEN_CONTRACT_ADDRESS -a $WALLET_ADDRESS -p $WALLET_PASSWORD -e $ENDPOINT \
 GetBalance "$BALANCE_BEFORE_PARAMS_FT"
 ```
 
@@ -193,7 +193,7 @@ GetBalance "$BALANCE_BEFORE_PARAMS_FT"
 # Need to split 2 commands on Windows.
 set "BALANCE_BEFORE_PARAMS_FT={\"symbol\":\"%SYMBOL_FT%\",\"owner\":\"%WALLET_ADDRESS%\"}"
 
-aelf-command call %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% GetBalance "%BALANCE_BEFORE_PARAMS_FT%"
+aelf-command call %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %ENDPOINT% GetBalance "%BALANCE_BEFORE_PARAMS_FT%"
 ```
 
   </TabItem>
@@ -214,7 +214,7 @@ export ISSUE_PARAMS_FT=$(cat << EOL
 }
 EOL
 )
-aelf-command send $TOKEN_CONTRACT_ADDRESS -a $WALLET_ADDRESS -p $WALLET_PASSWORD -e $TESTNET_ENDPOINT \
+aelf-command send $TOKEN_CONTRACT_ADDRESS -a $WALLET_ADDRESS -p $WALLET_PASSWORD -e $ENDPOINT \
 Issue "$ISSUE_PARAMS_FT"
 ```
 
@@ -225,7 +225,7 @@ Issue "$ISSUE_PARAMS_FT"
 # Need to split 2 commands on Windows.
 set "ISSUE_PARAMS_FT={\"symbol\":\"%SYMBOL_FT%\",\"amount\":10000000000,\"memo\":\"test\",\"to\":\"%WALLET_ADDRESS%\"}"
 
-aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% Issue "%ISSUE_PARAMS_FT%"
+aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %ENDPOINT% Issue "%ISSUE_PARAMS_FT%"
 ```
 
   </TabItem>
@@ -244,7 +244,7 @@ export BALANCE_AFTER_PARAMS_FT=$(cat << EOL
 }
 EOL
 )
-aelf-command call $TOKEN_CONTRACT_ADDRESS -a $WALLET_ADDRESS -p $WALLET_PASSWORD -e $TESTNET_ENDPOINT \
+aelf-command call $TOKEN_CONTRACT_ADDRESS -a $WALLET_ADDRESS -p $WALLET_PASSWORD -e $ENDPOINT \
 GetBalance "$BALANCE_AFTER_PARAMS_FT"
 ```
 
@@ -255,7 +255,7 @@ GetBalance "$BALANCE_AFTER_PARAMS_FT"
 # Need to split 2 commands on Windows.
 set "BALANCE_AFTER_PARAMS_FT={\"symbol\":\"%SYMBOL_FT%\",\"owner\":\"%WALLET_ADDRESS%\"}"
 
-aelf-command call %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% GetBalance "%BALANCE_AFTER_PARAMS_FT%"
+aelf-command call %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %ENDPOINT% GetBalance "%BALANCE_AFTER_PARAMS_FT%"
 ```
 
   </TabItem>
@@ -298,7 +298,7 @@ export CREATE_PARAMS_NFT_COLLECTION=$(cat << EOL
 }
 EOL
 )
-aelf-command send $TOKEN_CONTRACT_ADDRESS -a $WALLET_ADDRESS -p $WALLET_PASSWORD -e $TESTNET_ENDPOINT \
+aelf-command send $TOKEN_CONTRACT_ADDRESS -a $WALLET_ADDRESS -p $WALLET_PASSWORD -e $ENDPOINT \
 Create "$CREATE_PARAMS_NFT_COLLECTION"
 ```
 
@@ -309,7 +309,7 @@ Create "$CREATE_PARAMS_NFT_COLLECTION"
 # Need to split 2 commands on Windows.
 set "CREATE_PARAMS_NFT_COLLECTION={\"symbol\":\"%SYMBOL_NFT%-0\",\"tokenName\":\"Collecion of %SYMBOL_NFT%\",\"totalSupply\":\"1\",\"decimals\":0,\"issuer\":\"%WALLET_ADDRESS%\",\"isBurnable\":\"true\",\"lockWhiteList\":null,\"issueChainId\":9992731,\"externalInfo\":{\"value\":{\"__nft_image_url\":\"%NFT_COLLECTION_IMAGE%\"}},\"owner\":\"%WALLET_ADDRESS%\"}"
 
-aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% Create "%CREATE_PARAMS_NFT_COLLECTION%"
+aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %ENDPOINT% Create "%CREATE_PARAMS_NFT_COLLECTION%"
 ```
 
   </TabItem>
@@ -353,7 +353,7 @@ export CREATE_PARAMS_NFT=$(cat << EOL
 }
 EOL
 )
-aelf-command send $TOKEN_CONTRACT_ADDRESS -a $WALLET_ADDRESS -p $WALLET_PASSWORD -e $TESTNET_ENDPOINT \
+aelf-command send $TOKEN_CONTRACT_ADDRESS -a $WALLET_ADDRESS -p $WALLET_PASSWORD -e $ENDPOINT \
 Create "$CREATE_PARAMS_NFT"
 ```
 
@@ -364,7 +364,7 @@ Create "$CREATE_PARAMS_NFT"
 # Need to split 2 commands on Windows.
 set "CREATE_PARAMS_NFT={\"symbol\":\"%SYMBOL_NFT%-1\",\"tokenName\":\"%SYMBOL_NFT% item\",\"totalSupply\":\"1\",\"decimals\":0,\"issuer\":\"%WALLET_ADDRESS%\",\"isBurnable\":\"true\",\"lockWhiteList\":null,\"issueChainId\":9992731,\"externalInfo\":{\"value\":{\"__nft_image_url\":\"%NFT_ITEM_IMAGE%\"}},\"owner\":\"%WALLET_ADDRESS%\"}"
 
-aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% Create "%CREATE_PARAMS_NFT%"
+aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %ENDPOINT% Create "%CREATE_PARAMS_NFT%"
 ```
 
   </TabItem>
@@ -392,7 +392,7 @@ export BALANCE_BEFORE_PARAMS_NFT=$(cat << EOL
 }
 EOL
 )
-aelf-command call $TOKEN_CONTRACT_ADDRESS -a $WALLET_ADDRESS -p $WALLET_PASSWORD -e $TESTNET_ENDPOINT \
+aelf-command call $TOKEN_CONTRACT_ADDRESS -a $WALLET_ADDRESS -p $WALLET_PASSWORD -e $ENDPOINT \
 GetBalance "$BALANCE_BEFORE_PARAMS_NFT"
 ```
 
@@ -403,7 +403,7 @@ GetBalance "$BALANCE_BEFORE_PARAMS_NFT"
 # Need to split 2 commands on Windows.
 set "BALANCE_BEFORE_PARAMS_NFT={\"symbol\":\"%SYMBOL_NFT%-1\",\"owner\":\"%WALLET_ADDRESS%\"}"
 
-aelf-command call %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% GetBalance "%BALANCE_BEFORE_PARAMS_NFT%"
+aelf-command call %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %ENDPOINT% GetBalance "%BALANCE_BEFORE_PARAMS_NFT%"
 ```
 
   </TabItem>
@@ -424,7 +424,7 @@ export ISSUE_PARAMS_NFT=$(cat << EOL
 }
 EOL
 )
-aelf-command send $TOKEN_CONTRACT_ADDRESS -a $WALLET_ADDRESS -p $WALLET_PASSWORD -e $TESTNET_ENDPOINT \
+aelf-command send $TOKEN_CONTRACT_ADDRESS -a $WALLET_ADDRESS -p $WALLET_PASSWORD -e $ENDPOINT \
 Issue "$ISSUE_PARAMS_NFT"
 ```
 
@@ -435,7 +435,7 @@ Issue "$ISSUE_PARAMS_NFT"
 # Need to split 2 commands on Windows.
 set "ISSUE_PARAMS_NFT={\"symbol\":\"%SYMBOL_NFT%-1\",\"amount\":1,\"memo\":\"test\",\"to\":\"%WALLET_ADDRESS%\"}"
 
-aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% Issue "%ISSUE_PARAMS_NFT%"
+aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %ENDPOINT% Issue "%ISSUE_PARAMS_NFT%"
 ```
 
   </TabItem>
@@ -454,7 +454,7 @@ export BALANCE_AFTER_PARAMS_NFT=$(cat << EOL
 }
 EOL
 )
-aelf-command call $TOKEN_CONTRACT_ADDRESS -a $WALLET_ADDRESS -p $WALLET_PASSWORD -e $TESTNET_ENDPOINT \
+aelf-command call $TOKEN_CONTRACT_ADDRESS -a $WALLET_ADDRESS -p $WALLET_PASSWORD -e $ENDPOINT \
 GetBalance "$BALANCE_AFTER_PARAMS_NFT"
 ```
 
@@ -465,7 +465,7 @@ GetBalance "$BALANCE_AFTER_PARAMS_NFT"
 # Need to split 2 commands on Windows.
 set "BALANCE_AFTER_PARAMS_NFT={\"symbol\":\"%SYMBOL_NFT%-1\",\"owner\":\"%WALLET_ADDRESS%\"}"
 
-aelf-command call %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% GetBalance "%BALANCE_AFTER_PARAMS_NFT%"
+aelf-command call %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %ENDPOINT% GetBalance "%BALANCE_AFTER_PARAMS_NFT%"
 ```
 
   </TabItem>
@@ -496,7 +496,7 @@ export TRANSFER_PARAMS=$(cat << EOL
 }
 EOL
 )
-aelf-command send $TOKEN_CONTRACT_ADDRESS -a $WALLET_ADDRESS -p $WALLET_PASSWORD -e $TESTNET_ENDPOINT \
+aelf-command send $TOKEN_CONTRACT_ADDRESS -a $WALLET_ADDRESS -p $WALLET_PASSWORD -e $ENDPOINT \
 Transfer "$TRANSFER_PARAMS"
 ```
 
@@ -507,7 +507,7 @@ Transfer "$TRANSFER_PARAMS"
 # Need to split 2 commands on Windows.
 set "TRANSFER_PARAMS={\"symbol\":\"%SYMBOL_FT%\",\"amount\":1000000000,\"memo\":\"test\",\"to\":\"%WALLET_ADDRESS%\"}"
 
-aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% Transfer "%TRANSFER_PARAMS%"
+aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %ENDPOINT% Transfer "%TRANSFER_PARAMS%"
 ```
 
   </TabItem>
@@ -528,7 +528,7 @@ export TRANSFER_PARAMS=$(cat << EOL
 }
 EOL
 )
-aelf-command send $TOKEN_CONTRACT_ADDRESS -a $WALLET_ADDRESS -p $WALLET_PASSWORD -e $TESTNET_ENDPOINT \
+aelf-command send $TOKEN_CONTRACT_ADDRESS -a $WALLET_ADDRESS -p $WALLET_PASSWORD -e $ENDPOINT \
 Transfer "$TRANSFER_PARAMS"
 ```
 
@@ -539,7 +539,7 @@ Transfer "$TRANSFER_PARAMS"
 # Need to split 2 commands on Windows.
 set "TRANSFER_PARAMS={\"symbol\":\"%SYMBOL_NFT%-1\",\"amount\":1,\"memo\":\"test\",\"to\":\"%WALLET_ADDRESS%\"}"
 
-aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %TESTNET_ENDPOINT% Transfer "%TRANSFER_PARAMS%"
+aelf-command send %TOKEN_CONTRACT_ADDRESS% -a %WALLET_ADDRESS% -p %WALLET_PASSWORD% -e %ENDPOINT% Transfer "%TRANSFER_PARAMS%"
 ```
 
   </TabItem>
