@@ -222,7 +222,7 @@ message Character {
 ```
 
 
-Replace `HelloWorldState.cs` by following codes, these heighlighted lines of code will create a storage space for Character and Initialized, import and encapsulate ACS6 reference state.
+Replace `HelloWorldState.cs` by following codes, these heighlighted lines of code will create states for Initialized and Character, import and encapsulate ACS6 reference state.
 
 ```csharp copy
 using AElf.Sdk.CSharp.State;
@@ -251,7 +251,7 @@ namespace AElf.Contracts.HelloWorld
 }
 ```
 
-Add implementation of CreateCharacter and GetMyCharacter methods in `HelloWorld.cs` as well:
+Add implementation of Initialize, CreateCharacter and GetMyCharacter methods in `HelloWorld.cs` as well:
 ```csharp copy
 using AElf.Sdk.CSharp;
 using Google.Protobuf.WellKnownTypes;
@@ -352,7 +352,7 @@ namespace AElf.Contracts.HelloWorld
 }
 ```
 
-This code generates a random character's attributes based on a randomBytes obtained from the ACS6. The 3 element of byte will do exclusive OR operation with 3 elements of a computed hash, each result transformed into an attribute. The attributes determine health, strength, and speed proportions. The resulting character's attributes are then formatted into a Character data structure and returned, providing details of HP, strength, and speed.
+These codes generate a random character's attributes based on randomBytes obtained from the ACS6. The 3 elements of randomBytes will do exclusive OR operation with 3 elements of the computed hash, each result is transformed into an attribute. The attributes determine health, strength, and speed. The resulting character's attributes are then formatted into a Character data structure and returned.
 
 ## 3. Deploy the contract
 
@@ -362,7 +362,7 @@ Deployment procedure:
 
 1. Implement acs12.proto
 
-We need create a new file called `acs12.proto` under `src/Protobuf/reference` folder, this is a standard aelf package for showing users gas fee. `Acs12.proto` is necessary for depoyment on AElf test net.
+We need create a new file called `acs12.proto` under `src/Protobuf/reference` folder, this is a standard aelf package for showing users gas fee. `Acs12.proto` is necessary for deployment on AElf test net.
 
 ```protobuf copy
 /**
@@ -454,9 +454,12 @@ Then build under src folder again.
 dotnet build
 ```
 
-2. Go to https://explorer-test-side02.aelf.io/proposal/proposals and login your portkey account
+2. Go to https://explorer-test-side02.aelf.io/proposal/proposals and login your portkey account, and transfer some tokens to sidechain as we need deploy on sidechain.
 
 If you haven't don't have test tokens on your account, you may go to https://testnet-faucet.aelf.io/ to get some free test tokens.
+
+Here is how to tranfer test tokens to side chain:
+![](/img/extension_sidechain.gif)
 
 3. Submit a proposal
 
@@ -484,12 +487,12 @@ Here is a gif of the whole deployment process.
 
 Initialize
 ```bash copy
-aelf-command send "$DEMO_CONTRACT_ADDRESS" -e "$SIDECHAIN_ENDPOINT" -a "$WALLET_ADDRESS" -p "$WALLET_PASSWORD" Initialize
+aelf-command send "$DEMO_CONTRACT_ADDRESS" -e "$TESTNET_SIDECHAIN_ENDPOINT" -a "$WALLET_ADDRESS" -p "$WALLET_PASSWORD" Initialize
 ```
 
 CreateCharater
 ```bash copy
-aelf-command send "$DEMO_CONTRACT_ADDRESS" -e "$SIDECHAIN_ENDPOINT" -a "$WALLET_ADDRESS" -p "$WALLET_PASSWORD" CreateCharacter
+aelf-command send "$DEMO_CONTRACT_ADDRESS" -e "$TESTNET_SIDECHAIN_ENDPOINT" -a "$WALLET_ADDRESS" -p "$WALLET_PASSWORD" CreateCharacter
 ```
 
 GetMyCharacter
@@ -498,7 +501,7 @@ export GETCHAR_PARAMS=$(cat << EOL
 "$WALLET_ADDRESS"
 EOL
 )
-aelf-command call "$DEMO_CONTRACT_ADDRESS" -e "$SIDECHAIN_ENDPOINT" -a "$WALLET_ADDRESS" -p "$WALLET_PASSWORD" GetMyCharacter "$GETCHAR_PARAMS"
+aelf-command call "$DEMO_CONTRACT_ADDRESS" -e "$TESTNET_SIDECHAIN_ENDPOINT" -a "$WALLET_ADDRESS" -p "$WALLET_PASSWORD" GetMyCharacter "$GETCHAR_PARAMS"
 ```
 
 Here is an example of my own account:
