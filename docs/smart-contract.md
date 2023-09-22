@@ -222,7 +222,7 @@ message Character {
 ```
 
 
-Replace `HelloWorldState.cs` by following codes, these heighlighted lines of code will create a storage space for Character and Initialized, import and encapsulate ACS6 reference state.
+Replace `HelloWorldState.cs` by following codes, these heighlighted lines of code will create states for Initialized and Character, import and encapsulate ACS6 reference state.
 
 ```csharp copy
 using AElf.Sdk.CSharp.State;
@@ -251,7 +251,7 @@ namespace AElf.Contracts.HelloWorld
 }
 ```
 
-Add implementation of CreateCharacter and GetMyCharacter methods in `HelloWorld.cs` as well:
+Add implementation of Initialize, CreateCharacter and GetMyCharacter methods in `HelloWorld.cs` as well:
 ```csharp copy
 using AElf.Sdk.CSharp;
 using Google.Protobuf.WellKnownTypes;
@@ -352,7 +352,7 @@ namespace AElf.Contracts.HelloWorld
 }
 ```
 
-This code generates a random character's attributes based on a randomBytes obtained from the ACS6. The 3 element of byte will do exclusive OR operation with 3 elements of a computed hash, each result transformed into an attribute. The attributes determine health, strength, and speed proportions. The resulting character's attributes are then formatted into a Character data structure and returned, providing details of HP, strength, and speed.
+These codes generate a random character's attributes based on randomBytes obtained from the ACS6. The 3 elements of randomBytes will do exclusive OR operation with 3 elements of the computed hash, each result is transformed into an attribute. The attributes determine health, strength, and speed. The resulting character's attributes are then formatted into a Character data structure and returned.
 
 ## 3. Deploy the contract
 
