@@ -454,9 +454,12 @@ Then build under src folder again.
 dotnet build
 ```
 
-2. Go to https://explorer-test-side02.aelf.io/proposal/proposals and login your portkey account
+2. Go to https://explorer-test-side02.aelf.io/proposal/proposals and login your portkey account, and transfer some tokens to sidechain as we need deploy on sidechain.
 
 If you haven't don't have test tokens on your account, you may go to https://testnet-faucet.aelf.io/ to get some free test tokens.
+
+Here is how to tranfer test tokens to side chain:
+![](/img/extension_sidechain.gif)
 
 3. Submit a proposal
 
@@ -484,12 +487,12 @@ Here is a gif of the whole deployment process.
 
 Initialize
 ```bash copy
-aelf-command send "$DEMO_CONTRACT_ADDRESS" -e "$SIDECHAIN_ENDPOINT" -a "$WALLET_ADDRESS" -p "$WALLET_PASSWORD" Initialize
+aelf-command send "$DEMO_CONTRACT_ADDRESS" -e "$TESTNET_SIDECHAIN_ENDPOINT" -a "$WALLET_ADDRESS" -p "$WALLET_PASSWORD" Initialize
 ```
 
 CreateCharater
 ```bash copy
-aelf-command send "$DEMO_CONTRACT_ADDRESS" -e "$SIDECHAIN_ENDPOINT" -a "$WALLET_ADDRESS" -p "$WALLET_PASSWORD" CreateCharacter
+aelf-command send "$DEMO_CONTRACT_ADDRESS" -e "$TESTNET_SIDECHAIN_ENDPOINT" -a "$WALLET_ADDRESS" -p "$WALLET_PASSWORD" CreateCharacter
 ```
 
 GetMyCharacter
@@ -498,7 +501,7 @@ export GETCHAR_PARAMS=$(cat << EOL
 "$WALLET_ADDRESS"
 EOL
 )
-aelf-command call "$DEMO_CONTRACT_ADDRESS" -e "$SIDECHAIN_ENDPOINT" -a "$WALLET_ADDRESS" -p "$WALLET_PASSWORD" GetMyCharacter "$GETCHAR_PARAMS"
+aelf-command call "$DEMO_CONTRACT_ADDRESS" -e "$TESTNET_SIDECHAIN_ENDPOINT" -a "$WALLET_ADDRESS" -p "$WALLET_PASSWORD" GetMyCharacter "$GETCHAR_PARAMS"
 ```
 
 Here is an example of my own account:
