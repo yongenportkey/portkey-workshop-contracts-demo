@@ -325,11 +325,11 @@ namespace AElf.Contracts.HelloWorld
             // highlight-next-line
             {
                 // highlight-next-line
-                Health = 60 + (randomBytes[0] ^ hash[0]) % 41, // Health is 60 ~ 100
+                Health = 60 + (randomBytes[2] ^ hash[2]) % 41, // Health is 60 ~ 100
                 // highlight-next-line
-                Strength = 40 + (randomBytes[1] ^ hash[1]) % 61, // Strength is 40 ~ 100
+                Strength = 40 + (randomBytes[3] ^ hash[3]) % 61, // Strength is 40 ~ 100
                 // highlight-next-line
-                Speed = 100 + (randomBytes[2] ^ hash[2]) % 101 // Speed is 100 ~ 200
+                Speed = 100 + (randomBytes[4] ^ hash[4]) % 101 // Speed is 100 ~ 200
                 // highlight-next-line
             };
             // highlight-next-line
@@ -484,12 +484,12 @@ Here is a gif of the whole deployment process.
 
 Initialize
 ```bash copy
-aelf-command send "$DEMO_CONTRACT_ADDRESS" -e "$TESTNET_SIDECHAIN_ENDPOINT%" -a "$WALLET_ADDRESS" -p "$WALLET_PASSWORD" Initialize
+aelf-command send "$DEMO_CONTRACT_ADDRESS" -e "$SIDECHAIN_ENDPOINT" -a "$WALLET_ADDRESS" -p "$WALLET_PASSWORD" Initialize
 ```
 
 CreateCharater
 ```bash copy
-aelf-command send "$DEMO_CONTRACT_ADDRESS" -e "$TESTNET_SIDECHAIN_ENDPOINT%" -a "$WALLET_ADDRESS" -p "$WALLET_PASSWORD" CreateCharacter
+aelf-command send "$DEMO_CONTRACT_ADDRESS" -e "$SIDECHAIN_ENDPOINT" -a "$WALLET_ADDRESS" -p "$WALLET_PASSWORD" CreateCharacter
 ```
 
 GetMyCharacter
@@ -498,7 +498,7 @@ export GETCHAR_PARAMS=$(cat << EOL
 "$WALLET_ADDRESS"
 EOL
 )
-aelf-command call "$DEMO_CONTRACT_ADDRESS" -e "$TESTNET_SIDECHAIN_ENDPOINT%" -a "$WALLET_ADDRESS" -p "$WALLET_PASSWORD" GetMyCharacter "$GETCHAR_PARAMS"
+aelf-command call "$DEMO_CONTRACT_ADDRESS" -e "$SIDECHAIN_ENDPOINT" -a "$WALLET_ADDRESS" -p "$WALLET_PASSWORD" GetMyCharacter "$GETCHAR_PARAMS"
 ```
 
 Here is an example of my own account:
